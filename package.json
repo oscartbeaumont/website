@@ -8,7 +8,7 @@
   "dependencies": {
     "hexo": "*",
     "hexo-admin": "*",
-    "hexo-autonofollow": "^1.0.1",
+    "hexo-autonofollow": "*",
     "hexo-browsersync": "*",
     "hexo-deployer-git": "*",
     "hexo-generator-archive": "*",
