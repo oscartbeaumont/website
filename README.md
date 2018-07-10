@@ -14,7 +14,6 @@ Then Navagate To [localhost:4000](http://localhost:4000) In Your Browser To View
 # Publishing New Version
 To Publish A New Version Of This Website Use The Command's Below (In Your Hexo Project Folder):
 ```
-rm -rf docs/
 hexo generate
 ```
 Then Commit Your Changes To Git To Publish It.
