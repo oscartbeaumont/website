@@ -9,7 +9,7 @@ cd website
 npm install
 hexo serve
 ```
-Then Navagate To http://localhost:4000 In Your Browser To View The Site Locally. You Can Access The [Hexo Admin Interface](https://jaredforsyth.com/hexo-admin/) By Going To http://localhost:4000/admin/ (Please Be Aware This Interface Only Exists When Running Locally). Now You Can Begin Modifing The Configs/Files To Update The Websites Content.
+Then Navagate To [localhost:4000](http://localhost:4000) In Your Browser To View The Site Locally. You Can Access The [Hexo Admin Interface](https://jaredforsyth.com/hexo-admin/) By Going To [localhost:4000/admin/](http://localhost:4000/admin/) (Please Be Aware This Interface Only Exists When Running Locally). Now You Can Begin Modifing The Configs/Files To Update The Websites Content.
 
 # Publishing New Version
 To Publish A New Version Of This Website Use The Command's Below (In Your Hexo Project Folder):
