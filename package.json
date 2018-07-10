@@ -16,7 +16,7 @@
     "hexo-generator-feed": "*",
     "hexo-generator-index": "*",
     "hexo-generator-seo-friendly-sitemap": "*",
-    "hexo-generator-sitemap": "^1.2.0",
+    "hexo-generator-sitemap": "*",
     "hexo-generator-tag": "*",
     "hexo-renderer-ejs": "*",
     "hexo-renderer-jade": "*",
