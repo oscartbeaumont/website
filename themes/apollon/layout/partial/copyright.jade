@@ -1,0 +1,20 @@
+.copyright
+    - var hexoURL = "https://hexo.io/";
+    - var apolloURL = "https://github.com/pinggod/hexo-theme-apollo";
+    - var currentDate = new Date();
+    - var year = currentDate.getFullYear();
+    - year = year == theme.startyear ? year : theme.startyear + ' - ' + year;
+    p © #{year} #[a(href=config.url)!= config.author], powered by #[a(href=hexoURL, target="_blank") Hexo] and a modified version of #[a(href=apolloURL, target="_blank") hexo-theme-apollo].
+    .services
+        if config.social_bar.github
+          a(href="https://github.com/" + config.social_bar.github, target="_blank", class="social-icon")
+            img(src = "/img/github.png", alt="Github")
+        if config.social_bar.spotify
+          a(href="https://open.spotify.com/user/" + config.social_bar.spotify, target="_blank", class="social-icon")
+            img(src = "/img/spotify.png", alt="Spotify")
+        if config.social_bar.email
+          a(href="mailto:" + config.social_bar.email, target="_blank", class="social-icon")
+            img(src = "/img/email.png", alt="Email")
+        if config.social_bar.rss
+          a(href=config.social_bar.rss, target="_blank", class="social-icon")
+            img(src = "/img/rss.png", alt="RSS")

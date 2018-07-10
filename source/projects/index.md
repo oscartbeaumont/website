@@ -1,0 +1,128 @@
+---
+title: Projects
+---
+
+{% raw %}
+<div id="modal" class="modal">
+  <span class="close">&times;</span>
+  <img class="modal-content" id="modalImg">
+  <div id="caption"></div>
+</div>
+
+<script>
+window.onload=function(){for(var n=document.getElementById("modal"),t=document.getElementById("modalImg"),o=document.getElementById("caption"),e=document.getElementsByTagName("img"),l=0;l<e.length;l++){e[l].onclick=function(e){n.style.display="block",t.src=e.target.src,o.innerHTML=this.alt}}document.getElementsByClassName("close")[0].onclick=function(){n.style.display="none"}};
+</script>
+{% endraw %}
+
+This page shows the projects/events I have worked on. You can contact me to hire me if you want!
+Click on any image to expand it.
+
+# Sound and Lighting
+## High School Music Production
+I did lighting for a production of “High School Musical” at a small local theatre. I was using lighting desk shown below and all of the lights were analog and powered by 3 different 12 Channel Dimmers.
+
+{% raw %}
+<table class="imgView">
+  <tr>
+    <td>
+      <img src="HSM/hsm1.jpg" alt="High School Music - The View">
+      <div>The View</div>
+    </td>
+    <td>
+      <img src="HSM/hsm2.jpg" alt="High School Music - The Lighting Desk">
+      <div>The Lighting Desk</div>
+    </td>
+    <td>
+      <img src="HSM/hsm3.jpg" alt="High School Music - My Setup">
+      <div>My Setup</div>
+    </td>
+    <td>
+      <img src="HSM/hsm4.jpg" alt="High School Music - The Cable Mess">
+      <div>The Cable Mess</div>
+    </td>
+  </tr>
+</table>
+{% endraw %}
+
+## Another School Social
+A friend and I did sound and lighting for a school social event. The event was powered by an older sound and lighting desk. We used two T bars on both sides of the room to mount the lights on. We also used a projector already in the room to project cool graphics that changed based on the music.
+
+ {% raw %}
+ <table class="imgView">
+   <tr>
+     <td>
+       <img src="SchoolSocial/ss1.jpg" alt="School Social - The Sound Setup">
+       <div>The Sound Setup</div>
+     </td>
+     <td>
+       <img src="SchoolSocial/ss2.jpg" alt="School Social - The Setup">
+       <div>The Setup</div>
+     </td>
+     <td>
+       <img src="SchoolSocial/ss3.jpg" alt="School Social - The Lighting Desk">
+       <div>The Lighting Desk</div>
+     </td>
+   </tr>
+ </table>
+ {% endraw %}
+
+
+## Another School Social
+A Friend and I ran sound and lighting for another social at school. It was held in an auditorium that already had lighting equipment so we ran two lighting “loops” both with different controllers. The existing lighting in the room was run off a [Smartfade ML](https://www.etcconnect.com/Products/Consoles/Smart-Family/SmartFade-ML/Features.aspx) and my friends custom built lighting bar and lights were powered by [QLC Plus](http://www.qlcplus.org/). The Sound was run using a [Si Expression](https://www.soundcraft.com/en-US/products/si-expression-1) and 4 [EV SX300's](https://www.electrovoice.com/product.php?id=202).
+
+{% raw %}
+<table class="imgView">
+  <tr>
+    <td>
+      <img src="SchoolSocial2/ss1.jpg" alt="School Social - The Setup">
+      <div>The Setup</div>
+    </td>
+    <td>
+      <img src="SchoolSocial2/ss2.jpg" alt="School Social - The Lighting Bar 1">
+      <div>The Lighting Bar 1</div>
+    </td>
+    <td>
+      <img src="SchoolSocial2/ss3.jpg" alt="School Social - The Lighting Bar 2">
+      <div>My Lighting Bar 2</div>
+    </td>
+    <td>
+      <img src="SchoolSocial2/ss4.jpg" alt="School Social - Derigging The Lighting Bar">
+      <div>Derigging The Lighting Bar</div>
+    </td>
+    <td>
+      <img src="SchoolSocial2/ss5.jpg" alt="School Social - Packing And Sorting The Equipment">
+      <div>Packing And Sorting The Equipment</div>
+    </td>
+  </tr>
+</table>
+{% endraw %}
+
+# Robotics
+## Robocup Australia Nationals
+I was the captain of a Robotics team that entered [Robocup Nationals](http://www.robocupjunior.org.au/), a robotics competition that is held in Australia. My team came 6th. Our robots main problem was it getting “Stage Fright” and the colour sensors reading incorrectly. Our robot was built using the [Lego Mindstorms EV3](https://www.lego.com/mindstorms/about-ev3) Platform.
+
+{% raw %}
+<table class="imgView">
+  <tr>
+    <td>
+      <img src="RobocupNationals/nationals.jpg" alt="Robocup Nationals - The Event">
+      <div>The Event</div>
+    </td>
+    <td>
+      <img src="RobocupNationals/nationals1.jpg" alt="Robocup Nationals - Front of The Robot">
+      <div>Front of The Robot</div>
+    </td>
+    <td>
+      <img src="RobocupNationals/nationals2.jpg" alt="Robocup Nationals - Side of The Robot">
+      <div>Side of The Robot</div>
+    </td>
+    <td>
+      <img src="RobocupNationals/nationals3.jpg" alt="Robocup Nationals - The Robot">
+      <div>The Robot</div>
+    </td>
+  </tr>
+</table>
+{% endraw %}
+
+# Programming
+### [Github Resume](https://resume.github.io/?oscartbeaumont)

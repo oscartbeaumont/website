@@ -1,0 +1,22 @@
+extends partial/layout
+
+block site_title
+    if page.title == ""
+      != config.title
+    else
+      != page.title + " - " + config.title
+
+block description
+    - var desc = page.desc || config.description;
+    meta(name="description", content=desc)
+
+block container
+    include mixins/page
+    +post(page)
+
+block pagination
+    include mixins/paginator
+    include partial/comment
+
+block copyright
+    include partial/copyright
