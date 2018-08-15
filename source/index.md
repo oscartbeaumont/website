@@ -6,7 +6,7 @@ Hello There,
 My name is Oscar Beaumont, I am a high school student, developer and a tech enthusiast.
 
 I have a love for
-* Programming ([Nodejs](https://nodejs.org/), [React](https://reactjs.org/) and [Rust](https://www.rust-lang.org/))
+* Programming ([Nodejs](https://nodejs.org/), [React](https://reactjs.org/) and [Golang](https://golang.org))
 * Open Source ([Github](https://github.com/oscartbeaumont), [MIT License](https://opensource.org/licenses/MIT))
 * Robotics ([Lego Mindstorms EV3 Robots](https://www.lego.com/mindstorms/about-ev3), [Robocup Junior Competition](http://www.robocupjunior.org.au/))
 * Stage Lighting And Sound

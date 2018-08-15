@@ -1,2 +1,8 @@
 #Mac
 .DS_Store
+
+#Nodejs
+node_modules/
+
+#Hexo Cache
+db.json
