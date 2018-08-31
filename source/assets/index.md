@@ -16,4 +16,4 @@ Picture Of Me:
 
 Computer Wallpapers:
 * I Am Root (1920×1080): [wallpaper.jpeg](wallpaper.jpeg) (Copyright of Original Artist Not Me)
-* Long Road (1920×1080): [wallpaper2.jpeg](wallpaper2.jpeg) (Copyright of Original Artist Not Me)
+* Long Road (1920×1080): [wallpaper2.jpg](wallpaper2.jpg) (Copyright of Original Artist Not Me)
