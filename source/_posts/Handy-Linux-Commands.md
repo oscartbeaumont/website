@@ -3,8 +3,6 @@ title: Handy Linux Commands
 date: 2018-06-01 21:53:44
 ---
 
-# This is a work in progress and is not complete yet
-
 [System Status](#testing)
 System Network Details system-details
 Software software
@@ -17,6 +15,10 @@ objDiv.scrollTop = objDiv.scrollHeight;
 {% endraw %}
 
 
+# Self Signed HTTPS Certificates Generation
+{% code lang:bash %}
+openssl req -nodes -new -x509 -keyout server.key -out server.cert
+{% endcode %}
 
 {% raw %}<div id="system-status-commands">{% endraw %}
 # System Status Commands
@@ -67,13 +69,24 @@ Ubuntu/Debian Updates:
 sudo apt update && sudo apt -y upgrade
 {% endcode %}
 
+CentOS Updates:
+{% code lang:bash %}
+suod yum update
+{% endcode %}
+
 {% raw %}</div>{% endraw %}
 
 # SSH Key Handling
 
-generation
+Generating SSH Keys:
+{% code lang:bash %}
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+{% endcode %}
 
-copying
+Copying SSH Keys:
+{% code lang:bash %}
+ssh-copy-id user@hostname.example.com
+{% endcode %}
 
 # Linux User Commands
 Create A New User:
@@ -83,23 +96,12 @@ sudo adduser sammy
 
 Delete A User (Including Home Directory):
 {% code lang:bash %}
-sudo userdel -r sammy <font color='red'>bar</font>
+sudo userdel -r sammy bar
 {% endcode %}
 
 Give User Sudo:
 {% code lang:bash %}
 sudo usermod -aG sudo sammy
 {% endcode %}
-
-
-
-
-TODO:
- Username Sammy (Change To Red Color)
- Interface eth0 (Change To Red Color)
- IP Address's eth0 (Change To Red Color)
- new-hostname (Change To Red Color)
-
-foo <font color='red'>bar</font> foo
 
 ​
