@@ -11,6 +11,7 @@ install: npm install
 before_script:
 - git config --global user.name "Oscar Beaumont"
 - git config --global user.email "oscartbeaumont@gmail.com"
-- sed -i "s/__GITHUB_TOKEN__/${__GITHUB_TOKEN__}/" _config.yml
+#- sed -i "s/__GITHUB_TOKEN__/${__GITHUB_TOKEN__}/" _config.yml # Linux
+- sed -i '' "s/__GITHUB_TOKEN__/${__GITHUB_TOKEN__}/g" _config.yml #MacOS
 
 script: npm run build
