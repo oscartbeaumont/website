@@ -6,7 +6,7 @@
 title: Oscar Beaumont
 subtitle:
 description: Hello There, My name is Oscar Beaumont, I am a high school student, developer and a tech enthusiast. This is my personal website and blog. Click Here to read more!
-keywords: Technology Linux Servers Programming Developer Oscar Beaumont otbeaumont oscartbeaumont
+keywords: Technology Linux Servers Programming Robotics Developer Oscar Beaumont otbeaumont oscartbeaumont
 author: Oscar Beaumont
 language: en
 timezone: Australia/Perth
@@ -104,3 +104,9 @@ nofollow:
     - github.com
     - open.spotify.com
     - gmail.com
+
+#Github Deployment Settings (Done Via Travis CI)
+deploy:
+  type: git
+  repo: https://__GITHUB_TOKEN__@github.com/oscartbeaumont/website.git
+  branch: gh-pages
