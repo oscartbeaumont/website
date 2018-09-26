@@ -110,3 +110,4 @@ deploy:
   type: git
   repo: https://__GITHUB_TOKEN__@github.com/oscartbeaumont/website.git
   branch: gh-pages
+  message: Deployed Site Change
