@@ -14,14 +14,14 @@
   },
   "dependencies": {
     "hexo": "*",
+    "hexo-autonofollow": "*",
     "hexo-all-minifier": "*",
     "hexo-deployer-git": "*",
     "hexo-generator-archive": "*",
     "hexo-generator-category": "*",
     "hexo-generator-index": "*",
     "hexo-generator-tag": "*",
-    "hexo-renderer-ejs": "*",
-    "hexo-renderer-stylus": "*",
+    "hexo-renderer-jade": "*",
     "hexo-renderer-marked": "*",
     "hexo-server": "*"
   }
