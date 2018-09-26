@@ -23,6 +23,7 @@
     "hexo-generator-tag": "*",
     "hexo-renderer-jade": "*",
     "hexo-renderer-marked": "*",
+    "hexo-generator-seo-friendly-sitemap": "*",
     "hexo-server": "*"
   }
 }
