@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "hexo": "*",
+    "hexo-all-minifier": "*",
     "hexo-deployer-git": "*",
     "hexo-generator-archive": "*",
     "hexo-generator-category": "*",

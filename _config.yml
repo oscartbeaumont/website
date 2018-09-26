@@ -93,11 +93,11 @@ social_bar: #Accounts For Social Bar
 
 startyear: 2018 # Copyright Infomation
 
-#Hexo SEO Sitemap
+# Hexo SEO Sitemap
 sitemap:
     path: sitemap.xml
 
-#Hexo Auto Nofollow Attribute
+# Hexo Auto Nofollow Attribute
 nofollow:
   enable: true
   exclude:
@@ -105,7 +105,10 @@ nofollow:
     - open.spotify.com
     - gmail.com
 
-#Github Deployment Settings (Done Via Travis CI)
+# Minify Everthing
+all_minifier: true
+
+# Github Deployment Settings (Done Via Travis CI)
 deploy:
   type: git
   repo: https://__GITHUB_TOKEN__@github.com/oscartbeaumont/website.git
