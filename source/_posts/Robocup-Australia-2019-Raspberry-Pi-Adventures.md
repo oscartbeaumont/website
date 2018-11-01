@@ -4,6 +4,8 @@ date: 2018-11-01 18:38:10
 #tags:
 ---
 
+# Please Note This Post/Project is Incomplete And Will Be Updated Until I Finish The Project Around Mid 2019
+
 I am embarking on the project of building a robot for the [Australian RoboCup Junior](https://www.robocupjunior.org.au/rescue) 2019 Open Rescue division. This is a project I have been interested in doing and playing around with over the last 2 years. I want to do it because of the problems I have encountered with the Mindstorms EV3 robotics platform. This blog post is going to be my documentation as I do the project. It will contain information about how the robot works and how I went about building it.
 
 #### Handy Terminology:
