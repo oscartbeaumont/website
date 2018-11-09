@@ -28,7 +28,7 @@ The block is an orange block of wood that sits in the chemical spill. It is wher
 
 ## The Minimum Required Hardware
 * 2 Drive Motors
-* 2 Claw Motors - One For Lifting Up And Down And One Of Grabbing The Can
+* 2 Claw Motors (Likely Servo's) - One For Lifting Up And Down And One Of Grabbing The Can
 * 3 Color Sensors - 2 For Sensing The Line And Colors On The Tiles, 1 For Sensing The Color Of The Block or Can
 * 1 Ultrasonic Sensor - Detect Object And The Can/Block
 
@@ -47,11 +47,13 @@ Before I even start with the motors and sensors of the robot I need an easy way 
 During the event, I must assume there is going to be no wireless connectivity (Bluetooth or WiFi) even though there may be. In past events I have been to the organisers have enacted a WiFi ban (because they needed it for scoring) and usually, the Bluetooth range is so full of robots that it causes the software crashes (The EV3 Platform). The solution to this with the Raspberry Pi is to use an Ethernet cable along with a USB to Ethernet adapter on my laptop.
 
 # The Hardware
+My plan for building the robot is to build a PCB (a hand soldered perfboard) that will contain all of the circuitry and a 3D Printed or CNC body. The PCB will contain required to handle the motor and sensors, This is a lot better than using a breadboard because connections could come loose and also it has a much neater look. The PCB will have headers/screw terminals on it which will allow the sensors/motors to be removed if needed and the PCB will contain all the components required to make the sensor/motor work so I will just need cables that directly connect the sensors/motors.
 
 ### Sensor Control
 The logical first step for me was to try and get the hardware working because I begin designing a full robot chassis. The first sensor I started with was the Ultrasonic sensor, I chose to start here because from experience this was something I struggled with
 
 ### Motor Control
+
 
 
 ### Power?
