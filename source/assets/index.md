@@ -6,6 +6,7 @@ title: Assets
 
 Android Man:
 * Dancing GIF (400×400): [logo.gif](logo.gif)
+* Falling GIF (400×400): [logo-splat.gif](logo-splat.gif)
 * ICO (16x16): [logo.ico](logo.ico)
 * Static PNG (500x500): [logo.png](logo.png)
 * Smaller PNG (174×174): [smaller.png](smaller.png)
