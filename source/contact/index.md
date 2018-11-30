@@ -2,8 +2,6 @@
 title: Contact
 ---
 
-# Current Not Working - Should be working within 24 hours
-
 # Contact Me
 <form name="contact_me" method="POST" netlify-honeypot="_gotcha" netlify>
     <input type="text" name="name" placeholder="Your Name">
