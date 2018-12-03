@@ -1,5 +1,6 @@
 backend:
   name: github
+  repo: oscartbeaumont/website
 
 publish_mode: editorial_workflow
 
