@@ -16,7 +16,6 @@
     "hexo": "*",
     "hexo-all-minifier": "*",
     "hexo-autonofollow": "*",
-    "hexo-deployer-git": "*",
     "hexo-generator-archive": "*",
     "hexo-generator-category": "*",
     "hexo-generator-index": "*",
