@@ -2,8 +2,6 @@ backend:
   name: github
   repo: oscartbeaumont/website
 
-logo_url: https://otbeaumont.me/assets/smaller.png
-
 publish_mode: editorial_workflow
 
 media_folder: "/source/assets/upload/"
