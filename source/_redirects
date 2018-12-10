@@ -3,3 +3,4 @@ https://otbeaumontme.netlify.com/* https://otbeaumont.me/:splat 301!
 
 # Netlify Admin
 /admin /admin/ 302
+/assets /assets/ 302
