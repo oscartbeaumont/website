@@ -4,3 +4,6 @@ https://otbeaumontme.netlify.com/* https://otbeaumont.me/:splat 301!
 # Netlify Admin
 /admin /admin/ 302
 /assets /assets/ 302
+
+# Project Redirects (I put links on the internet before creating the pages and this is to fix that)
+/p/netflix /blog/Netflix-Desktop/ 302

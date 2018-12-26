@@ -31,19 +31,19 @@ I did lighting for a production of “High School Musical” at a small local th
 <table class="imgView">
   <tr>
     <td>
-      <img src="HSM/hsm1.jpg" alt="High School Music - The View">
+      <img src="assets/HSM/hsm1.jpg" alt="High School Music - The View">
       <div>The View</div>
     </td>
     <td>
-      <img src="HSM/hsm2.jpg" alt="High School Music - The Lighting Desk">
+      <img src="assets/HSM/hsm2.jpg" alt="High School Music - The Lighting Desk">
       <div>The Lighting Desk</div>
     </td>
     <td>
-      <img src="HSM/hsm3.jpg" alt="High School Music - My Setup">
+      <img src="assets/HSM/hsm3.jpg" alt="High School Music - My Setup">
       <div>My Setup</div>
     </td>
     <td>
-      <img src="HSM/hsm4.jpg" alt="High School Music - The Cable Mess">
+      <img src="assets/HSM/hsm4.jpg" alt="High School Music - The Cable Mess">
       <div>The Cable Mess</div>
     </td>
   </tr>
@@ -57,15 +57,15 @@ A friend and I did sound and lighting for a school social event. The event was p
  <table class="imgView">
    <tr>
      <td>
-       <img src="SchoolSocial/ss1.jpg" alt="School Social - The Sound Setup">
+       <img src="assets/SchoolSocial/ss1.jpg" alt="School Social - The Sound Setup">
        <div>The Sound Setup</div>
      </td>
      <td>
-       <img src="SchoolSocial/ss2.jpg" alt="School Social - The Setup">
+       <img src="assets/SchoolSocial/ss2.jpg" alt="School Social - The Setup">
        <div>The Setup</div>
      </td>
      <td>
-       <img src="SchoolSocial/ss3.jpg" alt="School Social - The Lighting Desk">
+       <img src="assets/SchoolSocial/ss3.jpg" alt="School Social - The Lighting Desk">
        <div>The Lighting Desk</div>
      </td>
    </tr>
@@ -80,23 +80,23 @@ A Friend and I ran sound and lighting for another social at school. It was held 
 <table class="imgView">
   <tr>
     <td>
-      <img src="SchoolSocial2/ss1.jpg" alt="School Social - The Setup">
+      <img src="assets/SchoolSocial2/ss1.jpg" alt="School Social - The Setup">
       <div>The Setup</div>
     </td>
     <td>
-      <img src="SchoolSocial2/ss2.jpg" alt="School Social - The Lighting Bar 1">
+      <img src="assets/SchoolSocial2/ss2.jpg" alt="School Social - The Lighting Bar 1">
       <div>The Lighting Bar 1</div>
     </td>
     <td>
-      <img src="SchoolSocial2/ss3.jpg" alt="School Social - The Lighting Bar 2">
+      <img src="assets/SchoolSocial2/ss3.jpg" alt="School Social - The Lighting Bar 2">
       <div>My Lighting Bar 2</div>
     </td>
     <td>
-      <img src="SchoolSocial2/ss4.jpg" alt="School Social - Derigging The Lighting Bar">
+      <img src="assets/SchoolSocial2/ss4.jpg" alt="School Social - Derigging The Lighting Bar">
       <div>Derigging The Lighting Bar</div>
     </td>
     <td>
-      <img src="SchoolSocial2/ss5.jpg" alt="School Social - Packing And Sorting The Equipment">
+      <img src="assets/SchoolSocial2/ss5.jpg" alt="School Social - Packing And Sorting The Equipment">
       <div>Packing And Sorting The Equipment</div>
     </td>
   </tr>
@@ -111,19 +111,19 @@ I was the captain of a Robotics team that entered [Robocup Nationals](http://www
 <table class="imgView">
   <tr>
     <td>
-      <img src="RobocupNationals/nationals.jpg" alt="Robocup Nationals - The Event">
+      <img src="assets/RobocupNationals/nationals.jpg" alt="Robocup Nationals - The Event">
       <div>The Event</div>
     </td>
     <td>
-      <img src="RobocupNationals/nationals1.jpg" alt="Robocup Nationals - Front of The Robot">
+      <img src="assets/RobocupNationals/nationals1.jpg" alt="Robocup Nationals - Front of The Robot">
       <div>Front of The Robot</div>
     </td>
     <td>
-      <img src="RobocupNationals/nationals2.jpg" alt="Robocup Nationals - Side of The Robot">
+      <img src="assets/RobocupNationals/nationals2.jpg" alt="Robocup Nationals - Side of The Robot">
       <div>Side of The Robot</div>
     </td>
     <td>
-      <img src="RobocupNationals/nationals3.jpg" alt="Robocup Nationals - The Robot">
+      <img src="assets/RobocupNationals/nationals3.jpg" alt="Robocup Nationals - The Robot">
       <div>The Robot</div>
     </td>
   </tr>
