@@ -1,20 +1,19 @@
 // next.config.js
-const withMDX = require('@zeit/next-mdx')();
+const path = require('path');
+const copyFile = require('util').promisify(require('fs').copyFile);
+const withPlugins = require('next-compose-plugins');
 
-const fs = require('fs');
-const { join } = require('path');
-const { promisify } = require('util');
-const copyFile = promisify(fs.copyFile);
-
-
-
-module.exports = withMDX({
+module.exports = withPlugins([
+  [require('@zeit/next-mdx')(), {}],
+  [require('next-optimized-images'), {}],
+  /* [require('next-fonts'), {}], */
+], {
   outDir: 'dist',
   pageExtensions: ['js', 'jsx', 'mdx'],
 
   exportPathMap: async function (defaultPathMap, {dev, dir, outDir, distDir, buildId}) {
     if (dev) return defaultPathMap
-    await copyFile(join(dir, '_redirects'), join(outDir, '_redirects'));
+    await copyFile(path.join(dir, '_redirects'), path.join(outDir, '_redirects'));
     return defaultPathMap
   }
 });
