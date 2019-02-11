@@ -1,4 +1,6 @@
 # My Personal Website
+[![Netlify Status](https://api.netlify.com/api/v1/badges/a3c6a3ce-fa33-4b02-8443-05ab8dd5278b/deploy-status)](https://app.netlify.com/sites/otbeaumontme/deploys)
+
 This Repository Holds The Code For My Personal Website [otbeaumont.me](https://otbeaumont.me). The Site Is Built Using The [Hexo Static Site Generator](https://hexo.io) And Uses A Modified Version Of The [Hexo Apollo Theme](https://github.com/pinggod/hexo-theme-apollo). The Hexo Source In On The Main Branch And Github Pages Hosts The "docs/" Folder Which Contains The Generated Static HTML For The Site.
 
 # Local Website Server
