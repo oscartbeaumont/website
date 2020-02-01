@@ -1,0 +1,8 @@
+# Redirect default Netlify subdomain to primary domain
+https://otbeaumontme.netlify.com/* https://otbeaumont.me/:splat 301!
+
+{{  range $p := .Site.Pages -}}
+    {{ range .Aliases }}
+        {{  . | printf "%-35s" }}	{{ $p.RelPermalink -}}
+    {{ end -}}
+{{- end -}}

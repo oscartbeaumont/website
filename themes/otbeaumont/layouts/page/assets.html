@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {{ partial "head.html" . }}
+</head>
+<body>
+    {{ partial "header.html" . }}
+    <main>
+        <div class="info">
+            <h1 class="title">Assets</h1>
+            <p class="about"></p>
+        </div>
+        <div class="md">
+            {{ .Content }}
+        </div>
+    </main>
+
+    {{ partial "analytics.html" . }}
+</body>
+</html>

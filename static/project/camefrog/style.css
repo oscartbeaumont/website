@@ -1,0 +1,16 @@
+.headertext {
+    color:black!important;
+}
+
+.blackboarder {
+    border:0!important;
+    border:1px solid black!important;
+}
+
+.page {
+    display:none;
+}
+
+.visible {
+    display:block;
+}

@@ -1,17 +1,22 @@
 # My Personal Website
+
 [![Netlify Status](https://api.netlify.com/api/v1/badges/a3c6a3ce-fa33-4b02-8443-05ab8dd5278b/deploy-status)](https://app.netlify.com/sites/otbeaumontme/deploys)
 
-This Repository Holds The Code For My Personal Website [otbeaumont.me](https://otbeaumont.me). The Site Is Built Using The [Hexo Static Site Generator](https://hexo.io) And Uses A Modified Version Of The [Hexo Apollo Theme](https://github.com/pinggod/hexo-theme-apollo). The Hexo Source In On The Main Branch And Github Pages Hosts The "docs/" Folder Which Contains The Generated Static HTML For The Site.
+This Repository Holds The Code For My Personal Website [otbeaumont.me](https://otbeaumont.me). The site is built using [Hugo](https://gohugo.io) and hosted on [Netlify](https://www.netlify.com)
 
-# Local Website Server
-To See A Rendered Version Of The Website Locally While Developing Use The Commands Below:
-```
+## Running Site Locally
+
+First [install Hugo](https://gohugo.io/getting-started/installing) then use the following commands:
+
+```bash
 git clone https://github.com/oscartbeaumont/website.git
 cd website
-yarn
-hexo serve
+hugo server
 ```
-Then Navagate To [localhost:4000](http://localhost:4000) In Your Browser To View The Site Locally. Now You Can Begin Modifying The Configs/Files To Update The Websites Content.
 
-# Publishing
-After Modifying The Source Files Commit And Push Them To The Git Repository And Travis CI Will Them Build Them To HTML And Put Them On The Github Pages Branch Where They Are Hosted From To My Domain Using Github Pages.
+## TODO
+
+- Security Headers - CSP, etc
+- Caching Headers
+- Page title for Blog page is "Blogs" not "Blog"
+- Shorten hash in file name

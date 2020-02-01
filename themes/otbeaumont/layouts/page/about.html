@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {{ partial "head.html" . }}
+</head>
+<body>
+    {{ partial "header.html" . }}
+    <main>
+        <div class="info skills-side">
+            <h1 class="title">Skills</h1>
+            <p class="about">I enjoy learning new technologies and believe that the use case should always dictate the technologies which are used but below is a showcase of technologies I love to work with.</p>
+            <div class="skills">
+                <ul>
+                    <li>Frontend Framework - <a href="https://preactjs.com" rel="external nofollow noopener noreferrer" target="_blank">Preact</a></li>
+                    <li>Programming Language - <a href="https://golang.org" rel="external nofollow noopener noreferrer" target="_blank">Go</a></li>
+                    <li>Programming Language - <a href="https://nodejs.org" rel="external nofollow noopener noreferrer" target="_blank">Nodejs</a></li>
+                    <li>Systems Administration - <a href="https://www.debian.org" rel="external nofollow noopener noreferrer" target="_blank">Linux primarily Debian</a></li>
+                    <li>Systems Administration - <a href="https://www.microsoft.com/en-us/microsoft-365/enterprise-mobility-security/microsoft-intune" rel="external nofollow noopener noreferrer" target="_blank">Intune</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="info">
+            <h1 class="title">Projects</h1>
+            <div class="projects">
+                <div>
+                    <h2>ElectronPlayer</h2>
+                    <p>An app for playing online video streaming services. The application was featured on the Snapcraft store and has gained ~7000 users globally.</p>
+                    <a href="https://github.com/oscartbeaumont/ElectronPlayer" target="_blank">More Info</a>
+                </div>
+                <div>
+                    <h2>Netlify Dynamic DNS</h2>
+                    <p>A simple command-line tool capable of automatically updating a DNS entry to point to your public IP address. This is great for people running home servers.</p>
+                    <a href="https://github.com/oscartbeaumont/netlify-dynamic-dns" target="_blank">More Info</a>
+                </div>
+                <div>
+                    <h2>Mattrax</h2>
+                    <p>An ambitious work in progress self-hosted mobile device management server which bridges the native management protocols of managed devices.</p>
+                    <a href="https://github.com/mattrax/Mattrax" target="_blank">More Info</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    {{ partial "analytics.html" . }}
+</body>
+</html>

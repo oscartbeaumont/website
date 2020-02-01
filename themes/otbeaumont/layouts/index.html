@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {{ partial "head.html" . }}
+</head>
+<body>
+    {{ partial "header.html" . }}
+    <main>
+        <img src="data:image/jpeg;base64,{{ readFile "/static/assets/me.jpg" | base64Encode }}" alt="Oscar Beaumont" class="me"></img>
+        <div class="info">
+            <h1 class="title">Oscar Beaumont</h1>
+            <p class="about">I am a high school student and a tech enthusiast. I have an interest in most fields of technology including programming, system administration, robotics and sound/lighting. I also have a huge passion for learning new things and understanding how the world around me works. I am self-taught and love finding or creating solutions to help people use technology effectively. I love to publish open-source code so check out my Github to see what I am working on and contact me if you are interested in hiring me or collaborating on a project.</p>
+            <div class="links">
+                <a href="https://github.com/oscartbeaumont" rel="external nofollow noopener noreferrer" target="_blank"><img src="/static/social-ico/github.png" alt="Github"></img></a>
+                <a href="https://linkedin.com/in/oscartbeaumont" rel="external nofollow noopener noreferrer" target="_blank"><img src="/static/social-ico/linkedin.png" alt="LinkedIn"></img></a>
+                <a href="/contact" rel="external nofollow noopener noreferrer" target="_blank"><img src="/static/social-ico/email.png" alt="Email"></img></a>
+                <a href="https://www.thingiverse.com/oscartbeaumont" rel="external nofollow noopener noreferrer" target="_blank"><img src="/static/social-ico/thingiverse.png" alt="Thingiverse"></img></a>
+                <a href="https://open.spotify.com/user/oscartbeaumont" rel="external nofollow noopener noreferrer" target="_blank"><img src="/static/social-ico/spotify.png" alt="Spotify"></img></a>
+            </div>
+        </div>
+    </main>
+
+    {{ partial "analytics.html" . }}
+</body>
+</html>

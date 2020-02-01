@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {{ partial "head.html" . }}
+</head>
+<body>
+    {{ partial "header.html" . }}
+    <main>
+        <div class="info">
+            <h1 class="title">Blog</h1>
+            <p class="about">A place for me to share my finding and information about projects I am working on. Hopefully, you find something interesting or informative.</p>
+        </div>
+        <div class="posts">
+            <ul>
+                {{ range .Pages.Reverse }}
+                    <li>
+                        <a href="{{ .Permalink }}">
+                            <h2>{{ .Title }}</h2>
+                            <p>{{ .Date.Format "Jan 2, 2006" }} by Oscar Beaumont</p>
+                        </a>
+                    </li>
+                {{ end }}
+            </ul>           
+        </div>
+    </main>
+
+    {{ partial "analytics.html" . }}
+</body>
+</html>
