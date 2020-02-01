@@ -2,7 +2,7 @@ title: "Oscar Beaumont"
 
 params:
   # Open Graph API config
-  description: Hello There, My name is Oscar Beaumont, I am a high school student, developer and a tech enthusiast. This is my personal website and blog. Click Here to read more!
+  description: Hello There, My name is Oscar Beaumont, I am a high school student, developer and a tech enthusiast. This is my personal website and blog. Click here to read more!
   images:
   - assets/me.jpg
   
