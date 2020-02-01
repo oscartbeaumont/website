@@ -1,4 +1,5 @@
-{{ with resources.Get "css/minireset.min.css" }}Link: <{{ .Permalink }}>; rel=preload; as=style{{ end }}
-{{ with resources.Get "css/styles.css" | resources.Minify }}Link: <{{ .Permalink }}>; rel=preload; as=style{{ end }}
-Link: </static/fonts/open-sans-v17-latin-300.woff2>; rel=preload; as=font
-Link: </static/fonts/open-sans-v17-latin-700.woff2>; rel=preload; as=font
+/
+  {{ with resources.Get "css/minireset.min.css" }}Link: <{{ .Permalink }}>; rel=preload; as=style{{ end }}
+  {{ with resources.Get "css/styles.css" | resources.Minify }}Link: <{{ .Permalink }}>; rel=preload; as=style{{ end }}
+  Link: </static/fonts/open-sans-v17-latin-300.woff2>; rel=preload; as=font
+  Link: </static/fonts/open-sans-v17-latin-700.woff2>; rel=preload; as=font
