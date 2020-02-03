@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <title>Gospels Jigsaw</title>
+
+    <link rel="stylesheet" href="style.css"></link>
+  </head>
+  <body>
+    <div id="app">
+      <!-- The Stats/Controll Menu -->
+      <div>
+        <div class="info-bar">
+          <button class="button" type="button" @click="resetGame">Restart</button>
+          <button class="button" type="button" @click="cheatMenu">Cheat</button>
+
+          <p>Current Mode Is: {{this.difficultlyTxt}}</p>
+          <p>You Are Doing Puzzle: {{this.puzzel}}</p>
+          <p>You Have Used {{cheats}} Cheats!</p>
+          <p>You Have Made {{this.moves}} Moves</p>
+        </div>
+      </div>
+
+      <!-- The Game Space -->
+      <canvas id="jigsawCanvas" width="1350" height="710"></canvas>
+
+      <!-- Hidden Image -> Used To Render The Canvas -->
+      <img id="jigsawImage" :src="puzzelUrl" style="display: none;">
+
+      <!-- The Startup Modal -->
+      <transition name="modal" v-if="showModal" @close="showModal = false">
+        <div class="modal-mask">
+          <div class="modal-wrapper">
+            <div class="modal-container">
+              <div class="modal-header">
+                <h3>RAPS Gospels Jigsaw</h3>
+              </div>
+
+              <div class="modal-body">
+                <p class="info-txt">In the New Testament, there are four accounts of Jesus’ Life. These are the Gospels of Matthew, Mark, Luke and John. These all have some material that is shared and some material that is unique to each. Many biblical scholars (people who study the bible) over many years have carefully worked out how the stories of Jesus have been shared by the books. We can see how this works by using a colour code like the one below. Please Note having your browser in full screen (The green button on the top left of the applications window) might be required to see all of the puzzel pieces.</p>
+                <p style="display:block;">Please Select Your Difficultly:</p>
+                <div class="button-group" style="display:block;">
+                  <button class="button" :class="{ 'active': difficultly == 0 }" @click="difficultlyClick">Easy</button>
+                  <button class="button" :class="{ 'active': difficultly == 1 }" @click="difficultlyClick">Medium</button>
+                  <button class="button" :class="{ 'active': difficultly == 2 }" @click="difficultlyClick">Hard</button>
+                  <!--<button class="button" :class="{ 'active': difficultly == 3 }" @click="difficultlyClick">Impossible</button>-->
+                </div>
+                <p style="display:block;">Please Select Your Puzzel:</p>
+                <div class="button-group" style="display:block;">
+                  <button class="button" :class="{ 'active': puzzel == 0 }" @click="puzzelClick">Random</button>
+                  <button class="button" :class="{ 'active': puzzel == 1 }" @click="puzzelClick">1</button>
+                  <button class="button" :class="{ 'active': puzzel == 2 }" @click="puzzelClick">2</button>
+                  <button class="button" :class="{ 'active': puzzel == 3 }" @click="puzzelClick">3</button>
+                  <button class="button" :class="{ 'active': puzzel == 4 }" @click="puzzelClick">4</button>
+                  <button class="button" :class="{ 'active': puzzel == 5 }" @click="puzzelClick">5</button>
+                  <button class="button" :class="{ 'active': puzzel == 6 }" @click="puzzelClick">6</button>
+                  <button class="button" :class="{ 'active': puzzel == 7 }" @click="puzzelClick">7</button>
+                  <button class="button" :class="{ 'active': puzzel == 8 }" @click="puzzelClick">8</button>
+                  <button class="button" :class="{ 'active': puzzel == 9 }" @click="puzzelClick">9</button>
+                  <button class="button" :class="{ 'active': puzzel == 10 }" @click="puzzelClick">10</button>
+                  <button class="button" :class="{ 'active': puzzel == 11 }" @click="puzzelClick">11</button>
+                  <button class="button" :class="{ 'active': puzzel == 12 }" @click="puzzelClick">12</button>
+                </div>
+                <p class="credits">Created and Badly Coded By <a href="https://otbeaumont.me">Oscar Beaumont</a> Based Of Code By <a href="https://github.com/ryanfiorini/html5.jigsawpuzzle.example">Ryan Fiorini</a> And Hosted Using <a href="https://pages.github.com/">Github Pages</a></p>
+              </div>
+
+              <div class="modal-footer">
+                <div class="button-group" style="display:block;text-align: center;">
+                  <button class="button submit-btn" @click="startGame">Start</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
+
+      <!-- The Cheat Modal -->
+      <transition name="cheat-modal" v-if="showCheatModal" @close="showCheatModal = false">
+        <div class="modal-mask">
+          <div class="modal-wrapper">
+            <div class="modal-container">
+              <div class="modal-header">
+                <h3>Cheats</h3>
+              </div>
+
+              <div class="modal-body">
+                <img class="cheatImg" :src="puzzelUrl">
+              </div>
+
+              <div class="modal-footer">
+                <div class="button-group" style="display:block;text-align: center;">
+                  <button class="button submit-btn" @click="showCheatModal = false">Continue</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
+
+    </div>
+
+    <!-- Warning When The Browser Window Is Too Small -->
+    <div id="cover" onclick="this.className = this.className.concat(' disabled');">
+      <h1>Please Fullscreen Your Browser. Click To Ignore!</h1>
+    </div>
+    <style>
+    #cover {
+      display: none;
+    }
+
+    @media only screen and (max-width: 1150px) {
+      #cover:not(.disabled) {
+        display: block !important;
+        position:fixed;
+        top:0;
+        left:0;
+        z-index: 9999;
+        width:100vw;
+        height:100vh;
+        background: rgba(0,0,0,0.9);
+      }
+
+      #cover:not(.disabled) h1 {
+        color: white;
+        text-align: center;
+        vertical-align: middle;
+        line-height: 100vh;
+      }
+    }
+    </style>
+
+    <!-- Scripts -->
+    <script type="text/javascript" src="https://vuejs.org/js/vue.min.js"></script>
+    <script type="text/javascript" src="scripts/jigsawScript.js"></script>
+    <script>
+      var vue = new Vue({
+        el: '#app',
+        data: {
+          showModal: true,
+          showCheatModal: false,
+          difficultly: 1, // 0: Easy, 1: Medium, 2: Hard, 3: Impossible
+          difficultlyTxt: "Medium",
+          puzzel: 0, // 0: Random, 1: Puzzel 1, etc
+          puzzelUrl: "puzzels/1.jpg",
+          moves: 0,
+          cheats: 0,
+        },
+        methods: {
+          puzzelClick: function(event) {
+            if(event.target.innerHTML == "Random") {
+              puzzel = 0;
+            } else {
+              puzzel = parseInt(event.target.innerHTML, 10)
+            }
+            this.puzzelUrl = "puzzels/" + puzzel + ".jpg";
+            this.$set(this, 'puzzel', puzzel);
+            console.log("Change The Puzzel To: " + puzzel);
+          },
+          difficultlyClick: function() {
+            if(event.target.innerHTML == "Easy") {
+              difficultly = 0;
+            } else if(event.target.innerHTML == "Medium") {
+              difficultly = 1;
+            } else if(event.target.innerHTML == "Hard") {
+              difficultly = 2;
+            } else if(event.target.innerHTML == "Impossible") {
+              difficultly = 3;
+            } else {
+              difficultly = 1;
+            }
+            this.difficultlyTxt = event.target.innerHTML;
+            this.$set(this, 'difficultly', difficultly);
+            console.log("Change The Difficultly To: " + difficultly + " (" + this.difficultlyTxt + ")");
+          },
+          startGame: function() {
+            if(this.puzzel == 0) {
+              console.log("Picking A Random Puzzel!");
+              this.puzzel = Math.floor(Math.random() * 12) + 1; //Picks Random Number From 1 to 12 (including 1 & 12)
+            }
+            console.log("Starting The Game With Puzzel: " + this.puzzel + " And The Difficultly: " + this.difficultly);
+            this.showModal = false;
+
+            tiles = 1;
+            tileXoffset = 50;
+            tileYoffset = 50;
+            if(this.difficultly == 0) { // Easy
+              tiles = 3;
+              tileXoffset = 50;
+              tileYoffset = 65;
+            } else if(this.difficultly == 1) { // Medium
+              tiles = 4;
+              tileXoffset = 50;
+              tileYoffset = 70;
+            } else if(this.difficultly == 2) { // Hard
+              tiles = 5;
+              tileXoffset = 50;
+              tileYoffset = 70;
+            }
+
+            // Reset Varibles From The Last Game
+            this.cheats = 0;
+            this.moves = 0;
+
+            var game = new jigsaw("jigsawCanvas", "jigsawImage", tiles, tiles, tileXoffset, tileYoffset, this.finishedGame, function() {
+              this.moves++;
+            }.bind(this));
+            game.initDrawing();
+          },
+          finishedGame: function() {
+            // Finish Sound
+            /*var audioElement = document.createElement('audio');
+            audioElement.setAttribute('src', 'audio/finish.mp3');
+            audioElement.play();
+            audioElement.addEventListener("ended", function() {
+              // Clear The Game Canvas
+              canvas = document.getElementById("jigsawCanvas");
+              canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+
+              // Show The Modal After The Sound
+              this.showModal = true;
+            }.bind(this), false);*/
+
+            // Clear The Game Canvas
+            canvas = document.getElementById("jigsawCanvas");
+            canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+
+            // Show The Modal After The Sound
+            this.showModal = true;
+          },
+          resetGame: function() {
+            // Clear The Game Canvas
+            canvas = document.getElementById("jigsawCanvas");
+            canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+
+            // Show The Modal After The Sound
+            this.showModal = true;
+          },
+          cheatMenu: function() {
+            this.showCheatModal = true;
+            this.cheats++;
+          }
+        }
+      })
+    </script>
+  </body>
+</html>
