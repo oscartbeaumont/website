@@ -24,3 +24,7 @@ layout: assets
 
 * I Am Root (1920×1080): [wallpaper.jpeg](/assets/wallpaper.jpeg) (Copyright of Original Artist Not Me)
 * Long Road (1920×1080): [wallpaper2.jpg](/assets/wallpaper2.jpg) (Copyright of Original Artist Not Me)
+
+# Random
+
+* Minecraft Skin (64x32): [minecraft-skin.png](/assets/minecraft-skin.png)
