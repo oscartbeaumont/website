@@ -1,26 +1,8 @@
 ---
-import LogoImage from '../../public/assets/logo.png';
-
-const { title = '' } = Astro.props;
-
-// TODO: Move all of this into a general configuration file
-const config = {
-  title: "Oscar Beaumont",
-  description: "TODO",
-  lang: "en_US",
-  socialMedia: [
-    {
-      name: "GitHub",
-      icon_url: Astro.resolve("../assets/github.png"),
-      url: "https://github.com/oscartbeaumont"
-    },
-    {
-      name: "LinkedIn",
-      icon_url: Astro.resolve("../assets/linkedin.png"),
-      url: "https://www.linkedin.com/in/oscartbeaumont"
-    },
-  ]
-};
+  import LogoImage from '../../public/assets/logo.png';
+  import config from '../config';
+  
+  const { title = '' } = Astro.props;
 ---
 <html lang="en">
   <head>
@@ -61,7 +43,7 @@ const config = {
         </div>
         <div class="w-auto">
           {config.socialMedia.map(service => (
-            <a href={service.url} target="_blank" rel="noreferrer" class="float-left px-3"><img src={service.icon_url} alt={`${service.name} Logo`} /></a>
+            <a href={service.url} target="_blank" rel="noreferrer" class="float-left px-3"><img src={Astro.resolve(service.icon_url)} alt={`${service.name} Logo`} /></a>
           ))}
         </div>
       </nav>

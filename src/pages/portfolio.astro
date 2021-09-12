@@ -1,7 +1,5 @@
 ---
   import BaseLayout from '../layouts/BaseLayout.astro';
-  import BCGSLogoImage from "../assets/bcgs-logo.png";
-  import CurtinLogoImage from "../assets/curtin-logo.jpg";
 ---
 <BaseLayout title="Portfolio">
   <div class="py-10 px-5">
@@ -9,7 +7,7 @@
     
     <h4 class="text-3xl pb-4">Education</h4>
     <div class="flex">
-      <img src={BCGSLogoImage} alt="Bunbury Cathedral Grammar School Logo" class="w-36" />
+      <img src={Astro.resolve("../assets/bcgs-logo.png")} alt="Bunbury Cathedral Grammar School Logo" class="w-36" />
       <div class="pl-5">
         <h5 class="text-2xl">Bunbury Cathedral Grammar School</h5>
         <h6 class="text-xl pt-2">Completed Year 12</h6>
@@ -17,7 +15,7 @@
       </div>
     </div>
     <div class="flex">
-      <img src={CurtinLogoImage} alt="Curtin University Logo" class="w-36" />
+      <img src={Astro.resolve("../assets/curtin-logo.jpg")} alt="Curtin University Logo" class="w-36" />
       <div class="pl-5">
         <h5 class="text-2xl">Curtin University</h5>
         <h6 class="text-xl pt-2">Bachelor of Computing</h6>
