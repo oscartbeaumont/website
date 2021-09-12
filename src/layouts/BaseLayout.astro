@@ -25,11 +25,11 @@
   </head>
   <body>
     <div class="w-full p-5 max-w-4xl mx-auto">
-      <nav class="flex">
-        <a href="/" draggable="false">
+      <nav class="flex flex-row flex-wrap tiny:flex-nowrap items-center justify-center">
+        <a href="/" class="flex-shrink-0" draggable="false">
           <img src={LogoImage} alt="Logo" class="h-28" draggable="false" />
         </a>
-        <div class="flex-grow ml-5">
+        <div class="flex-grow ml-5 text-center ttiny:text-left py-2 ttiny:py-0">
           <a href="/" draggable="false">
             <h1 class="text-3xl">Oscar Beaumont</h1>
           </a>
@@ -41,9 +41,9 @@
             <a href="/contact" class="text-lg no-underline font-semibold mr-4">Contact</a>
           </div>
         </div>
-        <div class="w-auto">
+        <div class="py-2 ttiny:py-0">
           {config.socialMedia.map(service => (
-            <a href={service.url} target="_blank" rel="noreferrer" class="float-left px-3"><img src={Astro.resolve(service.icon_url)} alt={`${service.name} Logo`} /></a>
+            <a href={service.url} target="_blank" rel="noreferrer" class="float-left px-3 pb-0 ttiny:pb-3"><img src={Astro.resolve(service.icon_url)} alt={`${service.name} Logo`} class="min-w-32px" /></a>
           ))}
         </div>
       </nav>
