@@ -1,0 +1,73 @@
+---
+import LogoImage from '../../public/assets/logo.png';
+
+const { title = '' } = Astro.props;
+
+// TODO: Move all of this into a general configuration file
+const config = {
+  title: "Oscar Beaumont",
+  description: "TODO",
+  lang: "en_US",
+  socialMedia: [
+    {
+      name: "GitHub",
+      icon_url: Astro.resolve("../assets/github.png"),
+      url: "https://github.com/oscartbeaumont"
+    },
+    {
+      name: "LinkedIn",
+      icon_url: Astro.resolve("../assets/linkedin.png"),
+      url: "https://www.linkedin.com/in/oscartbeaumont"
+    },
+  ]
+};
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+        name="viewport"
+        content="width=device-width"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico'>
+    <title>{title !== "" ? `${title} | ${config.title}` : config.title}</title>
+    <meta name="description" content="{config.description}">
+
+    <meta property="og:locale" content={config.lang}>
+
+    <link rel="stylesheet" href={Astro.resolve("../global.css")}>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com/" />
+    <link href="https://fonts.googleapis.com/css?family=Raleway:400,600&display=swap" rel="stylesheet"/>
+  </head>
+  <body>
+    <div class="w-full p-5 max-w-4xl mx-auto">
+      <nav class="flex">
+        <a href="/" draggable="false">
+          <img src={LogoImage} alt="Logo" class="h-28" draggable="false" />
+        </a>
+        <div class="flex-grow ml-5">
+          <a href="/" draggable="false">
+            <h1 class="text-3xl">Oscar Beaumont</h1>
+          </a>
+          <h2 class="text-xl">Freelance Software Developer</h2>
+          <div class="mt-2">
+            <a href="/" class="text-lg no-underline font-semibold mr-4">Home</a>
+            <a href="/skills" class="text-lg no-underline font-semibold mr-4">Skills</a>
+            <a href="/portfolio" class="text-lg no-underline font-semibold mr-4">Portfolio</a>
+            <a href="/contact" class="text-lg no-underline font-semibold mr-4">Contact</a>
+          </div>
+        </div>
+        <div class="w-auto">
+          {config.socialMedia.map(service => (
+            <a href={service.url} target="_blank" rel="noreferrer" class="float-left px-3"><img src={service.icon_url} alt={`${service.name} Logo`} /></a>
+          ))}
+        </div>
+      </nav>
+      <main>
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>

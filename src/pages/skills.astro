@@ -1,0 +1,49 @@
+---
+  import BaseLayout from '../layouts/BaseLayout.astro';
+
+  // TODO: Move into configuration file
+  const skills = {
+    "Languages": {
+      "Go": "https://golang.org",
+      "Rust": "https://www.rust-lang.org",
+      "Typescript": "https://www.typescriptlang.org",
+      "Dart": "https://dart.dev",
+      "Java (University level, no real world experience)": "https://www.java.com",
+    },
+    "Frontend": {
+      "React": "https://reactjs.org",
+      "Svelte": "https://svelte.dev",
+      "Relay": "https://relay.dev",
+    },
+    "Application Development": {
+      "Electron": "https://www.electronjs.org",
+      "Flutter": "https://flutter.dev",
+      "Bloc": "https://bloclibrary.dev",
+    },
+    "Systems Administration/Devops": {
+      "Linux": undefined,
+      "Kubernetes": "https://kubernetes.io",
+    },
+    "Protocols": {
+      "Windows Mobile Device Management Protocol": "https://docs.microsoft.com/en-us/windows/client-management/mdm",
+    }
+  }
+---
+<BaseLayout title="Portfolio">
+  <div class="py-10 px-5">
+    <h3 class="text-4xl pb-4">My Skills</h3>
+
+    {Object.keys(skills).map(skillCategory => (
+      <div class="pb-4">
+        <h5 class="text-xl">{skillCategory}:</h5>
+        <ul class="list-disc ml-6 mb-2">
+          {Object.keys(skills[skillCategory]).map(name => (
+            <li><a href={skills[skillCategory][name]} target="_blank" rel="noreferrer" class={skills[skillCategory][name] ? "text-green-500" : ""}>{name}</a></li>
+          ))}
+        </ul>
+      </div>
+    ))}
+
+    <p class="text-lg py-2">These are some of my current skills. I enjoy learning new technologies and different approaches to software development which help to improve the developer experience and final product. To check out my skills in action look at my <a href="https://github.com/oscartbeaumont" target="_blank" rel="noopener" class="text-green-500">GitHub</a>.</p>
+  </div>
+</BaseLayout>

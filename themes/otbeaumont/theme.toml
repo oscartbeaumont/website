@@ -1,8 +1,0 @@
-name = "otbeaumont"
-license = "MIT"
-tags = []
-features = []
-min_version = "0.41"
-
-[author]
-  name = "Oscar Beaumont"

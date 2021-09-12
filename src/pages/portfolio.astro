@@ -1,0 +1,46 @@
+---
+  import BaseLayout from '../layouts/BaseLayout.astro';
+  import BCGSLogoImage from "../assets/bcgs-logo.png";
+  import CurtinLogoImage from "../assets/curtin-logo.jpg";
+---
+<BaseLayout title="Portfolio">
+  <div class="py-10 px-5">
+    <h3 class="text-4xl pb-4">My Portfolio</h3>
+    
+    <h4 class="text-3xl pb-4">Education</h4>
+    <div class="flex">
+      <img src={BCGSLogoImage} alt="Bunbury Cathedral Grammar School Logo" class="w-36" />
+      <div class="pl-5">
+        <h5 class="text-2xl">Bunbury Cathedral Grammar School</h5>
+        <h6 class="text-xl pt-2">Completed Year 12</h6>
+        <p class="text-lg pt-2">Graduated in 2020</p>
+      </div>
+    </div>
+    <div class="flex">
+      <img src={CurtinLogoImage} alt="Curtin University Logo" class="w-36" />
+      <div class="pl-5">
+        <h5 class="text-2xl">Curtin University</h5>
+        <h6 class="text-xl pt-2">Bachelor of Computing</h6>
+        <h6 class="text-xl pt-2">Majoring in Computer Science</h6>
+        <p class="text-lg pt-2">Started in 2021, Expected Graduation in 2023</p>
+      </div>
+    </div>
+
+    <h4 class="text-4xl py-4">Experience</h4>
+    <h5 class="text-2xl">Freelancer</h5>
+    <p class="text-lg pt-2">I currently work as a freelance software developer. In this role, I work with many clients to develop technical solutions to issues or ideas they have. I have worked with clients to develop Windows mobile device management solutions, Electron based desktop applications and Flutter based mobile applications.</p>
+
+    <h5 class="text-2xl mt-4">Theatre Technician</h5>
+    <p class="text-lg">I worked part-time at the Bunbury Regional Entertainment Centre. My role involved setting up and packing down shows that performed at the venue. This included moving equipment and set pieces along with setting up sound gear such as microphones and speakers.</p>
+
+    <h4 class="text-4xl py-4">Achievements</h4>
+    <h5 class="text-2xl">Security Research</h5>
+    <p class="text-lg pt-2">I am really interested in security research as it helps me to build secure software myself. While in high school I did research against many systems and wrote up reports which were passed on to the vendor of the software. I found fatal XSS and CSRF vulnerabilities in the student portal for the <a href="https://seqta.com.au" target="_blank" rel="noreferrer" class="text-green-500">SEQTA</a> learning management system which were patched by the company after receiving my report. Many of the vulnerabilities in my other reports were not fixed by the vendor of the software due to them being an "acceptable" business risk despite putting end-users of the software at risk 😞.</p>
+
+    <!-- TODO: <h4 class="text-4xl py-4">Personal Projects</h4> -->
+    <!-- TODO: Mattrax -->
+    <!-- TODO: Spotistats/My Spotify -->
+    <!-- TODO: ElectronPlayer, include info about being feature on Snapcraft store and posts about it -->
+    <!-- TODO: My other GitHub Open Source Projects -->
+  </div>
+</BaseLayout>
