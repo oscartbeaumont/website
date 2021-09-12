@@ -39,5 +39,6 @@ export default {
         "Protocols": {
             "Windows Mobile Device Management Protocol": "https://docs.microsoft.com/en-us/windows/client-management/mdm",
         }
-    }
+    },
+    theDogAPIKey: "8d0ae78c-af47-469c-9d46-5c00e6fbb4b3",
 };

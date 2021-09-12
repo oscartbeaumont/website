@@ -6,6 +6,8 @@ This repository holds the code for my personal website [otbeaumont.me](https://o
 
 ## Usage
 
+Note: The 404 page can't be opened with the dev server. This is a bug in Astro.
+
 ```bash
 git clone https://github.com/oscartbeaumont/website.git
 cd website

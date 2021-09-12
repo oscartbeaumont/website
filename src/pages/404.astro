@@ -1,0 +1,17 @@
+---
+  import BaseLayout from '../layouts/BaseLayout.astro';
+  import RandomDogPhoto from "../components/RandomDogPhoto.svelte"
+  import config from '../config';
+---
+<BaseLayout title="Not Found">
+  <div class="py-5 px-5">
+    <h3 class="text-4xl pb-4">Page Not Found</h3>
+    <p>The resource you requested was not found. Enjoy this random picture of a dog instead!</p>
+
+    <div class="py-4">
+        <RandomDogPhoto client:visible theDogAPIKey={config.theDogAPIKey}>
+            <h1>Hello Svelte!</h1>
+        </RandomDogPhoto>
+    </div>
+  </div>
+</BaseLayout>
