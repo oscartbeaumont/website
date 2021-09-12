@@ -1,2 +1,4 @@
 # Redirect default Netlify subdomain to primary domain
 https://otbeaumontme.netlify.com/* https://otbeaumont.me/:splat 301!
+
+/pgp /gpg
