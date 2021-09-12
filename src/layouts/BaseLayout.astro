@@ -3,7 +3,7 @@
   import MeImage from '../../public/assets/me.jpg';
   import config from '../config';
   
-  const { title = '' } = Astro.props;
+  const { title = '', hidden = false } = Astro.props;
 ---
 <html lang="en">
   <head>
@@ -13,6 +13,7 @@
         content="width=device-width"
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {hidden ? `<meta name="robots" content="noindex">` : ``}
     <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico'>
     <title>{title !== "" ? `${title} | ${config.title}` : config.title}</title>
     <meta name="description" content={config.description}>
@@ -33,7 +34,7 @@
     <div class="w-full p-5 max-w-4xl mx-auto">
       <nav class="flex flex-row flex-wrap tiny:flex-nowrap items-center justify-center">
         <a href="/" class="flex-shrink-0" draggable="false">
-          <img src={LogoImage} alt="Logo" class="h-28" draggable="false" />
+          <img src={LogoImage} alt="Logo" class="h-28 w-28 bg-red-500" draggable="false" />
         </a>
         <div class="flex-grow ml-5 text-center ttiny:text-left py-2 ttiny:py-0">
           <a href="/" draggable="false">
@@ -49,7 +50,7 @@
         </div>
         <div class="py-2 ttiny:py-0">
           {config.socialMedia.map(service => (
-            <a href={service.url} target="_blank" rel="noreferrer" class="float-left px-3 pb-0 ttiny:pb-3"><img src={Astro.resolve(service.icon_url)} alt={`${service.name} Logo`} class="min-w-32px" /></a>
+            <a href={service.url} target="_blank" rel="noreferrer" class="px-3 pb-0 ttiny:pb-3 float-left"><img src={Astro.resolve(service.icon_url)} alt={`${service.name} Logo`} class="min-w-min w-8" /></a>
           ))}
         </div>
       </nav>
