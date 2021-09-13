@@ -1,3 +1,4 @@
 {
+  "lib": ["es2018", "dom"],
   "moduleResolution": "node"
 }

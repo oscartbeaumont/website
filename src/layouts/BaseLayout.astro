@@ -1,5 +1,5 @@
 ---
-  import LogoImage from '../../public/assets/logo.png';
+  import InlineImage from "../utils/InlineImage";
   import MeImage from '../../public/assets/me.jpg';
   import config from '../config';
   
@@ -34,7 +34,7 @@
     <div class="w-full p-5 max-w-4xl mx-auto">
       <nav class="flex flex-row flex-wrap tiny:flex-nowrap items-center justify-center">
         <a href="/" class="flex-shrink-0" draggable="false">
-          <img src={LogoImage} alt="Logo" class="h-28 w-28 bg-red-500" draggable="false" />
+          <img src={await InlineImage("public/assets/logo.png")} alt="Logo" class="h-28 w-28" draggable="false" />
         </a>
         <div class="flex-grow ml-5 text-center ttiny:text-left py-2 ttiny:py-0">
           <a href="/" draggable="false">
@@ -49,8 +49,8 @@
           </div>
         </div>
         <div class="py-2 ttiny:py-0">
-          {config.socialMedia.map(service => (
-            <a href={service.url} target="_blank" rel="noreferrer" class="px-3 pb-0 ttiny:pb-3 float-left"><img src={Astro.resolve(service.icon_url)} alt={`${service.name} Logo`} class="min-w-min w-8" /></a>
+          {config.socialMedia.map(async service => (
+            <a href={service.url} target="_blank" rel="noreferrer" class="px-3 pb-0 ttiny:pb-3 float-left"><img src={await InlineImage(service.icon_url)} alt={`${service.name} Logo`} class="min-w-min w-8" /></a>
           ))}
         </div>
       </nav>

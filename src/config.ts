@@ -6,12 +6,12 @@ export default {
     socialMedia: [
         {
             name: "GitHub",
-            icon_url: "../assets/github.png",
+            icon_url: "./src/assets/github.png",
             url: "https://github.com/oscartbeaumont"
         },
         {
             name: "LinkedIn",
-            icon_url: "../assets/linkedin.png",
+            icon_url: "./src/assets/linkedin.png",
             url: "https://www.linkedin.com/in/oscartbeaumont"
         },
     ],
