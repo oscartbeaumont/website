@@ -1,7 +1,7 @@
 import { promises as fs } from "node:fs";
 import { createRequire } from "module";
-const cjs = createRequire(import.meta.url); // TODO: Fix types
-const sharp = cjs("sharp"); // TODO: Use @types/sharp
+const cjs = createRequire(import.meta.url);
+const sharp: typeof import("sharp") = cjs("sharp");
 
 interface InlineImageConfig {
   size: [number, number];
