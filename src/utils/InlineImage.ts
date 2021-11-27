@@ -1,4 +1,4 @@
-import { promises as fs } from "node:fs";
+import { promises as fs } from "fs";
 import { createRequire } from "module";
 const cjs = createRequire(import.meta.url);
 const sharp: typeof import("sharp") = cjs("sharp");

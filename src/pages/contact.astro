@@ -1,6 +1,8 @@
 ---
   import BaseLayout from '../layouts/BaseLayout.astro';  
   import InlineImage from '../utils/InlineImage';
+
+  const me2Jpg = await InlineImage("public/assets/me2.jpg");
 ---
 <BaseLayout title="Contact">
   <div class="md:flex px-6">
@@ -12,6 +14,6 @@
         <p class="text-lg w-full text-green-500 text-center content-center">oscar@otbeaumont.me</p>
       </a>
     </div>
-    <img src={await InlineImage("public/assets/me2.jpg")} alt="Oscar Beaumont" class="hidden md:block w-auto max-w-xs object-top object-scale-down" />
+    <img src={me2Jpg} alt="Oscar Beaumont" class="hidden md:block w-auto max-w-xs object-top object-scale-down" />
   </div>
 </BaseLayout>

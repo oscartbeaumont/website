@@ -1,5 +1,7 @@
 // @ts-check
-export default /** @type {import('astro').AstroUserConfig} */ ({
+
+/** @type {import('astro').AstroUserConfig} */
+export default ({
   renderers: ["@astrojs/renderer-svelte"],
   buildOptions: {
     site: "https://otbeaumont.me",

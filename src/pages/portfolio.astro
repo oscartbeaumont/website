@@ -1,6 +1,9 @@
 ---
   import BaseLayout from '../layouts/BaseLayout.astro';
   import InlineImage from '../utils/InlineImage';
+
+  const bcgsLogoJpg = await InlineImage("src/assets/bcgs-logo.png", {size: [180, 180]});
+  const curtinLogoJpg = await InlineImage("src/assets/curtin-logo.jpg", {size: [180, 180]});
 ---
 <BaseLayout title="Portfolio">
   <div class="py-5 px-5">
@@ -8,7 +11,7 @@
     
     <h4 class="text-3xl pb-4">Education</h4>
     <div class="flex flex-wrap tiny:flex-nowrap pb-5">
-      <img src={await InlineImage("src/assets/bcgs-logo.png", {size: [180, 180]})} alt="Bunbury Cathedral Grammar School Logo" class="w-36 m-auto tiny:m-0 object-top object-scale-down" />
+      <img src={bcgsLogoJpg} alt="Bunbury Cathedral Grammar School Logo" class="w-36 m-auto tiny:m-0 object-top object-scale-down" />
       <div class="pl-0 tiny:pl-5">
         <h5 class="text-2xl pt-1">Bunbury Cathedral Grammar School</h5>
         <h6 class="text-xl pt-2">Completed Year 12</h6>
@@ -16,7 +19,7 @@
       </div>
     </div>
     <div class="flex flex-wrap tiny:flex-nowrap">
-      <img src={await InlineImage("src/assets/curtin-logo.jpg", {size: [180, 180]})} alt="Curtin University Logo" class="w-36 m-auto tiny:m-0 object-top object-scale-down" />
+      <img src={curtinLogoJpg} alt="Curtin University Logo" class="w-36 m-auto tiny:m-0 object-top object-scale-down" />
       <div class="pl-0 tiny:pl-5">
         <h5 class="text-2xl pt-1">Curtin University</h5>
         <h6 class="text-xl pt-2">Bachelor of Computing</h6>

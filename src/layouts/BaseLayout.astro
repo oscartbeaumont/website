@@ -4,6 +4,8 @@
   import config from '../config';
   
   const { title = '', hidden = false } = Astro.props;
+
+  const logoPng = await InlineImage("public/assets/logo.png");
 ---
 <html lang="en">
   <head>
@@ -34,7 +36,7 @@
     <div class="w-full p-5 max-w-4xl mx-auto">
       <nav class="flex flex-row flex-wrap tiny:flex-nowrap items-center justify-center">
         <a href="/" class="flex-shrink-0" draggable="false">
-          <img src={await InlineImage("public/assets/logo.png")} alt="Logo" class="h-28 w-28" draggable="false" />
+          <img src={logoPng} alt="Logo" class="h-28 w-28" draggable="false" />
         </a>
         <div class="flex-grow ml-5 text-center ttiny:text-left py-2 ttiny:py-0">
           <a href="/" draggable="false">
@@ -49,9 +51,10 @@
           </div>
         </div>
         <div class="py-2 ttiny:py-0">
-          {config.socialMedia.map(async service => (
-            <a href={service.url} target="_blank" rel="noreferrer" class="px-3 pb-0 ttiny:pb-3 float-left"><img src={await InlineImage(service.icon_url)} alt={`${service.name} Logo`} class="min-w-min w-8" /></a>
-          ))}
+          {config.socialMedia.map(async service => {
+            const todo = await InlineImage(service.icon_url);
+            return (<a href={service.url} target="_blank" rel="noreferrer" class="px-3 pb-0 ttiny:pb-3 float-left"><img src={todo} alt={`${service.name} Logo`} class="min-w-min w-8" /></a>);
+          })}
         </div>
       </nav>
       <main>
@@ -59,7 +62,6 @@
       </main>
     </div>
     
-    <script async defer src="https://esa.otbeaumont.me/latest.js"></script>
-    <noscript><img src="https://esa.otbeaumont.me/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
+    <script defer data-domain="otbeaumont.me" src="https://plausible.otbeaumont.me/js/plausible.outbound-links.js"></script>
   </body>
 </html>
