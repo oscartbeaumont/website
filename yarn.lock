@@ -2,17 +2,17 @@
 # yarn lockfile v1
 
 
-"@astrojs/compiler@^0.6.0":
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/@astrojs/compiler/-/compiler-0.6.2.tgz#f9f6d2bfabc70921fa2be9da49767f878a1bc1e4"
-  integrity sha512-okzco1cwAPC1Fs1EovCckQpZFLAkuysTM+0qVXQ41fE6mLxmq/4i7fFR7l0Wy/0JapgcRQbK5xN4Y08ku4EPQg==
+"@astrojs/compiler@^0.7.4":
+  version "0.7.4"
+  resolved "https://registry.yarnpkg.com/@astrojs/compiler/-/compiler-0.7.4.tgz#f32559254c715af36e3169c33c717fc2a084b71a"
+  integrity sha512-CgKxhVYpfzr9Nox+79IGCd9IszEGIVhYCDl1am+LeAvpIVage9YE8YLVY0r+Ow8LaK26uqko/ae06+DmGDtU5w==
   dependencies:
     typescript "^4.3.5"
 
-"@astrojs/language-server@^0.8.2":
-  version "0.8.5"
-  resolved "https://registry.yarnpkg.com/@astrojs/language-server/-/language-server-0.8.5.tgz#f3eb869348d7da802ba88ecb559271abb842a333"
-  integrity sha512-3Ra2HjnJnfKjSsLrZeWuXIvpW/LBtoUOcnSYAR/pqfOcSZDZXHOXLsySLTkS46zQoMJK0F+V+IRUmZ+vTGUQwA==
+"@astrojs/language-server@^0.8.6":
+  version "0.8.6"
+  resolved "https://registry.yarnpkg.com/@astrojs/language-server/-/language-server-0.8.6.tgz#72b76429e9100c5b075ef3cd125d77fc36647916"
+  integrity sha512-Ta9v/19bczh9LXOYsRFQU8Rk8K/y6oSo510Jzp5xqJ+miWLQDLvLEL4BsyKpPBVBg2kyMBrpZ7LNSzGhQL4XVQ==
   dependencies:
     lodash "^4.17.21"
     source-map "^0.7.3"
@@ -75,13 +75,13 @@
     react "^17.0.2"
     react-dom "^17.0.2"
 
-"@astrojs/renderer-svelte@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@astrojs/renderer-svelte/-/renderer-svelte-0.3.0.tgz#7b97636a987a7d0b8d07512dd3a0175c501feca5"
-  integrity sha512-9acY+v9yty/N/IABegCWkIfgkAIWj50x+MvfmGMypoAvFreBrJhkHqYMqZ6KLr/CTP/9NuvQwikSDyErIeYhyQ==
+"@astrojs/renderer-svelte@0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@astrojs/renderer-svelte/-/renderer-svelte-0.3.1.tgz#f146c3401e6a483d71b018bbf510e7bcbc430442"
+  integrity sha512-upK/Mm00wI8xWqxiSjBV4SuDCSh3hsafLzORvy5vjpd2Czw8LM4c2SdlegBD1vtzbFUc1CnwZqNGdhCSbSHJYA==
   dependencies:
     "@sveltejs/vite-plugin-svelte" "1.0.0-next.30"
-    svelte "^3.44.2"
+    svelte "^3.44.3"
     svelte-preprocess "^4.9.8"
 
 "@astrojs/renderer-vue@0.3.0":
@@ -92,10 +92,10 @@
     "@vitejs/plugin-vue" "^1.9.4"
     vue "^3.2.22"
 
-"@astropub/webapi@^0.7.3":
-  version "0.7.4"
-  resolved "https://registry.yarnpkg.com/@astropub/webapi/-/webapi-0.7.4.tgz#a24d4d5412b580d687b92cc043b3289cb1d1f34a"
-  integrity sha512-LpGMWrI0SWGCWol9Em4/wcAtiQHQFV3MoQUYzdpCRWg1UOpXi38d+2xDtWWEgOxb433IXLYQ6XubLLqIx5m3bQ==
+"@astropub/webapi@^0.10.1":
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/@astropub/webapi/-/webapi-0.10.2.tgz#b1416fb05875cfe06e7c6d1a5d25a73f9ad54b7e"
+  integrity sha512-h1ZdhIPlE90iCf+DTTk60nzG3Bjo43NRHNUOUAdPg/8LA3C60ebq62oq8rTaNozoNLyPXrlC/Ig2YSs7KMquiA==
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.16.0":
   version "7.16.0"
@@ -743,20 +743,20 @@ astring@^1.7.5:
   resolved "https://registry.yarnpkg.com/astring/-/astring-1.8.1.tgz#a91c4afd4af3523e11f31242a3d5d9af62bb6cc6"
   integrity sha512-Aj3mbwVzj7Vve4I/v2JYOPFkCGM2YS7OqQTNSxmUR+LECRpokuPgAYghePgr6SALDo5bD5DlfbSaYjOzGJZOLQ==
 
-astro@^0.22.1:
-  version "0.22.1"
-  resolved "https://registry.yarnpkg.com/astro/-/astro-0.22.1.tgz#3c54bce0860ab3d08e4d508b3b16ff0c7f730d68"
-  integrity sha512-h8IMB34YS365E9/Wdw+W2zaP/HHzLkmCc0v+5pIjsrX5nhCN897obq4rJHkOyQ1xgpFYVoFllgdnOGIAk6H0/w==
+astro@^0.22.10:
+  version "0.22.10"
+  resolved "https://registry.yarnpkg.com/astro/-/astro-0.22.10.tgz#fef095c4e0992f778847a79f2ae563ed4382b2f1"
+  integrity sha512-QP5ZcG5cOpYLU6bUPw4BtQESeURu7P74z2mhlW8Fkxxvli5BuRll7SI1+F4mC8oYNhdSLJN/x/MA8HWQAjeU+w==
   dependencies:
-    "@astrojs/compiler" "^0.6.0"
-    "@astrojs/language-server" "^0.8.2"
+    "@astrojs/compiler" "^0.7.4"
+    "@astrojs/language-server" "^0.8.6"
     "@astrojs/markdown-remark" "^0.6.0"
     "@astrojs/prism" "0.4.0"
     "@astrojs/renderer-preact" "^0.4.0"
     "@astrojs/renderer-react" "0.4.0"
-    "@astrojs/renderer-svelte" "0.3.0"
+    "@astrojs/renderer-svelte" "0.3.1"
     "@astrojs/renderer-vue" "0.3.0"
-    "@astropub/webapi" "^0.7.3"
+    "@astropub/webapi" "^0.10.1"
     "@babel/core" "^7.15.8"
     "@babel/traverse" "^7.15.4"
     "@proload/core" "^0.2.1"
@@ -765,6 +765,7 @@ astro@^0.22.1:
     "@web/parse5-utils" "^1.3.0"
     astring "^1.7.5"
     ci-info "^3.2.0"
+    common-ancestor-path "^1.0.1"
     connect "^3.7.0"
     eol "^0.9.1"
     es-module-lexer "^0.9.3"
@@ -1032,6 +1033,11 @@ comma-separated-tokens@^2.0.0:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/comma-separated-tokens/-/comma-separated-tokens-2.0.2.tgz#d4c25abb679b7751c880be623c1179780fe1dd98"
   integrity sha512-G5yTt3KQN4Yn7Yk4ed73hlZ1evrFKXeUW3086p3PRFNp7m2vIjI6Pg+Kgb+oyzhd9F2qdcoj67+y3SdxL5XWsg==
+
+common-ancestor-path@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/common-ancestor-path/-/common-ancestor-path-1.0.1.tgz#4f7d2d1394d91b7abdf51871c62f71eadb0182a7"
+  integrity sha512-L3sHRo1pXXEqX8VU28kfgUY+YGsk09hPqZiZmLacNib6XNTCM8ubYeT7ryXQw8asB1sKgcU5lkB7ONug08aB8w==
 
 concat-map@0.0.1:
   version "0.0.1"
@@ -3992,10 +3998,10 @@ svelte-preprocess@^4.9.8:
     sorcery "^0.10.0"
     strip-indent "^3.0.0"
 
-svelte@^3.44.2:
-  version "3.44.3"
-  resolved "https://registry.yarnpkg.com/svelte/-/svelte-3.44.3.tgz#795b1ced6ed3da44969099e5061b850c93c95e9a"
-  integrity sha512-aGgrNCip5PQFNfq9e9tmm7EYxWLVHoFsEsmKrtOeRD8dmoGDdyTQ+21xd7qgFd8MNdKGSYvg7F9dr+Tc0yDymg==
+svelte@^3.44.3:
+  version "3.46.1"
+  resolved "https://registry.yarnpkg.com/svelte/-/svelte-3.46.1.tgz#8ea23595824a39d47d04c16c217000fbc4c52c49"
+  integrity sha512-Ue8ivq+G45AfZZL4Z93xNFiC352wPkyGiY9QSuWjxXh6jiaZMrpthinjc1rz0OSTceuST7Pxr1HDBj2KioliZg==
 
 tailwindcss@^3.0.7:
   version "3.0.7"
