@@ -2,6 +2,7 @@
   import InlineImage from "../utils/InlineImage";
   import MeImage from '../../public/assets/me.jpg';
   import config from '../config';
+  import '../styles/global.css';
   
   const { title = '', hidden = false } = Astro.props;
 
@@ -26,8 +27,6 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content={Astro.site} />
     <meta property="og:image" content={MeImage} />
-
-    <link rel="stylesheet" href={Astro.resolve("../styles/global.css")}>
 
     <link rel="preconnect" href="https://fonts.gstatic.com/" />
     <link href="https://fonts.googleapis.com/css?family=Raleway:400,600&display=swap" rel="stylesheet"/>
