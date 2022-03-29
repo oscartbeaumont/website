@@ -623,10 +623,10 @@ assert@^2.0.0:
     object-is "^1.0.1"
     util "^0.12.0"
 
-astro@^0.25.2:
-  version "0.25.2"
-  resolved "https://registry.yarnpkg.com/astro/-/astro-0.25.2.tgz#da9f0b4126e922a6c9bd9fe2b2cb7fb60ee9da07"
-  integrity sha512-jOKqCTzcaHaWZVQvrkoW8wHRhn4feYdeSfh+u7/oq7kzo5c9xUMPUTIBGk7Wwl+O7pvQIKCKZtnsU6v1xFN9/g==
+astro@^0.25.4:
+  version "0.25.4"
+  resolved "https://registry.yarnpkg.com/astro/-/astro-0.25.4.tgz#c9e979b025dfbd8059c55a2dd38045f209b528f9"
+  integrity sha512-ax2QfleG9UM/eSictu1Lo5f5w8Jy5Qfx+tpwiKKQkSAE68w7a0ow5Dx3elJYN5nKCHSJ2r3mFLjrPyHHvanciA==
   dependencies:
     "@astrojs/compiler" "^0.13.1"
     "@astrojs/language-server" "^0.13.2"
@@ -652,7 +652,7 @@ astro@^0.25.2:
     execa "^6.1.0"
     fast-glob "^3.2.11"
     fast-xml-parser "^4.0.7"
-    html-entities "^2.3.2"
+    html-entities "^2.3.3"
     html-escaper "^3.0.3"
     htmlparser2 "^7.2.0"
     kleur "^4.1.4"
@@ -684,7 +684,7 @@ astro@^0.25.2:
     tsconfig-resolver "^3.0.1"
     vite "^2.8.6"
     yargs-parser "^21.0.1"
-    zod "^3.14.2"
+    zod "^3.14.3"
 
 autoprefixer@^10.4.4:
   version "10.4.4"
@@ -1940,7 +1940,7 @@ hastscript@^7.0.0:
     property-information "^6.0.0"
     space-separated-tokens "^2.0.0"
 
-html-entities@^2.3.2:
+html-entities@^2.3.3:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/html-entities/-/html-entities-2.3.3.tgz#117d7626bece327fc8baace8868fa6f5ef856e46"
   integrity sha512-DV5Ln36z34NNTDgnz0EWGBLZENelNAtkiFA4kyNOG2tDI6Mz1uSWiq1wAKdyjnJwyDiDO7Fa2SO1CTxPXL8VxA==
@@ -4431,7 +4431,7 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zod@^3.14.2:
+zod@^3.14.3:
   version "3.14.3"
   resolved "https://registry.yarnpkg.com/zod/-/zod-3.14.3.tgz#60e86341c05883c281fe96a0e79acea48a09f123"
   integrity sha512-OzwRCSXB1+/8F6w6HkYHdbuWysYWnAF4fkRgKDcSFc54CE+Sv0rHXKfeNUReGCrHukm1LNpi6AYeXotznhYJbQ==
