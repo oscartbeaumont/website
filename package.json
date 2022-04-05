@@ -12,7 +12,7 @@
     "@astrojs/svelte": "^0.0.2",
     "@astrojs/tailwind": "^0.0.2",
     "@types/sharp": "^0.30.0",
-    "astro": "^0.25.2",
+    "astro": "^0.26.1",
     "autoprefixer": "^10.4.4",
     "postcss": "^8.4.12",
     "sharp": "^0.30.3",
