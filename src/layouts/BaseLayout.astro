@@ -16,7 +16,7 @@
         content="width=device-width"
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    {hidden ? `<meta name="robots" content="noindex">` : ``}
+    {hidden ? <meta name="robots" content="noindex"> : ``}
     <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico'>
     <title>{title !== "" ? `${title} | ${config.title}` : config.title}</title>
     <meta name="description" content={config.description}>
