@@ -1,27 +1,25 @@
 ---
-  import InlineImage from "../utils/InlineImage";
-  import MeImage from '../../public/assets/me.jpg';
-  import config from '../config';
-  import '../styles/global.css';
-  
-  const { title = '', hidden = false } = Astro.props;
+import InlineImage from "../utils/InlineImage";
+import MeImage from "../../public/assets/me.jpg";
+import config from "../config";
+import "../styles/global.css";
 
-  const logoPng = await InlineImage("public/assets/logo.png");
+const { title = "", hidden = false } = Astro.props;
+
+const logoPng = await InlineImage("public/assets/logo.png");
 ---
+
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta
-        name="viewport"
-        content="width=device-width"
-    />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    {hidden ? <meta name="robots" content="noindex"> : ``}
-    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico'>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    {hidden ? <meta name="robots" content="noindex" /> : ``}
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <title>{title !== "" ? `${title} | ${config.title}` : config.title}</title>
-    <meta name="description" content={config.description}>
+    <meta name="description" content={config.description} />
 
-    <meta property="og:locale" content={config.lang}>
+    <meta property="og:locale" content={config.lang} />
     <meta property="og:title" content={config.title} />
     <meta property="og:description" content={config.description} />
     <meta property="og:type" content="website" />
@@ -29,11 +27,16 @@
     <meta property="og:image" content={MeImage} />
 
     <link rel="preconnect" href="https://fonts.gstatic.com/" />
-    <link href="https://fonts.googleapis.com/css?family=Raleway:400,600&display=swap" rel="stylesheet"/>
+    <link
+      href="https://fonts.googleapis.com/css?family=Raleway:400,600&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div class="w-full p-5 max-w-4xl mx-auto">
-      <nav class="flex flex-row flex-wrap tiny:flex-nowrap items-center justify-center">
+      <nav
+        class="flex flex-row flex-wrap tiny:flex-nowrap items-center justify-center"
+      >
         <a href="/" class="flex-shrink-0" draggable="false">
           <img src={logoPng} alt="Logo" class="h-28 w-28" draggable="false" />
         </a>
@@ -44,23 +47,44 @@
           <h2 class="text-xl">Freelance Software Developer</h2>
           <div class="mt-2">
             <a href="/" class="text-lg no-underline font-semibold mr-4">Home</a>
-            <a href="/skills" class="text-lg no-underline font-semibold mr-4">Skills</a>
-            <a href="/portfolio" class="text-lg no-underline font-semibold mr-4">Portfolio</a>
-            <a href="/contact" class="text-lg no-underline font-semibold mr-4">Contact</a>
+            <a href="/skills" class="text-lg no-underline font-semibold mr-4"
+              >Skills</a
+            >
+            <a href="/portfolio" class="text-lg no-underline font-semibold mr-4"
+              >Portfolio</a
+            >
+            <a href="/contact" class="text-lg no-underline font-semibold mr-4"
+              >Contact</a
+            >
           </div>
         </div>
         <div class="py-2 ttiny:py-0">
-          {config.socialMedia.map(async service => {
-            const todo = await InlineImage(service.icon_url);
-            return (<a href={service.url} target="_blank" rel="noreferrer" class="px-3 pb-0 ttiny:pb-3 float-left"><img src={todo} alt={`${service.name} Logo`} class="min-w-min w-8" /></a>);
-          })}
+          {
+            config.socialMedia.map(async (service) => {
+              const todo = await InlineImage(service.icon_url);
+              return (
+                <a
+                  href={service.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  class="px-3 pb-0 ttiny:pb-3 float-left"
+                >
+                  <img
+                    src={todo}
+                    alt={`${service.name} Logo`}
+                    class="min-w-min w-8"
+                  />
+                </a>
+              );
+            })
+          }
         </div>
       </nav>
       <main>
         <slot />
       </main>
     </div>
-    
-    <script defer data-domain="otbeaumont.me" src="https://plausible.otbeaumont.me/js/plausible.outbound-links.js"></script>
+
+    <!-- <script defer data-domain="otbeaumont.me" src="https://plausible.otbeaumont.me/js/plausible.outbound-links.js"></script> -->
   </body>
 </html>

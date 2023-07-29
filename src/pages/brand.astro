@@ -1,21 +1,35 @@
 ---
-  import BaseLayout from '../layouts/BaseLayout.astro';
-  import config from "../config.ts";
-  import * as path from "path";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import config from "../config.ts";
+import * as path from "path";
 ---
+
 <BaseLayout title="Assets" hidden>
   <div class="py-5 px-5">
     <h3 class="text-4xl pb-4">Assets</h3>
 
-    {Object.keys(config.assets).map(assetCategory => (
-      <div class="pb-4">
-        <h5 class="text-xl">{assetCategory}:</h5>
-        <ul class="list-disc ml-6 mb-2">
-          {config.assets[assetCategory].map(asset => (
-            <li>{asset.name}<a href={asset.url} target="_blank" rel="noreferrer" class="ml-2 text-green-500">{path.basename(asset.url)}</a> {asset.suffix !== undefined ? ` (${asset.suffix})` : ''}</li>
-          ))}
-        </ul>
-      </div>
-    ))}
+    {
+      Object.keys(config.assets).map((assetCategory) => (
+        <div class="pb-4">
+          <h5 class="text-xl">{assetCategory}:</h5>
+          <ul class="list-disc ml-6 mb-2">
+            {config.assets[assetCategory].map((asset) => (
+              <li>
+                {asset.name}
+                <a
+                  href={asset.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  class="ml-2 text-green-500"
+                >
+                  {path.basename(asset.url)}
+                </a>{" "}
+                {asset.suffix !== undefined ? ` (${asset.suffix})` : ""}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
   </div>
 </BaseLayout>
