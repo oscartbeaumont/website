@@ -35,13 +35,10 @@ export function App({ path }: { path?: string }) {
   const Routes = useRoutes(routes);
 
   return (
-    <>
-      <p>Testing {path}</p>
-      <Router url={path}>
-        <LinkHyjack />
-        <Routes />
-      </Router>
-    </>
+    <Router url={path}>
+      <LinkHyjack />
+      <Routes />
+    </Router>
   );
 }
 
