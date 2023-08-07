@@ -1,12 +1,26 @@
 ---
-import InlineImage from "../utils/InlineImage";
-import MeImage from "../../public/assets/me.jpg";
-import config from "../config";
-import "../styles/global.css";
+import { App } from "../../App";
+import config from "../../config";
+import InlineImage from "../../utils/InlineImage";
+import MeImage from "../../../public/assets/me.jpg";
+import "../../styles/global.css";
+
+export function getStaticPaths() {
+  // TODO: Derived from config based routing
+  return [
+    { params: { slug: undefined } },
+    { params: { slug: "skills" }, props: { title: "Portfolio" } },
+    { params: { slug: "contact" } },
+    { params: { slug: "assets" }, props: { title: "Assets", hidden: true } },
+    { params: { slug: "404" }, props: { title: "Not Found", hidden: true } },
+  ];
+}
+
+const logoPng = await InlineImage("public/assets/logo.png");
 
 const { title = "", hidden = false } = Astro.props;
 
-const logoPng = await InlineImage("public/assets/logo.png");
+const path = Astro.url.pathname;
 ---
 
 <html lang="en">
@@ -44,11 +58,16 @@ const logoPng = await InlineImage("public/assets/logo.png");
           <a href="/" draggable="false">
             <h1 class="text-3xl">Oscar Beaumont</h1>
           </a>
-          <h2 class="text-xl">Freelance Software Developer</h2>
+          <!-- <h2 class="text-xl">Freelance Software Developer</h2> -->
           <div class="mt-2">
             <a href="/" class="text-lg no-underline font-semibold mr-4">Home</a>
             <a href="/skills" class="text-lg no-underline font-semibold mr-4"
               >Skills</a
+            >
+            <a
+              href="/disabled"
+              class="text-lg no-underline font-semibold mr-4 text-gray-600 cursor-default"
+              >Blog</a
             >
             <a href="/contact" class="text-lg no-underline font-semibold mr-4"
               >Contact</a
@@ -78,10 +97,8 @@ const logoPng = await InlineImage("public/assets/logo.png");
         </div>
       </nav>
       <main>
-        <slot />
+        <App path={path} client:load />
       </main>
     </div>
-
-    <!-- <script defer data-domain="otbeaumont.me" src="https://plausible.otbeaumont.me/js/plausible.outbound-links.js"></script> -->
   </body>
 </html>
