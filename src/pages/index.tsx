@@ -2,8 +2,6 @@
 import meJpg from "../../public/assets/me.jpg?optimse";
 
 export default function Page() {
-  console.log(meJpg);
-
   return (
     <div class="md:flex px-6">
       <div class="py-5 pr-5">
