@@ -1,26 +1,33 @@
 import { Router, useLocation, useNavigate, useRoutes } from "@solidjs/router";
-import { createEffect, lazy } from "solid-js";
+import { createEffect, lazy as solidLazy } from "solid-js";
 
+import IndexPage from "./pages/index";
+import SkillsPage from "./pages/skills";
+import ContactsPages from "./pages/contact";
+import AssetsPage from "./pages/assets";
+import NotFoundPage from "./pages/404";
+
+// TODO: Lazy loading components - https://github.com/withastro/astro/pull/6791
 const routes = [
   {
     path: "/",
-    component: lazy(() => import("./pages/index")),
+    component: IndexPage,
   },
   {
     path: "/skills",
-    component: lazy(() => import("./pages/skills")),
+    component: SkillsPage,
   },
   {
     path: "/contact",
-    component: lazy(() => import("./pages/contact")),
+    component: ContactsPages,
   },
   {
     path: "/assets",
-    component: lazy(() => import("./pages/assets")),
+    component: AssetsPage,
   },
   {
     path: "/*all",
-    component: lazy(() => import("./pages/404")),
+    component: NotFoundPage,
   },
 ];
 
@@ -28,10 +35,13 @@ export function App({ path }: { path?: string }) {
   const Routes = useRoutes(routes);
 
   return (
-    <Router url={path}>
-      <LinkHyjack />
-      <Routes />
-    </Router>
+    <>
+      <p>Testing {path}</p>
+      <Router url={path}>
+        <LinkHyjack />
+        <Routes />
+      </Router>
+    </>
   );
 }
 

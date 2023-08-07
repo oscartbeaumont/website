@@ -5,7 +5,7 @@ import solidJs from "@astrojs/solid-js";
 import type { Plugin } from "vite";
 import { promises as fs } from "node:fs";
 import { createRequire } from "module";
-import vercel from "@astrojs/vercel/edge";
+import vercel from "@astrojs/vercel/static";
 const cjs = createRequire(import.meta.url);
 const sharp: typeof import("sharp") = cjs("sharp");
 
@@ -14,7 +14,6 @@ export default defineConfig({
   site: "https://otbeaumont.me",
   srcDir: "src/astro",
   compressHTML: true,
-  output: "server",
   adapter: vercel(),
   integrations: [
     sitemap(),
