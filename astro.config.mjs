@@ -6,13 +6,12 @@ import sitemap from "@astrojs/sitemap";
 /** @type {import('astro').AstroUserConfig} */
 export default {
   site: "https://otbeaumont.me",
+  compressHTML: true,
   integrations: [
     sitemap(),
     svelte(),
     tailwind({
-      config: {
-        path: "./tailwind.config.js",
-      },
+      configFile: "./tailwind.config.js",
     }),
   ],
 };

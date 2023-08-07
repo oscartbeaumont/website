@@ -1,8 +1,3 @@
 {
-  "lib": ["es2018", "dom"],
-  "moduleResolution": "node",
-  "compilerOptions": {
-    "module": "es2020",
-    "strict": true
-  }
+  "extends": "astro/tsconfigs/strict"
 }
