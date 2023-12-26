@@ -1,0 +1,40 @@
+---
+// This component aims to hide the email from being scraped by bots. I'm getting SOOOOO MUCH SPAM!!!!!!
+
+// TODO: Make this expirence of copying my email a bit easier!
+
+const { email } = Astro.props;
+
+// We split the email into parts of 4 characters (which have hidden elements put in-between), and then we replace each character with its HTML entity.
+const emailParts = (email.match(/.{1,4}/g) || []).map((part) =>
+  part.replace(/./gm, (s) => "&#" + s.charCodeAt(0) + ";")
+);
+---
+
+<a id="electronic-mail" class="inline-block cursor-pointer hover:text-black/60">
+  <span class="flex flex-row">
+    {
+      emailParts.map((p) => (
+        <>
+          <span set:html={p} />
+          <span class="hidden select-none" aria-hidden="true">
+            {Number(Math.random() * 1000).toFixed(0)}
+          </span>
+        </>
+      ))
+    }
+  </span>
+</a>
+
+<script>
+  const email = document.getElementById("electronic-mail");
+  if (!email) throw new Error("Could not find email element");
+  email.onclick = () => {
+    let firstChild = email.children[0]; // We go inside the `span`
+    const emailString = Array.from(firstChild.children)
+      .filter((_, i) => i % 2 === 0)
+      .map((p) => p.textContent)
+      .join("");
+    window.location.href = `mailto:${emailString}`;
+  };
+</script>

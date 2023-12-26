@@ -1,13 +1,14 @@
 import { Show, createEffect, createSignal } from "solid-js";
-import config from "../config";
 
-function RandomDogPhoto() {
+const THE_DOG_API_KEY = "8d0ae78c-af47-469c-9d46-5c00e6fbb4b3";
+
+export function RandomDogPhoto() {
   const [imgUrl, setImgUrl] = createSignal(undefined);
 
   createEffect(() => {
-    const res = fetch("https://api.thedogapi.com/v1/images/search?size=full", {
+    fetch("https://api.thedogapi.com/v1/images/search?size=full", {
       headers: {
-        "x-api-key": config.theDogAPIKey,
+        "x-api-key": THE_DOG_API_KEY,
       },
     }).then(async (res) => {
       const body = await res.json();
@@ -55,21 +56,5 @@ function RandomDogPhoto() {
         class="w-96 m-auto"
       />
     </Show>
-  );
-}
-
-export default function Page() {
-  return (
-    <div class="py-5 px-5">
-      <h3 class="text-4xl pb-4">Page Not Found</h3>
-      <p>
-        The resource you requested was not found. Enjoy this random picture of a
-        dog instead!
-      </p>
-
-      <div class="py-4">
-        <RandomDogPhoto />
-      </div>
-    </div>
   );
 }
