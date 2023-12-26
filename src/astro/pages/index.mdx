@@ -1,0 +1,30 @@
+---
+layout: ../layouts/Layout.astro
+title: "Hello, World"
+# author: "Matthew Phillips"
+# date: "09 Aug 2022"
+---
+import { IconLayout, Icon } from "../components/IconLayout";
+import { GitHub, Twitter, LinkedIn, Twitch, Rust, SolidJS, Typescript, TailwindCSS, TanstackQuery } from "../components/Logos";
+import ProtectedEmail from "../components/ProtectedEmail.astro";
+
+# Hi, i'm Oscar
+
+I'm a software developer based in Perth, Australia. I am self-taught and love creating solutions to help people use technology effectively.
+
+{/* TODO: This looks kinda cringe, can it be improved or maybe just replace it? */}
+Check me out on <a href="https://github.com/oscartbeaumont" target="_blank" class="hover:opacity-80"><GitHub /></a>, <a href="https://twitter.com/oscartbeaumont" target="_blank" class="hover:opacity-80 no-underline text-2xl"><Twitter /></a>, <a href="https://www.linkedin.com/in/oscartbeaumont" target="_blank" class="hover:opacity-80"><LinkedIn /></a>, or <a href="https://www.twitch.tv/oscartbeaumont" target="_blank" class="hover:opacity-80"><Twitch /></a>.
+
+I am currently working as a full-stack software engineer at <a href="https://www.spacedrive.com" target="_blank" class="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 bg-clip-text text-transparent">Spacedrive</a> where I primarily maintain our Rust backend and peer-to-peer networking stack.
+
+<p class="!mb-2">The technologies I use are:</p>
+<IconLayout>
+    <Icon name="Rust" icon={Rust} href="https://www.rust-lang.org" />
+    <Icon name="Typescript" icon={Typescript} href="https://www.typescriptlang.org" />
+    <Icon name="SolidJS" icon={SolidJS} href="https://www.solidjs.com" />
+    <Icon name="Tailwind CSS" icon={TailwindCSS} href="https://tailwindcss.com" />
+    <Icon name="Tanstack Query" icon={TanstackQuery} href="https://tanstack.com/query" />
+    {/* TODO: AWS, Windows MDM */}
+</IconLayout>
+
+If you are interesting in chatting feel free to reach out at <ProtectedEmail email="oscar@otbeaumont.me" />.
