@@ -1,0 +1,36 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+
+export async function getStaticPaths() {
+  const blogEntries = await getCollection("blog");
+  return blogEntries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const {
+  entry: {
+    data: { title, description, draft },
+    render,
+  },
+} = Astro.props;
+
+const { Content } = await render();
+---
+
+<Layout frontmatter={{ title, description }}>
+  <!-- TODO: Proper navigation bar -->
+  <a href="/" class="hover:opacity-75 no-underline">Go Home</a>
+  <a href="/blog" class="hover:opacity-75 no-underline">Blog</a>
+  {
+    draft === true ? (
+      <div class="absolute top-0 left-0 text-red-500" role="alert">
+        You are currently viewing a draft!
+      </div>
+    ) : null
+  }
+
+  <Content />
+</Layout>

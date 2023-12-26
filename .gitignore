@@ -19,3 +19,6 @@ yarn-error.log*
 
 # Vercel build dir
 .vercel
+
+# Astro
+.astro
