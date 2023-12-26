@@ -1,5 +1,5 @@
-import { Router, useLocation, useNavigate, useRoutes } from "@solidjs/router";
-import { createEffect, lazy as solidLazy } from "solid-js";
+import { Router, useNavigate } from "@solidjs/router";
+import { createEffect, type ParentProps } from "solid-js";
 
 import IndexPage from "./pages/index";
 import SkillsPage from "./pages/skills";
@@ -31,20 +31,25 @@ const routes = [
   },
 ];
 
-export function App({ path }: { path?: string }) {
-  const Routes = useRoutes(routes);
-
+function Root(props: ParentProps) {
   return (
-    <Router url={path}>
+    <>
       <LinkHyjack />
-      <Routes />
+      {props.children}
+    </>
+  );
+}
+
+export function App({ path }: { path?: string }) {
+  return (
+    <Router url={path} root={Root}>
+      {routes}
     </Router>
   );
 }
 
 function LinkHyjack() {
   const navigate = useNavigate();
-  const location = useLocation();
 
   // Progressive enhancement for links
   // This would be better done with the Navigation API, but it's not supported in all browsers yet
