@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
-import MeImage from "../../../public/assets/me.jpg";
+import "@fontsource-variable/raleway";
+import MeImage from "../../public/assets/me.jpg";
 
 let {
   frontmatter: { title, description, hidden },
@@ -30,12 +31,6 @@ if (!description || description === "")
       <meta property="og:type" content="website" />
       <meta property="og:url" content={Astro.site} />
       <meta property="og:image" content={MeImage.src} />
-
-      <link rel="preconnect" href="https://fonts.gstatic.com/" />
-      <link
-        href="https://fonts.googleapis.com/css?family=Raleway:400,600&display=swap"
-        rel="stylesheet"
-      />
     </head>
     <body class="h-full font-sans">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

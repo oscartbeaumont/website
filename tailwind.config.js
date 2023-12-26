@@ -1,3 +1,5 @@
+const defaultTheme = require("tailwindcss/defaultTheme");
+
 module.exports = {
   content: [
     "./public/**/*.html",
@@ -5,9 +7,8 @@ module.exports = {
   ],
   theme: {
     extend: {
-      screens: {
-        ttiny: "473px",
-        tiny: "530px",
+      fontFamily: {
+        sans: ["RalewayVariable", "Raleway", ...defaultTheme.fontFamily.sans],
       },
     },
   },
