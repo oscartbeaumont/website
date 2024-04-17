@@ -2,19 +2,22 @@
 layout: ../layouts/Layout.astro
 ---
 import { IconLayout, Icon } from "../components/IconLayout";
+import { MapText } from "../components/MapText";
 import { GitHub, Twitter, LinkedIn, Twitch, Rust, SolidJS, Typescript, TailwindCSS, TanstackQuery } from "../components/Logos";
 import ProtectedEmail from "../components/ProtectedEmail.astro";
 
 # Hi, i'm Oscar
 
-I'm a software developer based in Perth, Australia. I am self-taught and love creating solutions to help people use technology effectively.
+I'm a software developer based in <MapText />. I am self-taught and love creating solutions to help people use technology effectively.
 
 {/* TODO: This looks kinda cringe, can it be improved or maybe just replace it? */}
 Check me out on <a href="https://github.com/oscartbeaumont" target="_blank" class="hover:opacity-80"><GitHub /></a>, <a href="https://twitter.com/oscartbeaumont" target="_blank" class="hover:opacity-80 no-underline text-2xl"><Twitter /></a>, <a href="https://www.linkedin.com/in/oscartbeaumont" target="_blank" class="hover:opacity-80"><LinkedIn /></a>, or <a href="https://www.twitch.tv/oscartbeaumont" target="_blank" class="hover:opacity-80"><Twitch /></a>.
 
 I am currently working as a full-stack software engineer at <a href="https://www.spacedrive.com" target="_blank" class="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 bg-clip-text text-transparent">Spacedrive</a> where I primarily maintain our Rust backend and peer-to-peer networking stack.
 
-<p class="!mb-2">The technologies I use are:</p>
+I maintain the open source projects <a href="https://github.com/oscartbeaumont/rspc" target="_blank">rspc</a> and <a href="https://github.com/oscartbeaumont/specta" target="_blank">Specta</a> along with also working on a mobile device management solution called <a href="https://mattrax.app" target="_blank">Mattrax</a>
+
+<p class="!mb-2">I love using the following technologies:</p>
 <IconLayout>
     <Icon name="Rust" icon={Rust} href="https://www.rust-lang.org" />
     <Icon name="Typescript" icon={Typescript} href="https://www.typescriptlang.org" />
