@@ -1,36 +1,28 @@
 ---
 title: Lies of Edge
-description: Edge region, Edge runtime, really 
+description: TODO
 date: 2024-04-17 # TODO
 draft: true # TODO
 ---
 
-TODO:
- - Compare runtimes - LLRT Lambda vs Node.js Lambda vs Cloudflare Worker vs Deno deploy
- - Read vs write traffic
-    - How read replicas and edge rendering makes sense
-    - Which DB providers would support this
+I've been reading the Twitter discourse and felt like some of the nuance is lost when discussing edge so this post aims to clarify some of the misconceptions.
 
- - Can we replica Fly.io's routing (GET to read-replica, rest to main) with multiple-region AWS Lambda's?
+## What even is Edge?
 
+Is it a location? Is it a runtime? It's both????
 
+Edge is a very loaded term that has been used to refer to both the location and runtime and this has caused endless confusion.
 
---- Scratch
+TODO - Define edge
 
-Deployed to Sydney and accessed through function URL in incognito mode.
+## Edge vs Lambda
 
-Node.js - arm64
- - 530ms cold boot
- - 70ms warm
+TODO - Compare (cold starts, runtime performance) and contrast for APIs and rendering
 
-LLRT - arm64, Sydney
- - 690ms cold boot
- - 69ms warm
+## A new challenger emerges
 
-Deno Deploy - Edge
- - 224ms cold boot
- - 63ms warm
+Partial Prerendering - TODO
 
-Cloudflare Workers - Edge
- - 243ms cold boot
- - 60ms warm
+TODO - Explain how it works, downsides
+
+TODO - Vercel moving off of edge
