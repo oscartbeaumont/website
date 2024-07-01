@@ -2,7 +2,7 @@
 title: Ultimate Deployment Guide
 description: TODO # TODO
 date: 2024-05-19
-draft: false # TODO
+draft: true # TODO
 ---
 
 I've been thinking a lot about the best way to deploy the backend of your application and I wanted to document my thoughts on different options and their trade-offs.
@@ -50,6 +50,8 @@ However, using a CDN introduces a lot of complexity. You will need to invalidate
 
 Fly.io allows for scaling your applications to zero. Unlike Lambda you are in complete control of the instances lifecycle. When you applications exits the machine will be shutdown and when the Fly load balancer detects a new connection it will start back up the instance.
 
+<!-- TODO: Cold start time/how are they different from Lambda's cold starts -->
+
 <!-- TODO - It's still got storage after being restated??? TODO - Check this -->
 
 Fly.io has support for automatically scaling up and down *pre-provisioned* machines. When the provisoned machine is not required it will scale-to-zero reducing it's cost to just the disk storage. When the existing instances get overloaded the instances will be woken up to handle the load. If you would like fully hands off autoscaling you can deploy [Fly autoscaler](https://github.com/superfly/fly-autoscaler).
@@ -90,6 +92,20 @@ TODO - Does this allow for rollbacks?
 
 TODO
 
+### AWS Lambda
+
+TODO
+
+<!-- TODO: Provisioned concurrency for ARM would cost 0.0000033334*60*60*24*31 = 8.92$ USD / month + usage (which isn't included lol) -->
+
+#### Lamdba warmer
+
+TODO
+
+#### Cold starts
+
+TODO
+
 ### Vercel
 
 [Vercel](https://vercel.com) is ...
@@ -105,19 +121,7 @@ TODO
 ### Render.io
 
 
-### AWS Lambda
 
-TODO
-
-<!-- TODO: Provisioned concurrency for ARM would cost 0.0000033334*60*60*24*31 = 8.92$ USD / month + usage (which isn't included lol) -->
-
-#### Lamdba warmer
-
-TODO
-
-#### Cold starts
-
-TODO
 
 ### Wasm - TODO Services
 
@@ -130,6 +134,10 @@ TODO
 ### Cloudflare Workers
 
 TODO
+
+<!-- TODO: Requires modified application for Rust -->
+
+<!-- TODO: Maybe list Spin and the other one and handle all wasm-based providers together -->
 
 ### Deno Deploy
 
