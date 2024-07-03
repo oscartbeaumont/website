@@ -26,3 +26,22 @@ Partial Prerendering - TODO
 TODO - Explain how it works, downsides
 
 TODO - Vercel moving off of edge
+
+<!-- TODO:
+ - Explain the problems with Edge
+	 - Location
+	 - Runtime
+ - How PPR solves them?
+	 - Downsides - Status codes
+ - How could Lambda be as fast as Edge?
+
+Why would you use each.
+
+
+I wonder if the reason Vercel found Lambda + PPR to be faster than Edge came down to a) cold starts being very infrequent given they have decent traffic b) Lambda would probs be faster at serving requests
+
+https://discord.com/channels/722131463138705510/780502110772658196/1232385980003254355
+
+https://www.youtube.com/watch?v=NDRV14_WDYA
+
+Vercel is just a wrapper. Cloudflare doesn't do regional edge. -->

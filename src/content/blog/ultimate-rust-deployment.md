@@ -166,3 +166,6 @@ TODO
 
 <!-- TODO -->
 <!-- Deployment speed matters - Caching -->
+
+
+<!-- TODO: https://graphite.dev/blog/why-we-use-aws-instead-of-vercel -->
