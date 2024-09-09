@@ -6,3 +6,8 @@ draft: true # TODO
 ---
 
 TODO - Explain rspc v1 syntax and why it's useful + new features
+
+TODO:
+ - Project Vision
+ - How it works???
+ - Benchmarks
