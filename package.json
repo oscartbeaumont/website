@@ -10,21 +10,21 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@fontsource-variable/raleway": "^5.0.20",
-    "solid-js": "^1.8.18"
+    "@fontsource-variable/raleway": "^5.0.22",
+    "solid-js": "^1.8.22"
   },
   "devDependencies": {
-    "@astrojs/mdx": "^3.1.2",
+    "@astrojs/mdx": "^3.1.5",
     "@astrojs/sitemap": "^3.1.6",
-    "@astrojs/solid-js": "^4.4.0",
+    "@astrojs/solid-js": "^4.4.1",
     "@astrojs/tailwind": "^5.1.0",
-    "@astrojs/vercel": "^7.7.2",
-    "@tailwindcss/typography": "^0.5.13",
-    "astro": "4.11.3",
-    "autoprefixer": "^10.4.19",
-    "postcss": "^8.4.39",
+    "@astrojs/vercel": "^7.8.0",
+    "@tailwindcss/typography": "^0.5.15",
+    "astro": "4.15.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.45",
     "remark-code-titles": "^0.1.2",
-    "tailwindcss": "^3.4.4",
-    "typescript": "^5.5.2"
+    "tailwindcss": "^3.4.10",
+    "typescript": "^5.5.4"
   }
 }
