@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@fontsource-variable/raleway": "^5.1.0",
+    "@solid-primitives/date": "^2.0.24",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.2",
     "solid-js": "^1.9.3"

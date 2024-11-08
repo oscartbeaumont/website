@@ -7,25 +7,36 @@ const initPdf = () => new jsPDF("p", "px", "a4");
 export function CaptureAsPdf() {
   onMount(() => {
     const doc = initPdf();
-    document.getElementById("document")!.style.width = `${doc.internal.pageSize.width * 2}px`;
-    document.getElementById("document")!.style.height = `${doc.internal.pageSize.height * 2}px`;
+    document.getElementById("document")!.style.width = `${
+      doc.internal.pageSize.width * 2
+    }px`;
+    document.getElementById("document")!.style.height = `${
+      doc.internal.pageSize.height * 2
+    }px`;
   });
 
   const generatePdf = (callback: (pdf: any) => void) => {
-      const doc = document.getElementById("document");
-      if (!doc) throw new Error("Element with 'id=document' not found");
+    const doc = document.getElementById("document");
+    if (!doc) throw new Error("Element with 'id=document' not found");
 
-      html2canvas(doc, {
-        scale: 10,
-      }).then(canvas => {    
-        const imgData = canvas.toDataURL("image/jpeg", 1.0);
-        const pdf = initPdf();
-        pdf.setDocumentProperties({
-          title: "Invoice",
-          author: "Oscar Beaumont",
-        });
-        pdf.addImage(imgData, 'JPEG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
-        callback(pdf);
+    html2canvas(doc, {
+      scale: 10,
+    }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/jpeg", 1.0);
+      const pdf = initPdf();
+      pdf.setDocumentProperties({
+        title: "Invoice",
+        author: "Oscar Beaumont",
+      });
+      pdf.addImage(
+        imgData,
+        "JPEG",
+        0,
+        0,
+        pdf.internal.pageSize.getWidth(),
+        pdf.internal.pageSize.getHeight()
+      );
+      callback(pdf);
     });
   };
 
@@ -40,7 +51,7 @@ export function CaptureAsPdf() {
   onCleanup(() => window.removeEventListener("keydown", handler));
 
   return (
-    <div class="bg-gray-700/25 rounded-bl-md w-30 h-15 fixed top-0 right-0 p-4 flex space-x-2">
+    <div class="p-4 flex space-x-2">
       <button
         class="bg-white hover:bg-gray-200 text-black font-bold py-2 px-4 rounded"
         onClick={() => generatePdf((pdf) => pdf.save("invoice.pdf"))}
