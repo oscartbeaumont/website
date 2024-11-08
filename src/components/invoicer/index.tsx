@@ -66,52 +66,59 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
         <div class="flex justify-between p-8">
           <div class="flex flex-col space-y-1">
             <p class="font-bold">BILL TO:</p>
-            <p class="text-xl font-bold">
-              <input
-                value={props.state.client.name}
-                onInput={(e) =>
-                  (props.state.client.name = e.currentTarget.value)
-                }
-                placeholder="A software company"
-              />
+            <p
+              class="text-xl font-bold"
+              contenteditable
+              onFocusOut={(e) =>
+                (props.state.client.name = e.currentTarget.textContent || "")
+              }
+            >
+              {props.state.client.name}
             </p>
             <div class="flex flex-col">
               <Show when={props.state.client.abn}>
                 <p>
                   ABN:{" "}
-                  <input
-                    value={props.state.client.abn}
-                    onInput={(e) =>
-                      (props.state.client.abn = e.currentTarget.value)
+                  <span
+                    contenteditable
+                    onFocusOut={(e) =>
+                      (props.state.client.abn =
+                        e.currentTarget.textContent || "")
                     }
-                    placeholder="00 000 000 000"
-                  />
+                  >
+                    {props.state.client.abn}
+                  </span>
                 </p>
               </Show>
               <Show when={props.state.client.address}>
-                <input
-                  value={props.state.client.address}
-                  onInput={(e) =>
-                    (props.state.client.address = e.currentTarget.value)
+                <p
+                  contenteditable
+                  onFocusOut={(e) =>
+                    (props.state.client.address =
+                      e.currentTarget.textContent || "")
                   }
-                  placeholder="00 Road St, Suburb AA 0000"
-                />
+                >
+                  {props.state.client.address}
+                </p>
               </Show>
-              <input
-                value={props.state.client.email}
-                onInput={(e) =>
-                  (props.state.client.email = e.currentTarget.value)
+              <p
+                contenteditable
+                onFocusOut={(e) =>
+                  (props.state.client.email = e.currentTarget.textContent || "")
                 }
-                placeholder="employer@example.com"
-              />
+              >
+                {props.state.client.email}
+              </p>
               <Show when={props.state.client.website}>
-                <input
-                  value={props.state.client.website}
-                  onInput={(e) =>
-                    (props.state.client.website = e.currentTarget.value)
+                <p
+                  contenteditable
+                  onFocusOut={(e) =>
+                    (props.state.client.website =
+                      e.currentTarget.textContent || "")
                   }
-                  placeholder="https://example.com"
-                />
+                >
+                  {props.state.client.website}
+                </p>
               </Show>
             </div>
           </div>
@@ -145,9 +152,9 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
             <thead>
               <tr class="w-full flex space-x-4">
                 <th class="w-full text-start">DESCRIPTION</th>
-                <th class="w-20 text-start">HOURS</th>
-                <th class="w-20 text-start">HOURLY</th>
-                <th class="w-20 text-start">TOTAL</th>
+                <th class="w-24 text-end">HOURS</th>
+                <th class="w-24 text-end">HOURLY</th>
+                <th class="w-24 text-end">TOTAL</th>
               </tr>
             </thead>
 
@@ -156,27 +163,32 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
                 {(task) => (
                   <tr class="w-full flex space-x-4 pt-2 rtex">
                     <td class="w-full text-start">
-                      <input
-                        value={task.name}
-                        onInput={(e) =>
-                          (task.name = e.currentTarget.value ?? "")
+                      <p
+                        contenteditable
+                        onFocusOut={(e) =>
+                          (task.name = e.currentTarget.textContent || "")
                         }
-                      />
+                      >
+                        {task.name}
+                      </p>
                     </td>
-                    <td>
-                      <input
-                        class="w-20 text-end"
-                        value={(task.hours ?? 0).toString()}
+                    <td class="w-24 text-end">
+                      <p
+                        contentEditable
                         // We do this so if the user doesn't enter a valid number, it doesn't break
                         onFocusOut={(e) =>
-                          (task.hours = parseInt(e.currentTarget.value))
+                          (task.hours = parseInt(
+                            e.currentTarget.textContent || "0"
+                          ))
                         }
-                      />
+                      >
+                        {(task.hours ?? 0).toString()}
+                      </p>
                     </td>
-                    <td class="w-20 text-end">
+                    <td class="w-24 text-end">
                       ${props.state.hourlyRate.toFixed(2)}
                     </td>
-                    <td class="w-20 text-end">
+                    <td class="w-24 text-end">
                       ${(task.hours * props.state.hourlyRate).toFixed(2)}
                     </td>
                   </tr>
