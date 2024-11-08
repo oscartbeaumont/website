@@ -2,6 +2,7 @@
 title: Vercel on AWS
 description: Can we replicate the Vercel developer experience on AWS and if so, how?
 date: 2024-09-09
+draft: true # TODO
 ---
 
 I'm sure if you spend as much time as I do on tech Twitter you've seen the posts talking about how Vercel is just an AWS wrapper and that you should just use AWS directly.
@@ -9,7 +10,7 @@ I've been thinking about this for a while and I wanted to investigate if it's po
 
 ## The Vercel Developer Experience
 
-I think it's important to start out by defining what I mean by the Vercel DX. For me this comes down to *preview deployments* and *instant rollbacks*.
+I think it's important to start out by defining what I mean by the Vercel DX. For me this comes down to _preview deployments_ and _instant rollbacks_.
 
 A preview deployments should be created for every commit allowing your team to quickly review pull requests and trace regressions back to a specific commit.
 As we are making use of serverless technologies that support scale-to-zero this should not incur any extra costs.
@@ -65,8 +66,9 @@ Turns out CloudFront is just very slow to provision. This would probally be fine
 What if we shared the same bucket and CloudFront distribution between all of our environments? This would mean only creating the slow CloudFront distribution once and should speed up the creation of preview environments.
 
 What if we struct our S3 bucket like:
- - `production/...` - the production assets
- - `GIT_SHA/...` - the assets for a specific commit
+
+- `production/...` - the production assets
+- `GIT_SHA/...` - the assets for a specific commit
 
 and then configure CloudFront to accept requests for `domain.com` and `*.preview.domain.com`. We could make use of a [CloudFront Function](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cloudfront-functions.html) to check the incoming domain and rewrite the S3 request to the correct.
 
@@ -77,8 +79,6 @@ This system is detailed in [this great 8thlight article](https://8thlight.com/in
 ## This is going far too easy
 
 This all works great but we are missing a part of the stack, the API!
-
-
 
 ## Issues
 
