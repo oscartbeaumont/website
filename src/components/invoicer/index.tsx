@@ -227,7 +227,7 @@ function Sidebar(props: { state: ReturnType<typeof initState> }) {
     <div class="w-[500px] bg-black/70 backdrop-blur-xl p-4 flex flex-col space-y-4 fixed top-0 bottom-0 right-0">
       <div class="flex justify-between">
         <h1 class="text-2xl font-extrabold uppercase text-nowrap flex items-center text-white">
-          Configure Invoice
+          Invoicer
         </h1>
 
         <CaptureAsPdf />
