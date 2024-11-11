@@ -24,7 +24,7 @@ function initState() {
     invoiceId: 0,
     dueInDays: 14,
     client,
-    hourlyRate: 70,
+    hourlyRate: 5,
     tasks: [] as { name: string; hours: number }[],
     clients: [] as (typeof client)[],
     paymentMethod: "Swift" as "Swift" | "PayPal" | "Other",
@@ -176,7 +176,7 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
                         contentEditable
                         // We do this so if the user doesn't enter a valid number, it doesn't break
                         onFocusOut={(e) =>
-                          (task.hours = parseInt(
+                          (task.hours = parseFloat(
                             e.currentTarget.textContent || "0"
                           ))
                         }
@@ -301,7 +301,7 @@ function Sidebar(props: { state: ReturnType<typeof initState> }) {
         class="p-2"
         value={props.state.hourlyRate.toString()}
         onChange={(e) =>
-          (props.state.hourlyRate = parseInt(e.currentTarget.value))
+          (props.state.hourlyRate = parseFloat(e.currentTarget.value))
         }
         placeholder="70"
       />
