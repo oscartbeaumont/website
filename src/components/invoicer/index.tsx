@@ -6,14 +6,14 @@ import { createDateNow } from "@solid-primitives/date";
 const defaultClient = () =>
   ({
     name: "A software company",
-    abn: "00 000 000 000",
+    identifier: "ABN: 00 000 000 000",
     address: "00 Road St, Suburb AA 0000",
     email: "employer@example.com",
     website: "https://example.com",
   } as {
     name: string;
     email: string;
-    abn?: string;
+    identifier?: string;
     address?: string;
     website?: string;
   });
@@ -76,18 +76,15 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
               {props.state.client.name}
             </p>
             <div class="flex flex-col">
-              <Show when={props.state.client.abn}>
-                <p>
-                  ABN:{" "}
-                  <span
-                    contenteditable
-                    onFocusOut={(e) =>
-                      (props.state.client.abn =
-                        e.currentTarget.textContent || "")
-                    }
-                  >
-                    {props.state.client.abn}
-                  </span>
+              <Show when={props.state.client.identifier}>
+                <p
+                  contenteditable
+                  onFocusOut={(e) =>
+                    (props.state.client.identifier =
+                      e.currentTarget.textContent || "")
+                  }
+                >
+                  {props.state.client.identifier}
                 </p>
               </Show>
               <Show when={props.state.client.address}>
@@ -355,8 +352,7 @@ function Sidebar(props: { state: ReturnType<typeof initState> }) {
 }
 
 function formatDate(date: Date) {
-  return `${date.getDate().toString().padStart(2, "0")}/${(date
-    .getMonth() + 1)
+  return `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1)
     .toString()
     .padStart(2, "0")}/${date.getFullYear()}`;
 }
