@@ -216,7 +216,7 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
                 >
                   {props.state.swiftCode}
                 </span>{" "}
-                and account
+                and account{" "}
                 <span
                   contentEditable
                   onFocusOut={(e) =>
