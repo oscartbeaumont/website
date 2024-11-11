@@ -51,9 +51,9 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
   return (
     <>
       <div class="h-1/5 w-full bg-[#1f65a6] text-white flex justify-between p-8">
-        <div>
-          TODO: Logo
-          <h1 class="font-bold text-5xl">Tax Invoice</h1>
+        <div class="pt-5">
+          <img src="/assets/OscarBeaumontLogo-White.png" class="h-12" />
+          <h1 class="font-bold text-5xl -mt-2">Tax Invoice</h1>
         </div>
 
         <div class="flex flex-col space-y-[2px] justify-center items-end">
