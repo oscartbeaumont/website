@@ -389,12 +389,10 @@ function formatDate(date: Date) {
 function toHours(time: string) {
   // Basic numbers are treated as hours
   const num = Number(time);
-  console.log(num);
   if (!Number.isNaN(num)) return num;
 
   // Else parse components
   const r = parse(time);
-  console.log(time, r);
   if (r === null || r === undefined) return NaN;
   return r / 1000 / 60 / 60;
 }
