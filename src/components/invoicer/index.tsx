@@ -2,6 +2,7 @@ import { For, Match, Show, Switch } from "solid-js";
 import { CaptureAsPdf } from "./CaptureAsPdf";
 import { createMutableLocalStorage } from "./util";
 import { createDateNow } from "@solid-primitives/date";
+import parse from "parse-duration";
 
 const defaultClient = () =>
   ({
@@ -25,7 +26,7 @@ function initState() {
     dueInDays: 14,
     client,
     hourlyRate: 5,
-    tasks: [] as { name: string; hours: number }[],
+    tasks: [] as { name: string; hours: string }[],
     clients: [] as (typeof client)[],
     paymentMethod: "Swift" as "Swift" | "PayPal" | "Other",
     swiftCode: "--------",
@@ -176,9 +177,7 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
                         contentEditable
                         // We do this so if the user doesn't enter a valid number, it doesn't break
                         onFocusOut={(e) =>
-                          (task.hours = parseFloat(
-                            e.currentTarget.textContent || "0"
-                          ))
+                          (task.hours = e.currentTarget.textContent || "0")
                         }
                       >
                         {(task.hours ?? 0).toString()}
@@ -188,7 +187,10 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
                       ${props.state.hourlyRate.toFixed(2)}
                     </td>
                     <td class="w-24 text-end">
-                      ${(task.hours * props.state.hourlyRate).toFixed(2)}
+                      $
+                      {(toHours(task.hours) * props.state.hourlyRate).toFixed(
+                        2
+                      )}
                     </td>
                   </tr>
                 )}
@@ -247,7 +249,7 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
             USD $
             {(
               props.state.tasks
-                .map((task) => task.hours)
+                .map((task) => toHours(task.hours))
                 .reduce((a, b) => a + b, 0) * props.state.hourlyRate
             ).toFixed(2)}
           </p>
@@ -382,4 +384,17 @@ function formatDate(date: Date) {
   return `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1)
     .toString()
     .padStart(2, "0")}/${date.getFullYear()}`;
+}
+
+function toHours(time: string) {
+  // Basic numbers are treated as hours
+  const num = Number(time);
+  console.log(num);
+  if (!Number.isNaN(num)) return num;
+
+  // Else parse components
+  const r = parse(time);
+  console.log(time, r);
+  if (r === null || r === undefined) return NaN;
+  return r / 1000 / 60 / 60;
 }
