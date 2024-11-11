@@ -27,7 +27,9 @@ function initState() {
     hourlyRate: 70,
     tasks: [] as { name: string; hours: number }[],
     clients: [] as (typeof client)[],
-    paymentMethod: "PayPal" as "PayPal" | "Other",
+    paymentMethod: "Swift" as "Swift" | "PayPal" | "Other",
+    swiftCode: "--------",
+    accountNumber: "-------------",
   });
 }
 
@@ -203,12 +205,36 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
               <p>Payment to be done by previously agreed upon terms.</p>
             }
           >
+            <Match when={props.state.paymentMethod === "Swift"}>
+              <p>
+                Payment to be done via international bank transfer to SWIFT code{" "}
+                <span
+                  contentEditable
+                  onFocusOut={(e) =>
+                    (props.state.swiftCode = e.currentTarget.textContent || "")
+                  }
+                >
+                  {props.state.swiftCode}
+                </span>{" "}
+                and account
+                <span
+                  contentEditable
+                  onFocusOut={(e) =>
+                    (props.state.accountNumber =
+                      e.currentTarget.textContent || "")
+                  }
+                >
+                  {props.state.accountNumber}
+                </span>
+                .
+              </p>
+            </Match>
             <Match when={props.state.paymentMethod === "PayPal"}>
               <p>
                 Payment to be done via PayPal and transferred to the email
                 <span class="pl-1 text-blue-700">oscar@otbeaumont.me</span>.
               </p>
-            </Match>
+            </Match>{" "}
           </Switch>
 
           <p class="pt-8">Thank you,</p>
@@ -345,6 +371,7 @@ function Sidebar(props: { state: ReturnType<typeof initState> }) {
         }
       >
         <option value="PayPal">PayPal</option>
+        <option value="Swift">Swift</option>
         <option value="Other">Other</option>
       </select>
     </div>
