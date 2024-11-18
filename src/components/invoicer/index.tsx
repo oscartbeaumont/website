@@ -63,6 +63,7 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
           <h1 class="text-2xl font-bold">BEAUMONT, OSCAR THOMAS</h1>
           <p class="text-md pt-[2px] font-light">oscar@otbeaumont.me</p>
           <p class="text-md font-light">ABN 97 277 414 018</p>
+          <p class="text-md font-light">132B Raleigh Street, Perth WA 6101</p>
         </div>
       </div>
       <div class="w-full h-2/5">
@@ -209,7 +210,10 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
           >
             <Match when={props.state.paymentMethod === "Swift"}>
               <p>
-                Payment to be done via international bank transfer to SWIFT code{" "}
+                Payment to be done via international bank transfer to <br />
+                Bankwest <br />
+                PO Box E237 Perth WA 6841
+                <br /> BIC:{" "}
                 <span
                   contentEditable
                   onFocusOut={(e) =>
@@ -217,8 +221,8 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
                   }
                 >
                   {props.state.swiftCode}
-                </span>{" "}
-                and account{" "}
+                </span>
+                <br /> Account:{" "}
                 <span
                   contentEditable
                   onFocusOut={(e) =>
@@ -228,7 +232,6 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
                 >
                   {props.state.accountNumber}
                 </span>
-                .
               </p>
             </Match>
             <Match when={props.state.paymentMethod === "PayPal"}>
@@ -352,7 +355,7 @@ function Sidebar(props: { state: ReturnType<typeof initState> }) {
         onClick={() =>
           props.state.tasks.push({
             name: "Did the thing",
-            hours: 0,
+            hours: "0",
           })
         }
       >
