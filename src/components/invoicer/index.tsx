@@ -212,7 +212,7 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
               <p>
                 Payment to be done via international bank transfer to <br />
                 Bankwest <br />
-                PO Box E237 Perth WA 6841
+                300 Murray St, Perth WA 6000
                 <br /> BIC:{" "}
                 <span
                   contentEditable
