@@ -14,7 +14,7 @@ I think it's important to start out by defining what I mean by the Vercel DX. Fo
 
 A preview deployments should be created for every commit allowing your team to quickly review pull requests and trace regressions back to a specific commit.
 As we are making use of serverless technologies that support scale-to-zero this should not incur any extra costs.
-I also believe it's crucial for preview deployments to be fast to create because nothing is worse than waiting 15 minutes for CI. I think under 10 seconds ecluding the framework's build time is a good target.
+I also believe it's crucial for preview deployments to be fast to create because nothing is worse than waiting 15 minutes for CI. I think under 10 seconds excluding the framework's build time is a good target.
 
 I also believe that instant rollbacks are key to a fast moving team. Being able to ship quickly and rollback if something goes wrong removes the fear of making changes (even on a Friday).
 
