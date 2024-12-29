@@ -164,40 +164,51 @@ For example this middleware has 3 generics `TCtx`, `TInput` and `TResult` which 
 
 This means when you call this procedure from Typescript your query will return a typesafe tuple of the value returned from the procedure and the time it took to execute as a string.
 
-#### Extensions
-
-We are also introducing an alternative to middleware called extensions. These are designed for cases where you want to access the final input, result and context types as middleware can only ever see the types relative to the next layer.
-
-
-TODO:
-
-Due to the fact that middleware can modify the input, output and context types it means the order of them can actually affect the result. At lot of middleware want to be sure they act on the types of the procedure and
+We have also introduced an alternative to middleware called extensions. These are designed for cases where you want to access the final input, result and context types as middleware can only ever see the types relative to the next layer. If you are interested in learning more about middleware and extensions [checkout the documentation](#todo).
 
 ### Official Middleware
 
-With the next release we are also going to be
+With the next release we are also going to be working on a set of official middleware to make building applications with rspc even easier.
 
-## Batching
+<!-- Add a stability indicator -->
+The current set is:
+ - [rspc-cache](#todo) - Easily cache the results of your procedures.
+ - [rspc-invalidation](#todo) - Invalidate the client cache from Rust + support for SFM's discussed later.
+ - [rspc-openapi](#todo) - Generate OpenAPI documentation and endpoints for your procedures.
+ - [rspc-tracing](#todo) - Integrate [tracing](https://docs.rs/tracing) spans with your procedures.
+ - [rspc-validator](#todo) - Integrate [validator](https://docs.rs/validator) for input validation.
+ - [rspc-zer](#todo) - HTTP session management and authentication.
 
-## Single Flight Mutations (SFM's)
+As we continue to experiment with the capabilities of the new middleware system we may add more in the future. We would love feedback on what you think is missing!
 
-## Jump to Definition
+### Transport layer improvements
 
-## Typesafe errors
+With this new release we are overhauling the current transport layer to make it faster and more flexible.
+
+<!-- TODO: Discuss tradeoff's that batching + caching breaks -->
+
+We are going to coalescing all of the rspc queries into a single `POST /rspc` endpoint. We are also going to be dropping any [JSON-RPC compatibility](https://www.jsonrpc.org/specification) and moving to a custom format.
+
+This all opens up the ability for batching multiple queries into a single request. This allows you to avoid the overhead of establishing multiple connections with your backend. It also allows you to only check authentication once for many queries.
+
+This new format is also capable of streaming so your able to return data as it's being generated. This is very useful for large dataset or AI applications.
+
+<!-- TODO: Maybe show `rspc::Stream` -->
+
+We also have a built-in flushing system to ensure that you can delay streaming until your application has set it's cookies.
+
+TODO: Content Types, File uploads
+TODO: More reliable adapters. Catching panics.
+
+We are also allowing you to define your own
+
+### Single Flight Mutations (SFM's)
+
+### Typesafe errors
 
 TODO: Also possibly better errors?
 
-## Content Types
-
-TODO: File uploads
-
-## Adapters
-
-TODO: More reliable. Catching panics.
-
-## New documentation
-
-## Coming soon
+### Jump to Definition
 
 ### Dates and BigInt support
 
@@ -205,14 +216,20 @@ TODO: More reliable. Catching panics.
 
 ### Experimental Rust Client
 
-## Incremental migration
+### create-rspc-app v2
+
+### New documentation
+
+### Incremental migration
 
 TODO
 
-## Conclusion
+### Conclusion
 
 A huge amount of research has gone into this release and I want to thank anyone who has supported me along the way.
 
 TODO: List of GitHub Sponsors & Contributors
+
+I also want to give a big shoutout to [@Brendonovich](https://www.brendonovich.dev) for his support and help contributing to this release.
 
 Thanks for using and supporting rspc.
