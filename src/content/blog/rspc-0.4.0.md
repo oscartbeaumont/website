@@ -2,7 +2,7 @@
 title: Announcing rspc 0.4.0
 description: Complete with a new syntax, improved middleware, SFM's, jump to definition and more.
 date: 2024-12-29
-draft: false # TODO
+draft: true # TODO
 ---
 
 Today marks the well anticipated release of rspc 0.4.0. This release has been over 2 years in the making and opens up a whole new world of possibilies.
