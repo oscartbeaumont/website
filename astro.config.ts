@@ -2,7 +2,7 @@ import tailwind from "@astrojs/tailwind";
 import sitemap from "@astrojs/sitemap";
 import { defineConfig } from "astro/config";
 import solidJs from "@astrojs/solid-js";
-import vercel from "@astrojs/vercel/static";
+import vercel from "@astrojs/vercel";
 import mdx from "@astrojs/mdx";
 import remarkCodeTitles from "remark-code-titles";
 
@@ -10,6 +10,7 @@ import remarkCodeTitles from "remark-code-titles";
 export default defineConfig({
   site: "https://otbeaumont.me",
   compressHTML: true,
+  output: "static",
   adapter: vercel(),
   markdown: { remarkPlugins: [remarkCodeTitles] },
   integrations: [
@@ -22,5 +23,5 @@ export default defineConfig({
   ],
   server: {
     port: 3008,
-  }
+  },
 });
