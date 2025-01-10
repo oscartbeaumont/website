@@ -11,13 +11,13 @@ const defaultClient = () =>
     address: "00 Road St, Suburb AA 0000",
     email: "employer@example.com",
     website: "https://example.com",
-  } as {
+  }) as {
     name: string;
     email: string;
     identifier?: string;
     address?: string;
     website?: string;
-  });
+  };
 
 function initState() {
   const client = defaultClient();
@@ -138,8 +138,8 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
                 {formatDate(
                   new Date(
                     now().getTime() +
-                      props.state.dueInDays * 24 * 60 * 60 * 1000
-                  )
+                      props.state.dueInDays * 24 * 60 * 60 * 1000,
+                  ),
                 )}
               </p>
             </div>
@@ -173,7 +173,7 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
                         {task.name}
                       </p>
                     </td>
-                    <td class="w-24 text-end">
+                    <td class="w-32 text-end">
                       <p
                         contentEditable
                         // We do this so if the user doesn't enter a valid number, it doesn't break
@@ -190,7 +190,7 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
                     <td class="w-24 text-end">
                       $
                       {(toHours(task.hours) * props.state.hourlyRate).toFixed(
-                        2
+                        2,
                       )}
                     </td>
                   </tr>
@@ -317,7 +317,7 @@ function Sidebar(props: { state: ReturnType<typeof initState> }) {
           class="w-full bg-white text-black font-bold uppercase rounded-md ml-4 py-2 px-4"
           onClick={() =>
             props.state.clients.push(
-              JSON.parse(JSON.stringify(props.state.client))
+              JSON.parse(JSON.stringify(props.state.client)),
             )
           }
         >
