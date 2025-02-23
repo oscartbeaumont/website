@@ -1,21 +1,24 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
 html {
-  overflow-y: scroll;
+    overflow-y: scroll;
 }
 
 body {
-  font-family: "Raleway";
+    font-family: "Raleway Variable";
 }
 
 dfn::before {
-  content: attr(title);
-  padding: 0 0 1em;
+    content: attr(title);
+    padding: 0 0 1em;
 }
 dfn button {
-  display: none;
-  position: absolute;
-  @apply text-black rounded-md backdrop-opacity-75 backdrop-contrast-200 backdrop-blur-2xl;
+    display: none;
+    position: absolute;
+    @apply text-black rounded-md backdrop-opacity-75 backdrop-contrast-200 backdrop-blur-2xl;
 }
 dfn:hover button,
 dfn:focus button {
-  display: block;
+    display: block;
 }
