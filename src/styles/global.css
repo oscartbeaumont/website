@@ -5,10 +5,6 @@ html {
     overflow-y: scroll;
 }
 
-body {
-    font-family: "Raleway Variable";
-}
-
 dfn::before {
     content: attr(title);
     padding: 0 0 1em;

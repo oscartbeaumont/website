@@ -276,7 +276,7 @@ function Sidebar(props: { state: ReturnType<typeof initState> }) {
       <p class="font-bold uppercase text-md text-white">Invoice identifier:</p>
       <div class="flex">
         <input
-          class="text-black p-2"
+          class="text-black p-2 bg-white"
           value={props.state.invoiceId.toString().padStart(4, "0")}
           onChange={(e) =>
             (props.state.invoiceId = parseInt(e.currentTarget.value))
@@ -293,7 +293,7 @@ function Sidebar(props: { state: ReturnType<typeof initState> }) {
 
       <p class="font-bold uppercase text-md text-white">Invoice due in days:</p>
       <input
-        class="p-2"
+        class="p-2 bg-white"
         value={props.state.dueInDays.toString()}
         onChange={(e) =>
           (props.state.dueInDays = parseInt(e.currentTarget.value))
@@ -303,7 +303,7 @@ function Sidebar(props: { state: ReturnType<typeof initState> }) {
 
       <p class="font-bold uppercase text-md text-white">Hourly rate:</p>
       <input
-        class="p-2"
+        class="p-2 bg-white"
         value={props.state.hourlyRate.toString()}
         onChange={(e) =>
           (props.state.hourlyRate = parseFloat(e.currentTarget.value))
@@ -374,6 +374,7 @@ function Sidebar(props: { state: ReturnType<typeof initState> }) {
         onChange={(e) =>
           (props.state.paymentMethod = e.currentTarget.value as any)
         }
+        class="bg-white"
       >
         <option value="PayPal">PayPal</option>
         <option value="Swift">Swift</option>
