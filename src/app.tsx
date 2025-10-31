@@ -4,6 +4,7 @@ import { DynamicImage, OpenGraph } from '@solid-mediakit/og';
 import { Link, MetaProvider, Title } from "@solidjs/meta";
 import { Suspense } from "solid-js";
 import "./app.css";
+import { getRequestEvent } from "solid-js/web";
 
 export default function App() {
   return (
@@ -16,12 +17,11 @@ export default function App() {
           <Title>Oscar Beaumont</Title>
           <Link rel="canonical" href="http://otbeaumont.me" />
 
-          {/*TODO: Dynamic domain*/}
-          {/*<OpenGraph origin='https://otbeaumont.me'>
+          <OpenGraph origin={getRequestEvent()!.nativeEvent.url.origin}>
             <DynamicImage>
               <div>This is very cool!</div>
             </DynamicImage>
-          </OpenGraph>*/}
+          </OpenGraph>
         </MetaProvider>
       )}
     >
