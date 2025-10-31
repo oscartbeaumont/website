@@ -18,4 +18,10 @@ export default createHandler(() => (
       </html>
     )}
   />
-));
+)).use(async (event, next) => {
+  console.log("REQ", event);
+  event.res.headers.set("X-Testing-123", "bruh");
+  const rawBody = await next();
+  console.log("RESP", rawBody);
+  return rawBody;
+});
