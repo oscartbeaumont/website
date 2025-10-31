@@ -9,7 +9,8 @@ import type { Plugin } from 'vite';
 import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 
-export interface HeadersConfig {
+// Must match definition in `global.d.ts`
+interface HeadersConfig {
   [path: string]: {
     [header: string]: string;
   };

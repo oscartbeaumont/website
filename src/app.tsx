@@ -17,11 +17,11 @@ export default function App() {
           <Link rel="canonical" href="http://otbeaumont.me" />
 
           {/*TODO: Dynamic domain*/}
-          <OpenGraph origin='https://otbeaumont.me'>
+          {/*<OpenGraph origin='https://otbeaumont.me'>
             <DynamicImage>
               <div>This is very cool!</div>
             </DynamicImage>
-          </OpenGraph>
+          </OpenGraph>*/}
         </MetaProvider>
       )}
     >
