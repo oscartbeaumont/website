@@ -18,20 +18,4 @@ export default createHandler(() => (
       </html>
     )}
   />
-), event => {
-  const nonce = crypto.randomUUID();
-
-  event.response.headers.set(
-    "Content-Security-Policy",
-    [
-      `default-src 'none'`,
-      `script-src 'nonce-${nonce}'`,
-      `img-src 'self'`,
-      `style-src 'self' 'unsafe-inline'`,
-      `font-src 'self'`,
-      `connect-src 'self'`
-    ].join(";")
-  );
-
-  return { nonce };
-});
+), (event) => ({ nonce: event.locals.nonce }));
