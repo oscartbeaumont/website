@@ -1,4 +1,5 @@
 import { createSignal, For } from "solid-js";
+import imageUrl from "./assets/logo.jpeg";
 
 export default function Home() {
   return (
@@ -31,7 +32,7 @@ function Header() {
         <div class="relative">
           <div class="absolute inset-0 rounded-full bg-gray-200 animate-pulse"></div>
           <img
-            src="https://github.com/oscartbeaumont.png"
+            src={imageUrl}
             alt="Oscar Beaumont"
             class="relative rounded-full h-32 w-32 border-2 border-gray-100 shadow-sm"
           />

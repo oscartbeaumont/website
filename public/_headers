@@ -1,11 +1,10 @@
-# Ensure you also update `middleware.ts` when changing these!
 /*
-  X-Frame-Options: DENY
-  X-XSS-Protection: 0
-  X-Content-Type-Options: nosniff
-  Referrer-Policy: strict-origin-when-cross-origin
-  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
-  Content-Security-Policy: script-src 'self'; frame-ancestors 'none';
+  x-frame-options: DENY
+  x-xss-protection: 0
+  x-content-type-options: nosniff
+  referrer-policy: strict-origin-when-cross-origin
+  strict-transport-security: max-age=63072000; includeSubDomains; preload
 
 /_build/*
-  Cache-Control: public, max-age=31556952, immutable
+  cache-control: public, max-age=31556952, immutable
+  content-security-policy: default-src 'none';
