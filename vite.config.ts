@@ -13,6 +13,9 @@ export default defineConfig({
     cloudflare({ viteEnvironment: { name: "ssr" } }),
     headersPlugin()
   ],
+  define: {
+    "import.meta.env.VITE_POSTHOG_KEY": `"phc_p4ybAvaYqJojhuZD0dVGExGoCCqbWViGzlxQc0AuWUv"`
+  },
   // resolve: {
   //   alias: {
   //     html2canvas: path.resolve(__dirname, "node_modules/html2canvas-pro"),

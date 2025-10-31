@@ -18,6 +18,7 @@
     "html2canvas-pro": "^1.5.12",
     "jspdf": "^3.0.3",
     "parse-duration": "^2.1.4",
+    "posthog-js": "^1.282.0",
     "solid-js": "^1.9.10",
     "vite": "^7.1.12"
   },
