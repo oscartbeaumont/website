@@ -25,7 +25,7 @@ function MeCard() {
 
 // TODO: Discuss projects and link to them. Maybe render stars?
 // TODO: Discuss skills
-function Projects() {}
+// function Projects() {}
 
 // TODO: Information for getting in contact with me
-function HireMe() {}
+// function HireMe() {}

@@ -105,7 +105,7 @@ function Projects() {
       <h2 class="text-5xl md:text-6xl font-bold mb-8 tracking-tight text-gray-900">Recent Projects</h2>
       <div class="grid gap-8">
         <For each={projects}>
-          {(project, index) => (
+          {(project) => (
             <div class="relative group">
               <div class="absolute inset-0 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
               <div class="relative bg-white border border-gray-100 rounded-lg p-8 group-hover:border-gray-200 transition-all duration-200 shadow-sm group-hover:shadow-md">

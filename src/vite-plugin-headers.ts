@@ -24,9 +24,7 @@ function parseHeadersFile(content: string): HeadersConfig {
     const trimmedLine = line.trim();
 
     // Skip empty lines and comments
-    if (!trimmedLine || trimmedLine.startsWith('#')) {
-      continue;
-    }
+    if (!trimmedLine || trimmedLine.startsWith('#')) continue;
 
     // Check if this is a path pattern (not indented)
     if (!line.startsWith(' ') && !line.startsWith('\t')) {
@@ -54,9 +52,7 @@ export function headersPlugin(): Plugin {
   return {
     name: 'vite-plugin-headers',
     resolveId(id) {
-      if (id === VIRTUAL_MODULE_ID) {
-        return RESOLVED_VIRTUAL_MODULE_ID;
-      }
+      if (id === VIRTUAL_MODULE_ID) return RESOLVED_VIRTUAL_MODULE_ID;
     },
     load(id) {
       if (id === RESOLVED_VIRTUAL_MODULE_ID) {
@@ -78,9 +74,7 @@ export function headersPlugin(): Plugin {
     // Add file watching for hot reload during development
     buildStart() {
       const headersPath = join(process.cwd(), 'public', '_headers');
-      if (existsSync(headersPath)) {
-        this.addWatchFile(headersPath);
-      }
+      if (existsSync(headersPath)) this.addWatchFile(headersPath);
     }
   };
 }

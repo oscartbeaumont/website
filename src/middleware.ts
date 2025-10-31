@@ -6,7 +6,6 @@ export default createMiddleware({
   onRequest: (event) => {
     const nonce = randomBytes(16).toString("base64");
     event.locals.nonce = nonce;
-
     event.response.headers.set(
       "Content-Security-Policy",
       [
