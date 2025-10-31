@@ -3,7 +3,6 @@ dist
 
 # dependencies
 node_modules/
-.snowpack/
 
 # logs
 npm-debug.log*
@@ -16,9 +15,3 @@ yarn-error.log*
 
 # macOS-specific files
 .DS_Store
-
-# Vercel build dir
-.vercel
-
-# Astro
-.astro
