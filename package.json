@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "wrangler types && tsc -b && vite build",
+    "build": "wrangler types --cwd src && tsc -b && vite build",
     "start": "vite start",
-    "types": "wrangler types",
+    "types": "wrangler types --cwd src",
     "typecheck": "tsc -b"
   },
   "dependencies": {
