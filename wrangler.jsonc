@@ -6,6 +6,10 @@
  "compatibility_flags": [
     "nodejs_compat"
   ],
+  "route": {
+     "pattern": "demo.otbeaumont.me/*",
+     "zone_name": "otbeaumont.me"
+  },
 	"observability": {
 		"enabled": true
 	},
