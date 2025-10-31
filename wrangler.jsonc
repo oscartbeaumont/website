@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "website",
+	"main": "@solidjs/start/server/entry",
+	"compatibility_date": "2025-10-11",
+ "compatibility_flags": [
+    "nodejs_compat"
+  ],
+	"observability": {
+		"enabled": true
+	},
+	"kv_namespaces": [
+    {
+      "binding": "KV"
+    }
+  ]
+}
