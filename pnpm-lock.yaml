@@ -21,8 +21,8 @@ importers:
         specifier: ^0.15.3
         version: 0.15.3(solid-js@1.9.10)
       '@solidjs/start':
-        specifier: https://pkg.pr.new/@solidjs/start@b3617b6
-        version: https://pkg.pr.new/@solidjs/start@b3617b6(jiti@2.6.1)(lightningcss@1.30.2)
+        specifier: https://pkg.pr.new/@solidjs/start@f01c1a1
+        version: https://pkg.pr.new/@solidjs/start@f01c1a1(jiti@2.6.1)(lightningcss@1.30.2)
       html2canvas:
         specifier: ^1.4.1
         version: 1.4.1
@@ -880,8 +880,8 @@ packages:
     peerDependencies:
       solid-js: ^1.8.6
 
-  '@solidjs/start@https://pkg.pr.new/@solidjs/start@b3617b6':
-    resolution: {tarball: https://pkg.pr.new/@solidjs/start@b3617b6}
+  '@solidjs/start@https://pkg.pr.new/@solidjs/start@f01c1a1':
+    resolution: {tarball: https://pkg.pr.new/@solidjs/start@f01c1a1}
     version: 2.0.0-devinxi.0
     engines: {node: '>=22'}
 
@@ -2677,7 +2677,7 @@ snapshots:
     dependencies:
       solid-js: 1.9.10
 
-  '@solidjs/start@https://pkg.pr.new/@solidjs/start@b3617b6(jiti@2.6.1)(lightningcss@1.30.2)':
+  '@solidjs/start@https://pkg.pr.new/@solidjs/start@f01c1a1(jiti@2.6.1)(lightningcss@1.30.2)':
     dependencies:
       '@babel/core': 7.28.5
       '@babel/traverse': 7.28.5
