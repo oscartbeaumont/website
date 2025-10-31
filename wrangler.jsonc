@@ -7,8 +7,8 @@
     "nodejs_compat"
   ],
   "route": {
-     "pattern": "demo.otbeaumont.me/*",
-     "zone_name": "otbeaumont.me"
+    "pattern": "demo.otbeaumont.me",
+    "custom_domain": true
   },
 	"observability": {
 		"enabled": true
