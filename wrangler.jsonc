@@ -3,7 +3,7 @@
 	"name": "website",
 	"main": "@solidjs/start/server/entry",
 	"compatibility_date": "2025-10-11",
- "compatibility_flags": [
+  "compatibility_flags": [
     "nodejs_compat"
   ],
   "route": {
