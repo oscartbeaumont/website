@@ -25,7 +25,8 @@
     "@cloudflare/vite-plugin": "^1.13.18",
     "@tailwindcss/vite": "^4.1.16",
     "tailwindcss": "^4.1.16",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "wrangler": "^4.45.3"
   },
   "pnpm": {
     "overrides": {
