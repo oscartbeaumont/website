@@ -1,2 +1,10 @@
 /*
-  X-Oscar-Testing2: Hello123
+  X-Frame-Options: DENY
+  X-XSS-Protection: 0
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  Content-Security-Policy: script-src 'self'; frame-ancestors 'none';
+
+/_build/*
+  Cache-Control: public, max-age=31556952, immutable
