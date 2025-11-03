@@ -1,10 +1,13 @@
 import { Router } from "@solidjs/router";
 import { FileRoutes } from "@solidjs/start/router";
-import { DynamicImage, OpenGraph } from '@solid-mediakit/og';
-import { Link, MetaProvider, Title } from "@solidjs/meta";
+import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
 import { Suspense } from "solid-js";
-import "./app.css";
 import { getRequestEvent } from "solid-js/web";
+import "./app.css";
+
+const title = "Oscar Beaumont";
+const description = "I'm a software developer based in Perth, Australia. I am self-taught and love creating solutions to help people use technology effectively.";
+const canonical = "http://otbeaumont.me";
 
 export default function App() {
   return (
@@ -13,15 +16,26 @@ export default function App() {
         <MetaProvider>
           <Suspense>{props.children}</Suspense>
 
-          {/* TODO: Finish SEO + OpenGraph Metadata -> + dynamic configuration of it using `constants.ts` style file */}
-          <Title>Oscar Beaumont</Title>
-          <Link rel="canonical" href="http://otbeaumont.me" />
 
-          <OpenGraph origin={getRequestEvent()!.nativeEvent.url.origin}>
+          <Title>Oscar Beaumont</Title>
+          <Meta name="description" content="I'm a software developer based in Perth, Australia. I am self-taught and love creating solutions to help people use technology effectively." />
+          <Link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+          {import.meta.env.PROD && <Link rel="canonical" href={canonical} />}
+
+
+          <Meta property="og:locale" content="en_US" />
+          <Meta property="og:title" content={title} />
+          <Meta property="og:description" content={description} />
+          <Meta property="og:type" content="website" />
+          {import.meta.env.PROD && <Meta property="og:url" content={canonical} />}
+
+          {/* TODO: Replace this with Solid OpenGraph */}
+          <Meta property="og:image" content={`${getRequestEvent()!.nativeEvent.url.origin}/assets/me.jpg`} />
+          {/*<OpenGraph origin={getRequestEvent()!.nativeEvent.url.origin}>
             <DynamicImage>
               <div>This is very cool!</div>
             </DynamicImage>
-          </OpenGraph>
+          </OpenGraph>*/}
         </MetaProvider>
       )}
     >

@@ -4,6 +4,7 @@ import { defineConfig } from "vite";
 import { cloudflare } from "@cloudflare/vite-plugin";
 import { vitePlugin as OGPlugin } from "@solid-mediakit/og/unplugin";
 import { headersPlugin } from "./src/vite-plugin-headers";
+import path from "node:path";
 
 export default defineConfig({
   plugins: [
@@ -15,12 +16,9 @@ export default defineConfig({
     cloudflare({ viteEnvironment: { name: "ssr" } }),
     headersPlugin()
   ],
-  define: {
-    "import.meta.env.VITE_POSTHOG_KEY": `"phc_p4ybAvaYqJojhuZD0dVGExGoCCqbWViGzlxQc0AuWUv"`
-  }
-  // resolve: {
-  //   alias: {
-  //     html2canvas: path.resolve(__dirname, "node_modules/html2canvas-pro"),
-  //   },
-  // },
+  resolve: {
+    alias: {
+      html2canvas: path.resolve(__dirname, "node_modules/html2canvas-pro"),
+    },
+  },
 });

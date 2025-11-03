@@ -7,7 +7,7 @@
     "nodejs_compat"
   ],
   "route": {
-    "pattern": "webv4.otbeaumont.me",
+    "pattern": "webv5.otbeaumont.me",
     "custom_domain": true
   },
 	"observability": {
