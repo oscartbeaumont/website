@@ -17,5 +17,8 @@
     {
       "binding": "KV"
     }
-  ]
+  ],
+  "vars": {
+    "PNPM_VERSION": "10.20.0"
+  }
 }
