@@ -16,7 +16,7 @@
     "@solid-primitives/date": "^2.1.4",
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.15.3",
-    "@solidjs/start": "https://pkg.pr.new/@solidjs/start@f01c1a1",
+    "@solidjs/start": "^2.0.0-alpha.1",
     "html2canvas": "^1.4.1",
     "html2canvas-pro": "^1.5.12",
     "jspdf": "^3.0.3",
