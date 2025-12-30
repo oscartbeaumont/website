@@ -11,33 +11,6 @@ import {
 	Show,
 } from "solid-js";
 
-import LogosDrizzle from "~icons/catppuccin/drizzle-orm";
-import HeroDesktop from "~icons/heroicons/computer-desktop-20-solid";
-import HeroMoon from "~icons/heroicons/moon-20-solid";
-import HeroSun from "~icons/heroicons/sun-20-solid";
-import IconDiscord from "~icons/logos/discord-icon";
-import LogosElectron from "~icons/logos/electron";
-import IconGitHub from "~icons/logos/github-icon";
-import LogosGo from "~icons/logos/go";
-import IconLinkedIn from "~icons/logos/linkedin-icon";
-import LogosWindows from "~icons/logos/microsoft-windows-icon";
-import LogosNext from "~icons/logos/nextjs-icon";
-import LogosPostHog from "~icons/logos/posthog-icon";
-import LogosPython from "~icons/logos/python";
-import LogosReact from "~icons/logos/react";
-import LogosRust from "~icons/logos/rust";
-import LogosSolid from "~icons/logos/solidjs-icon";
-import LogosSvelte from "~icons/logos/svelte-icon";
-import LogosTailwind from "~icons/logos/tailwindcss-icon";
-import LogosTauri from "~icons/logos/tauri";
-import LogosTrpc from "~icons/logos/trpc";
-import IconTwitter from "~icons/logos/twitter";
-import LogosTypescript from "~icons/logos/typescript-icon";
-import LogosVite from "~icons/logos/vitejs";
-import LogosPlanetscale from "~icons/simple-icons/planetscale";
-import LogosTanstack from "~icons/simple-icons/tanstack";
-import LogosWgpu from "~icons/simple-icons/wgpu";
-
 import imageUrl from "./assets/logo.jpeg";
 import mattraxLogoUrl from "./assets/matrax-logo.png";
 import spectaLogoUrl from "./assets/specta-logo.png";
@@ -106,7 +79,7 @@ function Header() {
 							title="GitHub"
 							href="https://github.com/oscartbeaumont"
 							icon={
-								<IconGitHub class="brightness-0 group-hover:brightness-100 dark:invert w-5 h-5" />
+								<IconLogosGithubIcon class="brightness-0 group-hover:brightness-100 dark:invert w-5 h-5" />
 							}
 							class="motion-safe:animate-[fadeIn_0.3s_0s_both]"
 						/>
@@ -114,7 +87,7 @@ function Header() {
 							title="Twitter"
 							href="https://twitter.com/oscartbeaumont"
 							icon={
-								<IconTwitter class="brightness-0 group-hover:brightness-100 dark:invert dark:group-hover:invert-0 w-5 h-5" />
+								<IconLogosTwitter class="brightness-0 group-hover:brightness-100 dark:invert dark:group-hover:invert-0 w-5 h-5" />
 							}
 							class="motion-safe:animate-[fadeIn_0.3s_0.2s_both]"
 						/>
@@ -122,7 +95,7 @@ function Header() {
 							title="LinkedIn"
 							href="https://linkedin.com/in/oscartbeaumont"
 							icon={
-								<IconLinkedIn class="brightness-0 group-hover:brightness-100 dark:invert dark:group-hover:invert-0 w-5 h-5" />
+								<IconLogosLinkedinIcon class="brightness-0 group-hover:brightness-100 dark:invert dark:group-hover:invert-0 w-5 h-5" />
 							}
 							class="motion-safe:animate-[fadeIn_0.3s_0.4s_both]"
 						/>
@@ -208,10 +181,10 @@ const WorkingOn = () => (
 							target="_blank"
 							rel="noopener"
 						>
-							<IconDiscord class="brightness-0 dark:invert hover:brightness-100 dark:hover:invert-0 w-5 h-5 transition-colors duration-300 ease-in-out" />
+							<IconLogosDiscordIcon class="brightness-0 dark:invert hover:brightness-100 dark:hover:invert-0 w-5 h-5 transition-colors duration-300 ease-in-out" />
 						</a>
 						<a href="https://github.com/mattrax" target="_blank" rel="noopener">
-							<IconGitHub class="brightness-0 dark:invert hover:brightness-100 w-5 h-5 transition-colors duration-300 ease-in-out" />
+							<IconLogosGithubIcon class="brightness-0 dark:invert hover:brightness-100 w-5 h-5 transition-colors duration-300 ease-in-out" />
 						</a>
 					</div>
 				}
@@ -228,14 +201,14 @@ const WorkingOn = () => (
 							target="_blank"
 							rel="noopener"
 						>
-							<IconDiscord class="brightness-0 dark:invert hover:brightness-100 dark:hover:invert-0 w-5 h-5 transition-colors duration-300 ease-in-out" />
+							<IconLogosDiscordIcon class="brightness-0 dark:invert hover:brightness-100 dark:hover:invert-0 w-5 h-5 transition-colors duration-300 ease-in-out" />
 						</a>
 						<a
 							href="https://github.com/specta-rs"
 							target="_blank"
 							rel="noopener"
 						>
-							<IconGitHub class="brightness-0 dark:invert hover:brightness-100 w-5 h-5 transition-colors duration-300 ease-in-out" />
+							<IconLogosGithubIcon class="brightness-0 dark:invert hover:brightness-100 w-5 h-5 transition-colors duration-300 ease-in-out" />
 						</a>
 					</div>
 				}
@@ -288,28 +261,36 @@ const SectionTitle = (props: ParentProps) => (
 );
 
 const skills = [
-	{ name: "Rust", href: "https://www.rust-lang.org", logo: LogosRust },
+	{ name: "Rust", href: "https://www.rust-lang.org", logo: IconLogosRust },
 	{
 		name: "TypeScript",
 		href: "https://www.typescriptlang.org",
-		logo: LogosTypescript,
+		logo: IconLogosTypescriptIcon,
 	},
-	{ name: "SolidJS", href: "https://www.solidjs.com", logo: LogosSolid },
-	{ name: "Vite", href: "https://vitejs.dev", logo: LogosVite },
+	{ name: "SolidJS", href: "https://www.solidjs.com", logo: IconLogosSolid },
+	{ name: "Vite", href: "https://vitejs.dev", logo: IconLogosVitejs },
 	{
 		name: "Tanstack Query",
 		href: "https://tanstack.com/query",
-		logo: LogosTanstack,
+		logo: IconSimpleIconsTanstack,
 	},
-	{ name: "Tailwind", href: "https://tailwindcss.com", logo: LogosTailwind },
-	{ name: "Tauri", href: "https://tauri.app", logo: LogosTauri },
-	{ name: "tRPC", href: "https://trpc.io", logo: LogosTrpc },
-	{ name: "Drizzle ORM", href: "https://orm.drizzle.team", logo: LogosDrizzle },
-	{ name: "PostHog", href: "https://posthog.com", logo: LogosPostHog },
+	{
+		name: "Tailwind",
+		href: "https://tailwindcss.com",
+		logo: IconLogosTailwindcssIcon,
+	},
+	{ name: "Tauri", href: "https://tauri.app", logo: IconLogosTauri },
+	{ name: "tRPC", href: "https://trpc.io", logo: IconLogosTrpc },
+	{
+		name: "Drizzle ORM",
+		href: "https://orm.drizzle.team",
+		logo: IconCatppuccinDrizzleOrm,
+	},
+	{ name: "PostHog", href: "https://posthog.com", logo: IconLogosPosthogIcon },
 	{
 		name: "PlanetScale",
 		href: "https://planetscale.com",
-		logo: LogosPlanetscale,
+		logo: IconSimpleIconsPlanetscale,
 	},
 ];
 
@@ -403,15 +384,27 @@ const Experience = () => (
 				description="Cap is the open source screen recorder and sharing tool. I worked on the desktop application and web backend including working with GPU shaders to render higher quality cursors, building a tracking system for upload progress, overhauling the recording flow UI, and moving the camera preview to native GPU rendering."
 				technologies={() => (
 					<>
-						<WorkExperienceItemTechnology name="Tauri" logo={LogosTauri} />
-						<WorkExperienceItemTechnology name="wgpu" logo={LogosWgpu} />
-						<WorkExperienceItemTechnology name="Solid" logo={LogosSolid} />
+						<WorkExperienceItemTechnology name="Tauri" logo={IconLogosTauri} />
+						<WorkExperienceItemTechnology
+							name="wgpu"
+							logo={IconSimpleIconsWgpu}
+						/>
+						<WorkExperienceItemTechnology
+							name="Solid"
+							logo={IconLogosSolidjsIcon}
+						/>
 						<WorkExperienceItemTechnology
 							name="Tailwind"
-							logo={LogosTailwind}
+							logo={IconLogosTailwindcssIcon}
 						/>
-						<WorkExperienceItemTechnology name="Next" logo={LogosNext} />
-						<WorkExperienceItemTechnology name="PostHog" logo={LogosPostHog} />
+						<WorkExperienceItemTechnology
+							name="Next"
+							logo={IconLogosNextjsIcon}
+						/>
+						<WorkExperienceItemTechnology
+							name="PostHog"
+							logo={IconLogosPosthogIcon}
+						/>
 					</>
 				)}
 			/>
@@ -440,15 +433,15 @@ const Experience = () => (
 				description="Building the file manager for the future. I worked on building the desktop application, Rust core for filesystem operations and peer to peer networking system. I also developed the system for us to ship our Rust core inside a React Native app."
 				technologies={() => (
 					<>
-						<WorkExperienceItemTechnology name="Tauri" logo={LogosTauri} />
-						<WorkExperienceItemTechnology name="React" logo={LogosReact} />
+						<WorkExperienceItemTechnology name="Tauri" logo={IconLogosTauri} />
+						<WorkExperienceItemTechnology name="React" logo={IconLogosReact} />
 						<WorkExperienceItemTechnology
 							name="Tailwind"
-							logo={LogosTailwind}
+							logo={IconLogosTailwindcssIcon}
 						/>
 						<WorkExperienceItemTechnology
 							name="React Native"
-							logo={LogosReact}
+							logo={IconLogosReact}
 						/>
 					</>
 				)}
@@ -464,23 +457,35 @@ const Experience = () => (
 				description="I worked for multiple clients to bring their vision to life. I built multiple Windows Device Management servers, a dash camera manager application in Electron and worked on a web interface for managing a telephony system."
 				technologies={() => (
 					<>
-						<WorkExperienceItemTechnology name="Windows" logo={LogosWindows} />
-						<WorkExperienceItemTechnology name="Go" logo={LogosGo} />
+						<WorkExperienceItemTechnology
+							name="Windows"
+							logo={IconLogosMicrosoftWindowsIcon}
+						/>
+						<WorkExperienceItemTechnology name="Go" logo={IconLogosGo} />
 						<WorkExperienceItemTechnologySplit />
 
 						<WorkExperienceItemTechnology
 							name="Electron"
-							logo={LogosElectron}
+							logo={IconLogosElectron}
 						/>
-						<WorkExperienceItemTechnology name="Svelte" logo={LogosSvelte} />
+						<WorkExperienceItemTechnology
+							name="Svelte"
+							logo={IconLogosSvelteIcon}
+						/>
 						<WorkExperienceItemTechnologySplit />
 
-						<WorkExperienceItemTechnology name="Next" logo={LogosNext} />
+						<WorkExperienceItemTechnology
+							name="Next"
+							logo={IconLogosNextjsIcon}
+						/>
 						<WorkExperienceItemTechnology
 							name="Tailwind"
-							logo={LogosTailwind}
+							logo={IconLogosTailwindcssIcon}
 						/>
-						<WorkExperienceItemTechnology name="Python" logo={LogosPython} />
+						<WorkExperienceItemTechnology
+							name="Python"
+							logo={IconLogosPython}
+						/>
 					</>
 				)}
 			/>
@@ -597,9 +602,9 @@ export function ThemeSwitcher() {
 				aria-label={`Current theme: ${colorMode() === "light" ? "Light" : colorMode() === "dark" ? "Dark" : "System"}. Click to cycle themes.`}
 			>
 				{colorMode() === "light" ? (
-					<HeroSun class="w-4 h-4 text-gray-700 dark:text-gray-300" />
+					<IconHeroiconsSun20Solid class="w-4 h-4 text-gray-700 dark:text-gray-300" />
 				) : (
-					<HeroMoon class="w-4 h-4 text-gray-700 dark:text-gray-300" />
+					<IconHeroiconsMoon20Solid class="w-4 h-4 text-gray-700 dark:text-gray-300" />
 				)}
 			</button>
 			<button
@@ -608,7 +613,7 @@ export function ThemeSwitcher() {
 				class="p-2.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 border border-gray-200 dark:border-gray-700"
 				aria-label="Use system theme"
 			>
-				<HeroDesktop class="w-4 h-4 text-gray-700 dark:text-gray-300" />
+				<IconHeroiconsComputerDesktop20Solid class="w-4 h-4 text-gray-700 dark:text-gray-300" />
 			</button>
 		</div>
 	);
