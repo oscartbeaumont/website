@@ -91,7 +91,7 @@ function Header() {
 								href="https://maps.app.goo.gl/5F1tMoTEUg9WpGXW8"
 								target="_blank"
 								rel="noopener"
-								class="hover:text-[#00A5AF] dark:hover:text-[#00D4E0]"
+								class="hover:text-[#00A5AF]"
 							>
 								Western Australia
 							</a>
@@ -101,19 +101,25 @@ function Header() {
 						<SocialLink
 							title="GitHub"
 							href="https://github.com/oscartbeaumont"
-							icon={<IconGitHub class="w-5 h-5" />}
+							icon={
+								<IconGitHub class="brightness-0 group-hover:brightness-100 dark:invert w-5 h-5" />
+							}
 							class="motion-safe:animate-[fadeIn_0.3s_0s_both]"
 						/>
 						<SocialLink
 							title="Twitter"
 							href="https://twitter.com/oscartbeaumont"
-							icon={<IconTwitter class="w-5 h-5" />}
+							icon={
+								<IconTwitter class="brightness-0 group-hover:brightness-100 dark:invert dark:group-hover:invert-0 w-5 h-5" />
+							}
 							class="motion-safe:animate-[fadeIn_0.3s_0.2s_both]"
 						/>
 						<SocialLink
 							title="LinkedIn"
 							href="https://linkedin.com/in/oscartbeaumont"
-							icon={<IconLinkedIn class="w-5 h-5" />}
+							icon={
+								<IconLinkedIn class="brightness-0 group-hover:brightness-100 dark:invert dark:group-hover:invert-0 w-5 h-5" />
+							}
 							class="motion-safe:animate-[fadeIn_0.3s_0.4s_both]"
 						/>
 					</div>
@@ -134,7 +140,7 @@ const SocialLink = (props: {
 		target="_blank"
 		rel="noopener noreferrer"
 		class={clsx(
-			"inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-200 brightness-0 hover:brightness-100",
+			"group inline-flex items-center gap-2  text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-200",
 			props.class,
 		)}
 	>
@@ -156,7 +162,7 @@ function About() {
 					working full-stack on everything from webapps to desktop apps and
 					building with many languages including{" "}
 					<a
-						class="font-semibold hover:text-[#B7410E] dark:hover:text-[#E6886C]"
+						class="font-semibold hover:text-[#B7410E]"
 						href="https://www.rust-lang.org"
 						target="_blank"
 						rel="noopener"
@@ -165,7 +171,7 @@ function About() {
 					</a>{" "}
 					and{" "}
 					<a
-						class="font-semibold hover:text-[#3178C6] dark:hover:text-[#5B9DD9]"
+						class="font-semibold hover:text-[#3178C6]"
 						href="https://www.typescriptlang.org"
 						target="_blank"
 						rel="noopener"
@@ -189,6 +195,7 @@ const WorkingOn = () => (
 				description="Manage all your Windows, Apple and Android devices from one simple dashboard"
 				href="https://mattrax.app"
 				logo={mattraxLogoUrl}
+				logoProps="dark:invert"
 				right={
 					<div class="flex space-x-4">
 						<a
@@ -196,10 +203,10 @@ const WorkingOn = () => (
 							target="_blank"
 							rel="noopener"
 						>
-							<IconDiscord class="brightness-0 hover:brightness-100 w-5 h-5" />
+							<IconDiscord class="brightness-0 dark:invert hover:brightness-100 dark:hover:invert-0 w-5 h-5 transition-all" />
 						</a>
 						<a href="https://github.com/mattrax" target="_blank" rel="noopener">
-							<IconGitHub class="brightness-0 hover:brightness-100 w-5 h-5" />
+							<IconGitHub class="brightness-0 dark:invert hover:brightness-100 w-5 h-5 transition-all" />
 						</a>
 					</div>
 				}
@@ -216,14 +223,14 @@ const WorkingOn = () => (
 							target="_blank"
 							rel="noopener"
 						>
-							<IconDiscord class="brightness-0 hover:brightness-100 w-5 h-5" />
+							<IconDiscord class="brightness-0 dark:invert hover:brightness-100 dark:hover:invert-0 w-5 h-5 transition-all" />
 						</a>
 						<a
 							href="https://github.com/specta-rs"
 							target="_blank"
 							rel="noopener"
 						>
-							<IconGitHub class="brightness-0 hover:brightness-100 ww-5 h-5" />
+							<IconGitHub class="brightness-0 dark:invert hover:brightness-100 w-5 h-5 transition-all" />
 						</a>
 					</div>
 				}
@@ -237,6 +244,7 @@ const ProjectPanel = (props: {
 	description: string;
 	href: string;
 	logo: string;
+	logoProps?: string;
 	right?: JSX.Element;
 }) => (
 	<div class="flex items-center justify-between gap-4 py-2">
@@ -249,7 +257,7 @@ const ProjectPanel = (props: {
 			<img
 				src={props.logo}
 				alt={`${props.name} logo`}
-				class="w-12 object-contain"
+				class={clsx("w-12 object-contain", props.logoProps)}
 			/>
 			<div class="min-w-0 flex-1">
 				<div class="font-semibold text-gray-900 dark:text-gray-100">
@@ -392,7 +400,7 @@ const Experience = () => (
 
 			<WorkExperienceItem
 				title={
-					<h3 class="text-lg font-bold text-neutral-900 group-hover:bg-linear-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 bg-clip-text group-hover:text-transparent">
+					<h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-400 hover:from-violet-500 hover:to-fuchsia-500 bg-clip-text group-hover:text-transparent">
 						Spacedrive
 					</h3>
 				}
