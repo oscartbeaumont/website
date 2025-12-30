@@ -472,36 +472,32 @@ function Footer() {
 }
 
 export function ThemeSwitcher() {
-	const { colorMode, setColorMode } = useColorMode();
-
-	const modes = [
-		{ value: "light" as const, icon: IconSun, label: "Light" },
-		{ value: "dark" as const, icon: IconMoon, label: "Dark" },
-		{ value: "system" as const, icon: IconComputerDesktop, label: "System" },
-	];
+	const { colorMode, setColorMode, toggleColorMode } = useColorMode();
 
 	return (
-		<fieldset
-			class="inline-flex gap-1 p-1 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
-			aria-label="Theme selector"
-		>
-			{modes.map((mode) => (
-				<button
-					type="button"
-					onClick={() => setColorMode(mode.value)}
-					class={clsx(
-						"p-2 rounded-md transition-all duration-200 text-sm font-medium",
-						colorMode() === mode.value
-							? "bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm"
-							: "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-750",
-					)}
-					title={`${mode.label} mode`}
-					aria-label={`Switch to ${mode.label} mode`}
-					aria-pressed={colorMode() === mode.value}
-				>
-					<mode.icon class="w-4 h-4" />
-				</button>
-			))}
-		</fieldset>
+		<div class="flex space-x-2">
+			<button
+				type="button"
+				onClick={toggleColorMode}
+				class="p-2.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200 border border-gray-200 dark:border-gray-700"
+				title={`Theme: ${colorMode() === "light" ? "Light" : colorMode() === "dark" ? "Dark" : "System"} (click to cycle)`}
+				aria-label={`Current theme: ${colorMode() === "light" ? "Light" : colorMode() === "dark" ? "Dark" : "System"}. Click to cycle themes.`}
+			>
+				{colorMode() === "light" ? (
+					<IconSun class="w-4 h-4 text-gray-700 dark:text-gray-300" />
+				) : (
+					<IconMoon class="w-4 h-4 text-gray-700 dark:text-gray-300" />
+				)}
+			</button>
+			<button
+				type="button"
+				onClick={() => setColorMode("system")}
+				// disabled={colorMode() === "system"}
+				class="p-2.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200 border border-gray-200 dark:border-gray-700"
+				aria-label="Use system theme"
+			>
+				<IconComputerDesktop class="w-4 h-4 text-gray-700 dark:text-gray-300" />
+			</button>
+		</div>
 	);
 }
