@@ -1,8 +1,10 @@
-import { createSignal, For, Show, type ParentProps } from "solid-js";
+import { type JSX, createMemo, Show, type ParentProps } from "solid-js";
+import { createDate,
+  createDateNow,
+createTimeAgo } from "@solid-primitives/date";
 import imageUrl from "./assets/logo.jpeg";
 import mattraxLogoUrl from "./assets/matrax-logo.png";
 import spectaLogoUrl from "./assets/specta-logo.png";
-import type { JSX } from "solid-js";
 
 export default function Home() {
   return (
@@ -17,8 +19,7 @@ export default function Home() {
   );
 }
 
-function Header() {
-  return (
+const Header = () => (
     <header class="mb-8">
       <div class="flex flex-col md:flex-row items-center gap-8 mb-8">
         <div class="relative">
@@ -37,25 +38,25 @@ function Header() {
             Software Engineer <span class="text-md font-light">from <a href="https://maps.app.goo.gl/5F1tMoTEUg9WpGXW8" target="_blank" rel="noopener">Western Australia</a></span>
           </p>
           <div class="flex gap-6 items-center justify-center md:justify-start">
-            <SocialLink href="https://github.com/oscartbeaumont" icon="GitHub" />
-            <SocialLink href="https://twitter.com/oscartbeaumont" icon="Twitter" />
-            <SocialLink href="https://linkedin.com/in/oscartbeaumont" icon="LinkedIn" />
+            <SocialLink href="https://github.com/oscartbeaumont" title="GitHub" icon={GitHubIcon} />
+            <SocialLink href="https://twitter.com/oscartbeaumont" title="Twitter" icon={TwitterIcon} />
+            <SocialLink href="https://linkedin.com/in/oscartbeaumont" title="LinkedIn" icon={LinkedInIcon} />
           </div>
         </div>
       </div>
     </header>
   );
-}
 
 function About() {
-  const yearsExperience = new Date().getFullYear() - 2020;
+  const [startDate] = createDate("Sep 1, 2020");
+  const [timeago]= createTimeAgo(startDate);
 
   return (
     <section class="pb-8">
       <div class="prose prose-gray max-w-none text-gray-700 leading-relaxed text-lg">
         <p>
           I'm a self-taught software engineer passionate about building tools that empower people.
-          With {yearsExperience} years of professional experience working full-stack on everything from webapps to desktop apps and building with many languages including <a class="font-semibold" href="https://www.rust-lang.org" target="_blank" rel="noopener">Rust</a> and <a class="font-semibold" href="https://www.typescriptlang.org" target="_blank" rel="noopener">TypeScript</a>.
+          With {timeago()} years of professional experience working full-stack on everything from webapps to desktop apps and building with many languages including <a class="font-semibold" href="https://www.rust-lang.org" target="_blank" rel="noopener">Rust</a> and <a class="font-semibold" href="https://www.typescriptlang.org" target="_blank" rel="noopener">TypeScript</a>.
         </p>
 
         <p class="mt-4">
@@ -124,123 +125,76 @@ const SectionTitle = (props: ParentProps) => <h2 class="text-sm font-bold text-n
   {props.children}
 </h2>;
 
-function Experience() {
-  const experiences = [
-    {
-      company: "Spacedrive",
-      role: "Core Engineer",
-      period: "2022 — Present",
-      description: "Building a file manager from the future. Responsible for the Rust core, database integration, and cross-platform architecture. Working with Tauri, Rust, and React to deliver a high-performance local-first experience.",
-      link: "https://spacedrive.com"
-    },
-    {
-      company: "Freelance / Open Source",
-      role: "Full Stack Developer",
-      period: "2020 — 2022",
-      description: `Developed various full-stack applications and open-source libraries. Created rspc and contributed to the Rust ecosystem. Gained extensive experience with low-level FFI, networking, and modern web frameworks.`,
-      link: undefined
-    }
-  ];
+const Experience = () => (
+  <section class="pb-8">
+    <SectionTitle>Work Experience</SectionTitle>
 
-  return (
-    <section>
-      <SectionTitle>Work Experience</SectionTitle>
-      <div class="relative border-l border-neutral-200 ml-3 space-y-12">
-        <For each={experiences}>
-          {(job) => (
-            <div class="relative pl-8 md:pl-12 group">
-              {/* Timeline dot */}
-              <div class="absolute -left-1.25 top-2 h-2.5 w-2.5 rounded-full bg-neutral-300 ring-4 ring-white group-hover:bg-neutral-900 transition-colors duration-200"></div>
+    <div class="relative border-l border-neutral-200 ml-3 space-y-12">
+      <WorkExperienceItem company="Spacedrive" position="Full Stack Developer" period="2022 — Present" description="Building a file manager from the future. Responsible for the Rust core, database integration, and cross-platform architecture. Working with Tauri, Rust, and React to deliver a high-performance local-first experience." link="https://spacedrive.com" />
+      <WorkExperienceItem company="Cap" position="Full Stack Developer" period="2021 — 2022" description="Developed a full-stack application using React and Node.js. Implemented a RESTful API using Express.js and MongoDB." />
+    </div>
+  </section>
+);
 
-              <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-2">
-                <h3 class="text-lg font-bold text-neutral-900">
-                  {job.company}
-                </h3>
-                <span class="text-sm font-medium text-neutral-500 tabular-nums">
-                  {job.period}
-                </span>
-              </div>
-              <div class="text-md font-medium text-neutral-700 mb-3">{job.role}</div>
-              <p class="text-neutral-600 leading-relaxed text-sm">
-                {job.description}
-              </p>
-              <Show when={job.link}>
-                <a
-                  href={job.link}
-                  target="_blank"
-                  rel="noopener"
-                  class="inline-flex items-center mt-3 text-sm font-medium text-neutral-900 hover:underline decoration-neutral-400 underline-offset-2"
-                >
-                  Visit Website
-                  <ArrowUpRightIcon class="w-3 h-3 ml-1" />
-                </a>
-              </Show>
-            </div>
-          )}
-        </For>
-      </div>
-    </section>
-  );
-}
+const WorkExperienceItem = (props: { company: string; position: string; period: string; description: string; link?: string }) => (
+  <div class="relative pl-8 md:pl-12 group">
+    {/* Timeline dot */}
+    <div class="absolute -left-1.25 top-2 h-2.5 w-2.5 rounded-full bg-neutral-300 ring-4 ring-white group-hover:bg-neutral-900 transition-colors duration-200"></div>
+
+    <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-2">
+      <h3 class="text-lg font-bold text-neutral-900">
+        {props.company}
+      </h3>
+      <span class="text-sm font-mono text-gray-500 tabular-nums">
+        {props.period}
+      </span>
+    </div>
+    <div class="text-md font-medium text-neutral-700 mb-3">{props.position}</div>
+    <p class="text-neutral-600 leading-relaxed text-sm">
+      {props.description}
+    </p>
+    <Show when={props.link}>
+      <a
+        href={props.link}
+        target="_blank"
+        rel="noopener"
+        class="inline-flex items-center mt-3 text-sm font-medium text-neutral-900 hover:underline decoration-neutral-400 underline-offset-2"
+      >
+        Visit Website
+        <ArrowUpRightIcon class="w-3 h-3 ml-1" />
+      </a>
+    </Show>
+  </div>
+);
 
 function Footer() {
-  const [currentYear] = createSignal(new Date().getFullYear());
+  const [date] = createDateNow();
+  const currentYear = createMemo(() => date().getFullYear());
 
   return (
     <footer class="pt-8 border-t border-gray-200 text-center text-gray-500">
-      <p>© {currentYear()} Oscar Beaumont. Built with SolidJS and TailwindCSS.</p>
+      <p>© {currentYear()} Oscar Beaumont. Built with <a href="https://solidjs.com" target="_blank" rel="noopener" class="hover:underline">SolidJS</a> and <a href="https://tailwindcss.com" target="_blank" rel="noopener" class="hover:underline">TailwindCSS</a>.</p>
     </footer>
   );
 }
 
-function SocialLink(props: { href: string; icon: string }) {
-  const getIcon = () => {
-    switch (props.icon) {
-      case 'GitHub':
-        return <GitHubIcon />;
-      case 'Twitter':
-        return <TwitterIcon />;
-      case 'LinkedIn':
-        return <LinkedInIcon />;
-      default:
-        return props.icon;
-    }
-  };
-
-  return (
+const SocialLink = (props: { href: string; title: string; icon: JSX.Element }) => (
     <a
       href={props.href}
       target="_blank"
       rel="noopener noreferrer"
       class="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors duration-200"
     >
-      {getIcon()}
-      <span class="hidden sm:inline font-medium">{props.icon}</span>
+      {props.icon}
+      <span class="hidden sm:inline font-medium">{props.title}</span>
     </a>
-  );
-}
+);
 
 // Simple SVG Icons
 function ArrowUpRightIcon(props: { class?: string }) {
   return (
     <svg class={props.class} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M7 17l9.2-9.2M17 17V7H7" />
-    </svg>
-  );
-}
-
-function StarIcon() {
-  return (
-    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-    </svg>
-  );
-}
-
-function ExternalLinkIcon() {
-  return (
-    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
     </svg>
   );
 }
