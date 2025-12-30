@@ -4,21 +4,11 @@ import imageUrl from "./assets/logo.jpeg";
 export default function Home() {
   return (
     <div class="min-h-screen bg-white text-gray-900">
-      <style>{`
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
       <div class="max-w-4xl mx-auto px-6 py-12">
         <Header />
         <About />
         <Projects />
         <Skills />
-        <Contact />
         <Footer />
       </div>
     </div>
@@ -61,14 +51,9 @@ function About() {
       <h2 class="text-2xl font-semibold mb-6 text-gray-800">About</h2>
       <div class="prose prose-lg max-w-none">
         <p class="text-gray-700 leading-relaxed mb-4">
-          I'm a passionate software engineer who loves building elegant solutions to complex problems.
-          With expertise in modern web technologies and systems design, I create applications that are
-          both performant and user-friendly.
+          I'm a self-taught software engineer who loves to create solutions to help people use technology effectively. I started development in high-school, learning from YouTube tutorials and have loved it ever since. For the past {new Date().getFullYear() - 2020} years i've been working professionally on everything from low-level FFI and networking all the way up to fullstack webapp development.
         </p>
-        <p class="text-gray-700 leading-relaxed">
-          When I'm not coding, you can find me exploring new technologies, contributing to open source
-          projects, or sharing knowledge with the developer community.
-        </p>
+         <p class="text-gray-700 leading-relaxed">Feel free to reach out via email at oscar at otbeaumont.me</p>
       </div>
     </section>
   );
@@ -205,38 +190,6 @@ function Skills() {
   );
 }
 
-function Contact() {
-  return (
-    <section class="mb-16">
-      <h2 class="text-2xl font-semibold mb-6 text-gray-800">Let's Work Together</h2>
-      <div class="bg-gray-50 border border-gray-200 rounded-lg p-8">
-        <p class="text-gray-700 mb-6 text-lg leading-relaxed">
-          I'm always interested in hearing about new opportunities and exciting projects.
-          Whether you're looking to build something amazing or just want to say hello,
-          feel free to reach out!
-        </p>
-        <div class="flex flex-col sm:flex-row gap-4">
-          <a
-            href="mailto:hello@oscartbeaumont.dev"
-            class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
-          >
-            <EmailIcon />
-            Get in Touch
-          </a>
-          <a
-            href="/resume.pdf"
-            target="_blank"
-            class="inline-flex items-center justify-center gap-2 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200 font-medium"
-          >
-            <DocumentIcon />
-            View Resume
-          </a>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function Footer() {
   const [currentYear] = createSignal(new Date().getFullYear());
 
@@ -287,22 +240,6 @@ function ExternalLinkIcon() {
   return (
     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-    </svg>
-  );
-}
-
-function EmailIcon() {
-  return (
-    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-    </svg>
-  );
-}
-
-function DocumentIcon() {
-  return (
-    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
     </svg>
   );
 }

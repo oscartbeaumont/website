@@ -2,7 +2,7 @@ import { Router } from "@solidjs/router";
 import { FileRoutes } from "@solidjs/start/router";
 import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
 import { Suspense } from "solid-js";
-import { getRequestEvent } from "solid-js/web";
+import { getRequestEvent, isServer } from "solid-js/web";
 import "./app.css";
 
 const title = "Oscar Beaumont";
@@ -10,12 +10,13 @@ const description = "I'm a software developer based in Perth, Australia. I am se
 const canonical = "http://otbeaumont.me";
 
 export default function App() {
+const origin = isServer ? getRequestEvent()!.nativeEvent.url.origin : window.location.origin;
+
   return (
     <Router
       root={props => (
         <MetaProvider>
           <Suspense>{props.children}</Suspense>
-
 
           <Title>Oscar Beaumont</Title>
           <Meta name="description" content="I'm a software developer based in Perth, Australia. I am self-taught and love creating solutions to help people use technology effectively." />
@@ -30,8 +31,8 @@ export default function App() {
           {import.meta.env.PROD && <Meta property="og:url" content={canonical} />}
 
           {/* TODO: Replace this with Solid OpenGraph */}
-          <Meta property="og:image" content={`${getRequestEvent()!.nativeEvent.url.origin}/assets/me.jpg`} />
-          {/*<OpenGraph origin={getRequestEvent()!.nativeEvent.url.origin}>
+          <Meta property="og:image" content={`${origin}/assets/me.jpg`} />
+          {/*<OpenGraph origin={origin}>
             <DynamicImage>
               <div>This is very cool!</div>
             </DynamicImage>
