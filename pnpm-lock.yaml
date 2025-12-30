@@ -80,9 +80,6 @@ importers:
       '@iconify-json/simple-icons':
         specifier: ^1.2.64
         version: 1.2.64
-      '@kobalte/tailwindcss':
-        specifier: ^0.9.0
-        version: 0.9.0(tailwindcss@4.1.18)
       '@tailwindcss/vite':
         specifier: ^4.1.18
         version: 4.1.18(vite@7.3.0(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2))
@@ -1010,11 +1007,6 @@ packages:
     resolution: {integrity: sha512-hK7TYpdib/XDb/r/4XDBFaO9O+3ZHz4ZWryV4/3BfES+tSQVgg2IJupDnztKXB0BqbSRy/aWlHKw1SPtNPYCFQ==}
     peerDependencies:
       solid-js: ^1.8.15
-
-  '@kobalte/tailwindcss@0.9.0':
-    resolution: {integrity: sha512-WbueJTVRiO4yrmfHIBwp07y3M5iibJ/gauEAQ7mOyg1tZulvpO7SM/UdgzX95a9a0KDt1mQFxwO7RmpOUXWOWA==}
-    peerDependencies:
-      tailwindcss: ^3.3.3
 
   '@kobalte/utils@0.9.1':
     resolution: {integrity: sha512-eeU60A3kprIiBDAfv9gUJX1tXGLuZiKMajUfSQURAF2pk4ZoMYiqIzmrMBvzcxP39xnYttgTyQEVLwiTZnrV4w==}
@@ -3239,10 +3231,6 @@ snapshots:
       solid-js: 1.9.10
       solid-presence: 0.1.8(solid-js@1.9.10)
       solid-prevent-scroll: 0.1.10(solid-js@1.9.10)
-
-  '@kobalte/tailwindcss@0.9.0(tailwindcss@4.1.18)':
-    dependencies:
-      tailwindcss: 4.1.18
 
   '@kobalte/utils@0.9.1(solid-js@1.9.10)':
     dependencies:

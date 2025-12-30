@@ -18,10 +18,3 @@
 		[data-kb-theme="dark"],
 		[data-kb-theme="dark"] *
 	));
-
-/* Smooth transitions for theme changes */
-* {
-	transition-property: background-color, border-color, color;
-	transition-duration: 0.2s;
-	transition-timing-function: ease-in-out;
-}

@@ -140,11 +140,12 @@ const SocialLink = (props: {
 		target="_blank"
 		rel="noopener noreferrer"
 		class={clsx(
-			"group inline-flex items-center gap-2  text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-200",
+			"group inline-flex items-center gap-2  text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-300",
 			props.class,
 		)}
 	>
 		{props.icon}
+
 		<span class="hidden sm:inline font-medium">{props.title}</span>
 	</a>
 );
@@ -203,10 +204,10 @@ const WorkingOn = () => (
 							target="_blank"
 							rel="noopener"
 						>
-							<IconDiscord class="brightness-0 dark:invert hover:brightness-100 dark:hover:invert-0 w-5 h-5 transition-all" />
+							<IconDiscord class="brightness-0 dark:invert hover:brightness-100 dark:hover:invert-0 w-5 h-5 transition-colors duration-300 ease-in-out" />
 						</a>
 						<a href="https://github.com/mattrax" target="_blank" rel="noopener">
-							<IconGitHub class="brightness-0 dark:invert hover:brightness-100 w-5 h-5 transition-all" />
+							<IconGitHub class="brightness-0 dark:invert hover:brightness-100 w-5 h-5 transition-colors duration-300 ease-in-out" />
 						</a>
 					</div>
 				}
@@ -223,14 +224,14 @@ const WorkingOn = () => (
 							target="_blank"
 							rel="noopener"
 						>
-							<IconDiscord class="brightness-0 dark:invert hover:brightness-100 dark:hover:invert-0 w-5 h-5 transition-all" />
+							<IconDiscord class="brightness-0 dark:invert hover:brightness-100 dark:hover:invert-0 w-5 h-5 transition-colors duration-300 ease-in-out" />
 						</a>
 						<a
 							href="https://github.com/specta-rs"
 							target="_blank"
 							rel="noopener"
 						>
-							<IconGitHub class="brightness-0 dark:invert hover:brightness-100 w-5 h-5 transition-all" />
+							<IconGitHub class="brightness-0 dark:invert hover:brightness-100 w-5 h-5 transition-colors duration-300 ease-in-out" />
 						</a>
 					</div>
 				}
@@ -252,7 +253,7 @@ const ProjectPanel = (props: {
 			href={props.href}
 			target="_blank"
 			rel="noopener"
-			class="flex items-center gap-3 flex-1 min-w-0 transition-transform duration-200 motion-safe:hover:translate-x-2"
+			class="flex items-center gap-3 flex-1 min-w-0 transition-transform duration-300 ease-in-out motion-safe:hover:translate-x-2"
 		>
 			<img
 				src={props.logo}
@@ -364,14 +365,14 @@ const SkillItem = (props: {
 		href={props.href}
 		target="_blank"
 		rel="noopener"
-		class="flex flex-col items-center gap-2 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200 group"
+		class="flex flex-col items-center gap-2 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-300 ease-in-out group"
 		title={props.name}
 	>
 		{props.logo({
 			class:
-				"w-12 h-12 object-contain grayscale group-hover:grayscale-0 transition-all duration-200",
+				"w-12 h-12 object-contain grayscale group-hover:grayscale-0 transition-colors duration-300 ease-in-out",
 		})}
-		<span class="text-xs font-medium text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors duration-200">
+		<span class="text-xs font-medium text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors duration-300 ease-in-out">
 			{props.name}
 		</span>
 	</a>
@@ -468,7 +469,7 @@ function Footer() {
 
 	return (
 		<footer class="pt-8 border-t border-gray-200 dark:border-gray-700">
-			<div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
+			<div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4 sm:mb-2">
 				<p class="text-gray-500 dark:text-gray-400">
 					© {currentYear()} Oscar Beaumont
 				</p>
@@ -487,7 +488,7 @@ export function ThemeSwitcher() {
 			<button
 				type="button"
 				onClick={toggleColorMode}
-				class="p-2.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200 border border-gray-200 dark:border-gray-700"
+				class="p-2.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 border border-gray-200 dark:border-gray-700"
 				title={`Theme: ${colorMode() === "light" ? "Light" : colorMode() === "dark" ? "Dark" : "System"} (click to cycle)`}
 				aria-label={`Current theme: ${colorMode() === "light" ? "Light" : colorMode() === "dark" ? "Dark" : "System"}. Click to cycle themes.`}
 			>
@@ -501,7 +502,7 @@ export function ThemeSwitcher() {
 				type="button"
 				onClick={() => setColorMode("system")}
 				// disabled={colorMode() === "system"}
-				class="p-2.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200 border border-gray-200 dark:border-gray-700"
+				class="p-2.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 border border-gray-200 dark:border-gray-700"
 				aria-label="Use system theme"
 			>
 				<IconComputerDesktop class="w-4 h-4 text-gray-700 dark:text-gray-300" />
