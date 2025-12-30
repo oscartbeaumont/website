@@ -17,6 +17,7 @@
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.15.4",
     "@solidjs/start": "2.0.0-alpha.1",
+    "clsx": "^2.1.1",
     "html2canvas": "^1.4.1",
     "html2canvas-pro": "^1.6.2",
     "jspdf": "^3.0.4",

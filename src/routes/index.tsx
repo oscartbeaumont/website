@@ -1,4 +1,4 @@
-import { type JSX, createMemo, Show, type ParentProps, createSignal, onMount, onCleanup } from "solid-js";
+import { type JSX, type ParentProps, createMemo, onMount, onCleanup } from "solid-js";
 import { createDate,
   createDateNow,
 createTimeAgo } from "@solid-primitives/date";
@@ -21,6 +21,7 @@ import LogosTrpc from "~icons/logos/trpc";
 import LogosDrizzle from "~icons/catppuccin/drizzle-orm";
 import LogosPostHog from "~icons/logos/posthog-icon";
 import LogosPlanetscale from "~icons/simple-icons/planetscale";
+import clsx from "clsx";
 
 export default function Home() {
   return (
@@ -28,8 +29,18 @@ export default function Home() {
       <div class="max-w-4xl mx-auto px-6 py-12">
         <Header />
         <About />
+        <WorkingOn />
         <Skills />
         <Experience />
+
+
+        <section class="pb-8 mt-4">
+          <div class="prose prose-gray max-w-none text-gray-600 leading-relaxed text-md">
+        <p class="">
+          Feel free to reach out via email at oscar at otbeaumont.me
+        </p>
+        </div>
+          </section>
         <Footer />
       </div>
     </div>
@@ -55,21 +66,21 @@ const Header = () => (
             Software Engineer <span class="text-md font-light">from <a href="https://maps.app.goo.gl/5F1tMoTEUg9WpGXW8" target="_blank" rel="noopener">Western Australia</a></span>
           </p>
           <div class="flex gap-6 items-center justify-center md:justify-start">
-            <SocialLink href="https://github.com/oscartbeaumont" title="GitHub" icon={<IconGitHub class="brightness-0 w-5 h-5" />} />
-            <SocialLink href="https://twitter.com/oscartbeaumont" title="Twitter" icon={<IconTwitter class="brightness-0 w-5 h-5" />} />
-            <SocialLink href="https://linkedin.com/in/oscartbeaumont" title="LinkedIn" icon={<IconLinkedIn class="brightness-0 w-5 h-5" />} />
+            <SocialLink title="GitHub" href="https://github.com/oscartbeaumont" icon={<IconGitHub class="brightness-0 w-5 h-5" />} class="animate-[fadeIn_0.3s_0s_both]"/>
+            <SocialLink title="Twitter" href="https://twitter.com/oscartbeaumont" icon={<IconTwitter class="brightness-0 w-5 h-5" />} class="animate-[fadeIn_0.3s_0.2s_both]" />
+            <SocialLink title="LinkedIn" href="hhttps://linkedin.com/in/oscartbeaumont" icon={<IconLinkedIn class="brightness-0 w-5 h-5" />} class="animate-[fadeIn_0.3s_0.4s_both]" />
           </div>
         </div>
       </div>
     </header>
   );
 
-const SocialLink = (props: { href: string; title: string; icon: JSX.Element }) => (
+const SocialLink = (props: { href: string; title: string; icon: JSX.Element; class: string; }) => (
     <a
       href={props.href}
       target="_blank"
       rel="noopener noreferrer"
-      class="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors duration-200"
+      class={clsx("inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors duration-200", props.class)}
     >
       {props.icon}
       <span class="hidden sm:inline font-medium">{props.title}</span>
@@ -85,51 +96,49 @@ function About() {
       <div class="prose prose-gray max-w-none text-gray-700 leading-relaxed text-lg">
         <p>
           I'm a self-taught software engineer passionate about building tools that empower people.
-          With {timeago()} years of professional experience working full-stack on everything from webapps to desktop apps and building with many languages including <a class="font-semibold" href="https://www.rust-lang.org" target="_blank" rel="noopener">Rust</a> and <a class="font-semibold" href="https://www.typescriptlang.org" target="_blank" rel="noopener">TypeScript</a>.
-        </p>
-
-        <p class="mt-4">
-          I am currently working on:
-        </p>
-
-        <div class="mt-3 ml-6 space-y-3">
-          <ProjectPanel
-            name="Mattrax"
-            description="Manage all your Windows, Apple and Android devices from one simple dashboard"
-            href="https://mattrax.app"
-            logo={mattraxLogoUrl}
-            right={<div class="flex space-x-4">
-              <a href="https://discord.gg/WPBHmDSfAn" target="_blank" rel="noopener">
-                <IconDiscord class="brightness-0 w-5 h-5" />
-              </a>
-              <a href="https://github.com/mattrax" target="_blank" rel="noopener">
-                <IconGitHub class="brightness-0 w-5 h-5" />
-              </a>
-            </div>}
-          />
-          <ProjectPanel
-              name="Specta"
-              description="Rust crates for building better web apps"
-              href="https://specta.dev"
-              logo={spectaLogoUrl}
-              right={<div class="flex space-x-4">
-                <a href="https://discord.com/invite/JgqH8b4ycw" target="_blank" rel="noopener">
-                  <IconDiscord class="brightness-0 w-5 h-5" />
-                </a>
-                <a href="https://github.com/specta-rs" target="_blank" rel="noopener">
-                  <IconGitHub class="brightness-0 w-5 h-5" />
-                </a>
-              </div>}
-          />
-        </div>
-
-        <p class="mt-4">
-          Feel free to reach out via email at oscar at otbeaumont.me
+          With {timeago()} years of professional experience working full-stack on everything from webapps to desktop apps and building with many languages including <a class="font-semibold hover:text-[#B7410E]" href="https://www.rust-lang.org" target="_blank" rel="noopener">Rust</a> and <a class="font-semibold hover:text-[#3178C6]" href="https://www.typescriptlang.org" target="_blank" rel="noopener">TypeScript</a>.
         </p>
       </div>
     </section>
   );
 }
+
+const WorkingOn = () => (
+  <section class="pb-8">
+    <SectionTitle>What i'm working on?</SectionTitle>
+
+    <div class="mt-3 ml-6 space-y-3">
+      <ProjectPanel
+        name="Mattrax"
+        description="Manage all your Windows, Apple and Android devices from one simple dashboard"
+        href="https://mattrax.app"
+        logo={mattraxLogoUrl}
+        right={<div class="flex space-x-4">
+          <a href="https://discord.gg/WPBHmDSfAn" target="_blank" rel="noopener">
+            <IconDiscord class="brightness-0 w-5 h-5" />
+          </a>
+          <a href="https://github.com/mattrax" target="_blank" rel="noopener">
+            <IconGitHub class="brightness-0 w-5 h-5" />
+          </a>
+        </div>}
+      />
+      <ProjectPanel
+          name="Specta"
+          description="Rust crates for building better web apps"
+          href="https://specta.dev"
+          logo={spectaLogoUrl}
+          right={<div class="flex space-x-4">
+            <a href="https://discord.com/invite/JgqH8b4ycw" target="_blank" rel="noopener">
+              <IconDiscord class="brightness-0 w-5 h-5" />
+            </a>
+            <a href="https://github.com/specta-rs" target="_blank" rel="noopener">
+              <IconGitHub class="brightness-0 w-5 h-5" />
+            </a>
+          </div>}
+      />
+    </div>
+  </section>
+);
 
 const ProjectPanel = (props: { name: string; description: string; href: string; logo: string; right?: JSX.Element }) => <div class="flex items-center justify-between gap-4 py-2">
   <a href={props.href} target="_blank" rel="noopener" class="flex items-center gap-3 flex-1 min-w-0">
@@ -192,7 +201,7 @@ const Skills = () => {
 
   return (
     <section class="pb-8">
-      <SectionTitle>Skills</SectionTitle>
+      <SectionTitle>What I use?</SectionTitle>
 
       <div class="relative overflow-hidden overflow-x-auto mask-[linear-gradient(to_right,transparent,black_20%,black_80%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]">
         <div
