@@ -1,4 +1,4 @@
-import { type JSX, createMemo, Show, type ParentProps } from "solid-js";
+import { type JSX, createMemo, Show, type ParentProps, createSignal, onMount, onCleanup } from "solid-js";
 import { createDate,
   createDateNow,
 createTimeAgo } from "@solid-primitives/date";
@@ -155,21 +155,62 @@ const SectionTitle = (props: ParentProps) => <h2 class="text-sm font-bold text-n
 </h2>;
 
 const Skills = () => {
+  let containerRef: HTMLDivElement | undefined;
+  // const [_, setScrollPosition] = createSignal(0);
+
+  const skills = [
+    { name: "Rust", href: "https://www.rust-lang.org", logo: LogosRust },
+    { name: "TypeScript", href: "https://www.typescriptlang.org", logo: LogosTypescript },
+    { name: "SolidJS", href: "https://www.solidjs.com", logo: LogosSolid },
+    { name: "Tanstack Query", href: "https://tanstack.com/query", logo: LogosTanstack },
+    { name: "Tailwind", href: "https://tailwindcss.com", logo: LogosTailwind },
+    { name: "Tauri", href: "https://tauri.app", logo: LogosTauri },
+    { name: "tRPC", href: "https://trpc.io", logo: LogosTrpc },
+    { name: "Drizzle ORM", href: "https://orm.drizzle.team", logo: LogosDrizzle },
+    { name: "PostHog", href: "https://posthog.com", logo: LogosPostHog },
+    { name: "PlanetScale", href: "https://planetscale.com", logo: LogosPlanetscale },
+  ];
+
+  onMount(() => {
+    const itemWidth = 120; // Approximate width of each skill item
+    const maxScroll = itemWidth * skills.length;
+
+    let scrollPosition = 0;
+    const interval = setInterval(() => {
+      if (!containerRef) return;
+
+      const newPos = scrollPosition + 1;
+      // Reset to 0 when we've scrolled through all items
+      if (newPos >= maxScroll) scrollPosition = 0;
+      else scrollPosition = newPos;
+      containerRef!.scrollLeft = scrollPosition;
+
+    }, 30);
+
+    onCleanup(() => clearInterval(interval));
+  });
+
   return (
     <section class="pb-8">
       <SectionTitle>Skills</SectionTitle>
 
-      <div class="grid grid-cols-4 md:grid-cols-9 gap-6">
-        <SkillItem name="Rust" href="https://www.rust-lang.org" logo={LogosRust} />
-        <SkillItem name="TypeScript" href="https://www.typescriptlang.org" logo={LogosTypescript} />
-        <SkillItem name="SolidJS" href="https://www.solidjs.com" logo={LogosSolid} />
-        <SkillItem name="Tanstack Query" href="https://tanstack.com/query" logo={LogosTanstack} />
-        <SkillItem name="Tailwind" href="https://tailwindcss.com" logo={LogosTailwind} />
-        <SkillItem name="Tauri" href="https://tauri.app" logo={LogosTauri} />
-        <SkillItem name="tRPC" href="https://trpc.io" logo={LogosTrpc} />
-        <SkillItem name="Drizzle ORM" href="https://orm.drizzle.team" logo={LogosDrizzle} />
-        <SkillItem name="PostHog" href="https://posthog.com" logo={LogosPostHog} />
-        <SkillItem name="PlanetScale" href="https://planetscale.com" logo={LogosPlanetscale} />
+      <div class="relative overflow-hidden">
+        <div
+          ref={containerRef}
+          class="flex gap-6 overflow-x-hidden"
+          style={{ "scroll-behavior": "auto" }}
+        >
+          {/* Render skills twice for seamless loop */}
+          {[...skills, ...skills].map((skill) => (
+            <div class="shrink-0">
+              <SkillItem
+                name={skill.name}
+                href={skill.href}
+                logo={skill.logo}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
