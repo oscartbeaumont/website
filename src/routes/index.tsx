@@ -14,6 +14,7 @@ import IconLinkedIn from '~icons/logos/linkedin-icon';
 import LogosRust from '~icons/logos/rust';
 import LogosTypescript from '~icons/logos/typescript-icon';
 import LogosSolid from '~icons/logos/solidjs-icon';
+import LogosVite from '~icons/logos/vitejs';
 import LogosTanstack from "~icons/simple-icons/tanstack";
 import LogosTailwind from "~icons/logos/tailwindcss-icon";
 import LogosTauri from "~icons/logos/tauri";
@@ -22,50 +23,66 @@ import LogosDrizzle from "~icons/catppuccin/drizzle-orm";
 import LogosPostHog from "~icons/logos/posthog-icon";
 import LogosPlanetscale from "~icons/simple-icons/planetscale";
 import clsx from "clsx";
+import { useNavigate } from "@solidjs/router";
 
 export default function Home() {
   return (
-    <div class="min-h-screen bg-white text-gray-900">
-      <div class="max-w-4xl mx-auto px-6 py-12">
+    <Layout>
         <Header />
         <About />
         <WorkingOn />
         <Skills />
         <Experience />
         <Contact />
-        <Footer />
-      </div>
-    </div>
+    </Layout>
   );
 }
 
-const Header = () => (
-    <header class="mb-8">
-      <div class="flex flex-col md:flex-row items-center gap-8 mb-8">
-        <div class="relative">
-          <div class="absolute inset-0 rounded-full bg-gray-200 animate-pulse"></div>
-          <img
-            src={imageUrl}
-            alt="Oscar Beaumont"
-            class="relative rounded-full h-36 w-36 border-2 border-gray-50 shadow-sm"
-          />
-        </div>
-        <div class="flex-1 text-center md:text-left">
-          <h1 class="text-5xl md:text-6xl font-bold mb-3 tracking-tight">
-            Oscar Beaumont
-          </h1>
-          <p class="text-xl text-gray-600 mb-4 leading-relaxed font-medium">
-            Software Engineer <span class="text-md font-light">from <a href="https://maps.app.goo.gl/5F1tMoTEUg9WpGXW8" target="_blank" rel="noopener" class="hover:text-[#00A5AF]">Western Australia</a></span>
-          </p>
-          <div class="flex gap-6 items-center justify-center md:justify-start">
-            <SocialLink title="GitHub" href="https://github.com/oscartbeaumont" icon={<IconGitHub class="w-5 h-5" />} class="motion-safe:animate-[fadeIn_0.3s_0s_both]"/>
-            <SocialLink title="Twitter" href="https://twitter.com/oscartbeaumont" icon={<IconTwitter class="w-5 h-5" />} class="motion-safe:animate-[fadeIn_0.3s_0.2s_both]" />
-            <SocialLink title="LinkedIn" href="https://linkedin.com/in/oscartbeaumont" icon={<IconLinkedIn class="w-5 h-5" />} class="motion-safe:animate-[fadeIn_0.3s_0.4s_both]" />
-          </div>
-        </div>
-      </div>
-    </header>
-  );
+export const Layout = (props: ParentProps) => (
+  <div class="min-h-screen bg-white text-gray-900">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+      {props.children}
+
+      <Footer />
+    </div>
+  </div>
+);
+
+function Header() {
+  const navigate = useNavigate();
+
+ return (
+     <header class="mb-8">
+       <div class="flex flex-col md:flex-row items-center gap-8 mb-8">
+         <div class="relative">
+           <div class="absolute inset-0 rounded-full bg-gray-200 animate-pulse"></div>
+           <img
+             src={imageUrl}
+             alt="Oscar Beaumont"
+             class="relative rounded-full h-36 w-36 border-2 border-gray-50 shadow-sm"
+             onContextMenu={(e) => {
+               e.preventDefault();
+               navigate("/brand");
+             }}
+           />
+         </div>
+         <div class="flex-1 text-center md:text-left">
+           <h1 class="text-5xl md:text-6xl font-bold mb-3 tracking-tight">
+             Oscar Beaumont
+           </h1>
+           <p class="text-xl text-gray-600 mb-4 leading-relaxed font-medium">
+             Software Engineer <span class="text-md font-light">from <a href="https://maps.app.goo.gl/5F1tMoTEUg9WpGXW8" target="_blank" rel="noopener" class="hover:text-[#00A5AF]">Western Australia</a></span>
+           </p>
+           <div class="flex gap-6 items-center justify-center md:justify-start">
+             <SocialLink title="GitHub" href="https://github.com/oscartbeaumont" icon={<IconGitHub class="w-5 h-5" />} class="motion-safe:animate-[fadeIn_0.3s_0s_both]"/>
+             <SocialLink title="Twitter" href="https://twitter.com/oscartbeaumont" icon={<IconTwitter class="w-5 h-5" />} class="motion-safe:animate-[fadeIn_0.3s_0.2s_both]" />
+             <SocialLink title="LinkedIn" href="https://linkedin.com/in/oscartbeaumont" icon={<IconLinkedIn class="w-5 h-5" />} class="motion-safe:animate-[fadeIn_0.3s_0.4s_both]" />
+           </div>
+         </div>
+       </div>
+     </header>
+   );
+}
 
 const SocialLink = (props: { href: string; title: string; icon: JSX.Element; class: string; }) => (
     <a
@@ -159,6 +176,7 @@ const skills = [
   { name: "Rust", href: "https://www.rust-lang.org", logo: LogosRust },
   { name: "TypeScript", href: "https://www.typescriptlang.org", logo: LogosTypescript },
   { name: "SolidJS", href: "https://www.solidjs.com", logo: LogosSolid },
+  { name: "Vite", href: "https://vitejs.dev", logo: LogosVite },
   { name: "Tanstack Query", href: "https://tanstack.com/query", logo: LogosTanstack },
   { name: "Tailwind", href: "https://tailwindcss.com", logo: LogosTailwind },
   { name: "Tauri", href: "https://tauri.app", logo: LogosTauri },
