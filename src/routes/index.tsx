@@ -37,6 +37,7 @@ import LogosVite from "~icons/logos/vitejs";
 import LogosPlanetscale from "~icons/simple-icons/planetscale";
 import LogosTanstack from "~icons/simple-icons/tanstack";
 import LogosWgpu from "~icons/simple-icons/wgpu";
+import LogosReactNative from "~icons/logos/react-native";
 
 import imageUrl from "./assets/logo.jpeg";
 import mattraxLogoUrl from "./assets/matrax-logo.png";
@@ -57,7 +58,7 @@ export default function Home() {
 
 export const Layout = (props: ParentProps) => (
 	<div class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-		<div class="max-w-4xl mx-auto px-6 pt-12 pb-6">
+		<div class="max-w-4xl mx-auto px-6 pt-12 pb-3 sm:pb-6">
 			{props.children}
 
 			<Footer />
@@ -318,16 +319,20 @@ const Skills = () => {
 
 	onMount(() => {
 		const itemWidth = 120; // Approximate width of each skill item
-		const maxScroll = itemWidth * skills.length;
+		const singleSetWidth = itemWidth * skills.length;
 
 		let scrollPosition = 0;
 		const interval = setInterval(() => {
 			if (!containerRef) return;
 
-			const newPos = scrollPosition + 1;
-			// Reset to 0 when we've scrolled through all items
-			if (newPos >= maxScroll) scrollPosition = 0;
-			else scrollPosition = newPos;
+			scrollPosition += 1;
+
+			// When we've scrolled past the first set, seamlessly reset to the start
+			// This works because we have the skills duplicated
+			if (scrollPosition >= singleSetWidth) {
+				scrollPosition = 0;
+			}
+
 			containerRef!.scrollLeft = scrollPosition;
 		}, 30);
 
@@ -344,9 +349,9 @@ const Skills = () => {
 					class="flex gap-6 overflow-x-hidden"
 					style={{ "scroll-behavior": "auto" }}
 				>
-					{/* Render skills twice for seamless loop */}
-					{[...skills, ...skills].map((skill) => (
-						<div class="shrink-0">
+					{/* Render skills three times for seamless infinite loop */}
+					{[...skills, ...skills, ...skills].map((skill, index) => (
+						<div class="shrink-0" key={`${skill.name}-${index}`}>
 							<SkillItem
 								name={skill.name}
 								href={skill.href}
@@ -399,11 +404,6 @@ const Experience = () => (
 				description="Cap is the open source screen recorder and sharing tool. I worked on the desktop application and web backend including working with GPU shaders to render higher quality cursors, building a tracking system for upload progress, overhauling the recording flow UI, and moving the camera preview to native GPU rendering."
 				technologies={() => (
 					<>
-						<WorkExperienceItemTechnology name="Rust" logo={LogosRust} />
-						<WorkExperienceItemTechnology
-							name="TypeScript"
-							logo={LogosTypescript}
-						/>
 						<WorkExperienceItemTechnology name="Tauri" logo={LogosTauri} />
 						<WorkExperienceItemTechnology name="wgpu" logo={LogosWgpu} />
 						<WorkExperienceItemTechnology name="Solid" logo={LogosSolid} />
@@ -427,21 +427,6 @@ const Experience = () => (
 				position="Contractor - Full Stack"
 				period="Apr 2025 — Jun 2025"
 				description="I worked on client projects and also the Specta. I worked on an AI computer control application and also ran training sessions for a development team on using Tauri effectively."
-				technologies={() => (
-					<>
-						<WorkExperienceItemTechnology name="Rust" logo={LogosRust} />
-						<WorkExperienceItemTechnology
-							name="TypeScript"
-							logo={LogosTypescript}
-						/>
-						<WorkExperienceItemTechnology name="Tauri" logo={LogosTauri} />
-						<WorkExperienceItemTechnology name="React" logo={LogosReact} />
-						<WorkExperienceItemTechnology
-							name="Tailwind"
-							logo={LogosTailwind}
-						/>
-					</>
-				)}
 			/>
 
 			<WorkExperienceItem
@@ -456,16 +441,15 @@ const Experience = () => (
 				description="Building the file manager for the future. I worked on building the desktop application, Rust core for filesystem operations and peer to peer networking system. I also developed the system for us to ship our Rust core inside a React Native app."
 				technologies={() => (
 					<>
-						<WorkExperienceItemTechnology name="Rust" logo={LogosRust} />
-						<WorkExperienceItemTechnology
-							name="TypeScript"
-							logo={LogosTypescript}
-						/>
 						<WorkExperienceItemTechnology name="Tauri" logo={LogosTauri} />
 						<WorkExperienceItemTechnology name="React" logo={LogosReact} />
 						<WorkExperienceItemTechnology
 							name="Tailwind"
 							logo={LogosTailwind}
+						/>
+						<WorkExperienceItemTechnology
+							name="React Native"
+							logo={LogosReact}
 						/>
 					</>
 				)}
