@@ -203,7 +203,6 @@ const Skills = () => {
       if (newPos >= maxScroll) scrollPosition = 0;
       else scrollPosition = newPos;
       containerRef!.scrollLeft = scrollPosition;
-
     }, 30);
 
     onCleanup(() => clearInterval(interval));
@@ -274,7 +273,11 @@ const Experience = () => (
       />*/}
 
         <WorkExperienceItem
-          company="Spacedrive"
+          title={
+            <h3 class="text-lg font-bold text-neutral-900 group-hover:bg-linear-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 bg-clip-text group-hover:text-transparent">
+              Spacedrive
+            </h3>
+          }
           link="https://spacedrive.com"
           position="Full Stack Developer"
           period="May 2022 — May 2024"
@@ -284,17 +287,15 @@ const Experience = () => (
   </section>
 );
 
-const WorkExperienceItem = (props: { company: string; position: string; period: string; description: string; link: string }) => (
+const WorkExperienceItem = (props: { title: JSX.Element; position: string; period: string; description: string; link: string }) => (
   <div class="relative pl-8 md:pl-12 group">
     {/* Timeline dot */}
     <div class="absolute -left-1.25 top-2 h-2.5 w-2.5 rounded-full bg-neutral-300 ring-4 ring-white group-hover:bg-neutral-900 transition-colors duration-200"></div>
 
-    <div class="transition-transform duration-200 motion-safe:hover:translate-x-1">
+    <div class="group transition-transform duration-200 motion-safe:hover:translate-x-1">
       <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-2">
         <a href={props.link} target="_blank" rel="noopener">
-          <h3 class="text-lg font-bold text-neutral-900">
-            {props.company}
-          </h3>
+          {props.title}
         </a>
         <span class="text-sm font-mono text-gray-500 tabular-nums">
           {props.period}
