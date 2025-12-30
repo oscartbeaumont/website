@@ -1,21 +1,19 @@
 {
-  "$schema": "./node_modules/wrangler/config-schema.json",
+	"$schema": "./node_modules/wrangler/config-schema.json",
 	"name": "website",
 	"main": "@solidjs/start/server/entry",
 	"compatibility_date": "2025-10-11",
-  "compatibility_flags": [
-    "nodejs_compat"
-  ],
-  "route": {
-    "pattern": "webv5.otbeaumont.me",
-    "custom_domain": true
-  },
+	"compatibility_flags": ["nodejs_compat"],
+	"route": {
+		"pattern": "webv5.otbeaumont.me",
+		"custom_domain": true
+	},
 	"observability": {
 		"enabled": true
 	},
 	"kv_namespaces": [
-    {
-      "binding": "KV"
-    }
-  ]
+		{
+			"binding": "KV"
+		}
+	]
 }

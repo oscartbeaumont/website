@@ -1,6 +1,6 @@
 // @refresh reload
 import { mount, StartClient } from "@solidjs/start/client";
-import posthog from 'posthog-js/dist/module.no-external'
+import posthog from "posthog-js/dist/module.no-external";
 
 if (!import.meta.env.DEV)
 	posthog.init("phc_p4ybAvaYqJojhuZD0dVGExGoCCqbWViGzlxQc0AuWUv", {
