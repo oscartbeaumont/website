@@ -3,9 +3,7 @@ import { createMutableLocalStorage } from "./util";
 import { createDateNow } from "@solid-primitives/date";
 import parse from "parse-duration";
 import { Meta, Title } from "@solidjs/meta";
-import { clientOnly } from "@solidjs/start";
-
-const CaptureAsPdf = clientOnly(() => import("./CaptureAsPdf").then((m) => ({ default: m.CaptureAsPdf })));
+import { CaptureAsPdf, defaultDocumentStyles } from "./CaptureAsPdf";
 
 const defaultClient = () =>
   ({
@@ -46,7 +44,7 @@ export default function Page() {
       <Title>Invoicer</Title>
       <Meta name="robots" content="noindex" />
 
-      <div id="document" class="flex flex-col">
+      <div id="document" class="flex flex-col" style={defaultDocumentStyles}>
         <InvoiceTemplate state={state} />
       </div>
 
@@ -62,13 +60,13 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
     <>
       <div class="h-1/5 w-full bg-[#1f65a6] text-white flex justify-between p-8">
         <div class="pt-5">
-          <img src="/assets/OscarBeaumontLogo-White.png" class="h-12" />
+          <img src="/assets/OscarBeaumontLogo-White.png" alt="Oscar Beaumont Logo" class="h-12" />
           <h1 class="font-bold text-5xl -mt-2">Tax Invoice</h1>
         </div>
 
-        <div class="flex flex-col space-y-[2px] justify-center items-end">
+        <div class="flex flex-col space-y-0.5 justify-center items-end">
           <h1 class="text-2xl font-bold">BEAUMONT, OSCAR THOMAS</h1>
-          <p class="text-md pt-[2px] font-light">oscar@otbeaumont.me</p>
+          <p class="text-md pt-0.5 font-light">oscar@otbeaumont.me</p>
           <p class="text-md font-light">ABN 97 277 414 018</p>
           <p class="text-md font-light">132B Raleigh Street, Perth WA 6101</p>
         </div>
@@ -271,7 +269,7 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
 
 function Sidebar(props: { state: ReturnType<typeof initState> }) {
   return (
-    <div class="w-[500px] bg-black/70 backdrop-blur-xl p-4 flex flex-col space-y-4 fixed top-0 bottom-0 right-0">
+    <div class="w-125 bg-black/70 backdrop-blur-xl p-4 flex flex-col space-y-4 fixed top-0 bottom-0 right-0">
       <div class="flex justify-between">
         <h1 class="text-2xl font-extrabold uppercase text-nowrap flex items-center text-white">
           Invoicer
@@ -291,6 +289,7 @@ function Sidebar(props: { state: ReturnType<typeof initState> }) {
           placeholder="0000"
         />
         <button
+          type="button"
           class="bg-white text-black font-bold uppercase rounded-md ml-4 py-2 px-4"
           onClick={() => props.state.invoiceId++}
         >
@@ -321,6 +320,7 @@ function Sidebar(props: { state: ReturnType<typeof initState> }) {
       <p class="font-bold uppercase text-md text-white">Client:</p>
       <div class="flex space-x-2 w-full">
         <button
+          type="button"
           class="w-full bg-white text-black font-bold uppercase rounded-md ml-4 py-2 px-4"
           onClick={() =>
             props.state.clients.push(
@@ -331,6 +331,7 @@ function Sidebar(props: { state: ReturnType<typeof initState> }) {
           Save
         </button>
         <button
+          type="button"
           class="w-full bg-white text-black font-bold uppercase rounded-md ml-4 py-2 px-4"
           onClick={() => (props.state.client = defaultClient())}
         >
@@ -341,12 +342,14 @@ function Sidebar(props: { state: ReturnType<typeof initState> }) {
         {(client, i) => (
           <div class="flex space-x-2 w-full">
             <button
+              type="button"
               class="bg-white text-black font-bold uppercase rounded-md py-2 px-4"
               onClick={() => (props.state.client = client)}
             >
               {client.name}
             </button>
             <button
+              type="button"
               class="bg-white text-black font-bold uppercase rounded-md py-2 px-4"
               onClick={() => props.state.clients.splice(i(), 1)}
             >
@@ -358,6 +361,7 @@ function Sidebar(props: { state: ReturnType<typeof initState> }) {
 
       <p class="font-bold uppercase text-md text-white">Tasks:</p>
       <button
+        type="button"
         class="bg-white text-black font-bold uppercase rounded-md ml-4 py-2 px-4"
         onClick={() =>
           props.state.tasks.push({
@@ -369,6 +373,7 @@ function Sidebar(props: { state: ReturnType<typeof initState> }) {
         New
       </button>
       <button
+        type="button"
         class="bg-white text-black font-bold uppercase rounded-md ml-4 py-2 px-4"
         onClick={() => props.state.tasks.pop()}
       >

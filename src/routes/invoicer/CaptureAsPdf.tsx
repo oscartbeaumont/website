@@ -1,11 +1,25 @@
 import { jsPDF } from "jspdf";
 import { onCleanup, onMount } from "solid-js";
 import html2canvas from "html2canvas";
+import { isServer } from "solid-js/web";
 
 const initPdf = () => new jsPDF("p", "px", "a4");
 
+export const defaultDocumentStyles = (() => {
+  const doc = initPdf();
+
+  return {
+    width: `${doc.internal.pageSize.width * 2}px`,
+    height: `${doc.internal.pageSize.height * 2}px`
+  };
+})();
+
+
 export function CaptureAsPdf() {
   onMount(() => {
+    if (isServer) return;
+
+    // Init document size
     const doc = initPdf();
     document.getElementById("document")!.style.width = `${
       doc.internal.pageSize.width * 2
@@ -13,6 +27,10 @@ export function CaptureAsPdf() {
     document.getElementById("document")!.style.height = `${
       doc.internal.pageSize.height * 2
     }px`;
+
+    // Keyboard handler
+    window.addEventListener("keydown", handler);
+    onCleanup(() => window.removeEventListener("keydown", handler));
   });
 
   const generatePdf = (callback: (pdf: any) => void) => {
@@ -46,9 +64,6 @@ export function CaptureAsPdf() {
       generatePdf((pdf) => pdf.save("invoice.pdf"));
     }
   };
-
-  window.addEventListener("keydown", handler);
-  onCleanup(() => window.removeEventListener("keydown", handler));
 
   return (
     <div class="p-4 flex space-x-2">
