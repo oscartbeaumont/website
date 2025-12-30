@@ -32,17 +32,7 @@ export default function Home() {
         <WorkingOn />
         <Skills />
         <Experience />
-
-
-        <section class="pb-8 mt-4">
-          <div class="prose prose-gray max-w-none text-gray-600 leading-relaxed text-md">
-        <p>
-          Feel free to reach out via email at <button type="button" class="cursor-pointer hover:underline" onClick={(e) => {
-                window.location.href = `mailto:${e.currentTarget.textContent.replace(" at ", "@")}`;
-          }}>oscar at otbeaumont.me</button>
-        </p>
-        </div>
-          </section>
+        <Contact />
         <Footer />
       </div>
     </div>
@@ -57,7 +47,7 @@ const Header = () => (
           <img
             src={imageUrl}
             alt="Oscar Beaumont"
-            class="relative rounded-full h-32 w-32 border-2 border-gray-100 shadow-sm"
+            class="relative rounded-full h-36 w-36 border-2 border-gray-50 shadow-sm"
           />
         </div>
         <div class="flex-1 text-center md:text-left">
@@ -68,9 +58,9 @@ const Header = () => (
             Software Engineer <span class="text-md font-light">from <a href="https://maps.app.goo.gl/5F1tMoTEUg9WpGXW8" target="_blank" rel="noopener" class="hover:text-[#00A5AF]">Western Australia</a></span>
           </p>
           <div class="flex gap-6 items-center justify-center md:justify-start">
-            <SocialLink title="GitHub" href="https://github.com/oscartbeaumont" icon={<IconGitHub class="w-5 h-5" />} class="animate-[fadeIn_0.3s_0s_both]"/>
-            <SocialLink title="Twitter" href="https://twitter.com/oscartbeaumont" icon={<IconTwitter class="w-5 h-5" />} class="animate-[fadeIn_0.3s_0.2s_both]" />
-            <SocialLink title="LinkedIn" href="https://linkedin.com/in/oscartbeaumont" icon={<IconLinkedIn class="w-5 h-5" />} class="animate-[fadeIn_0.3s_0.4s_both]" />
+            <SocialLink title="GitHub" href="https://github.com/oscartbeaumont" icon={<IconGitHub class="w-5 h-5" />} class="motion-safe:animate-[fadeIn_0.3s_0s_both]"/>
+            <SocialLink title="Twitter" href="https://twitter.com/oscartbeaumont" icon={<IconTwitter class="w-5 h-5" />} class="motion-safe:animate-[fadeIn_0.3s_0.2s_both]" />
+            <SocialLink title="LinkedIn" href="https://linkedin.com/in/oscartbeaumont" icon={<IconLinkedIn class="w-5 h-5" />} class="motion-safe:animate-[fadeIn_0.3s_0.4s_both]" />
           </div>
         </div>
       </div>
@@ -143,7 +133,7 @@ const WorkingOn = () => (
 );
 
 const ProjectPanel = (props: { name: string; description: string; href: string; logo: string; right?: JSX.Element }) => <div class="flex items-center justify-between gap-4 py-2">
-  <a href={props.href} target="_blank" rel="noopener" class="flex items-center gap-3 flex-1 min-w-0 transition-transform duration-200 hover:translate-x-2">
+  <a href={props.href} target="_blank" rel="noopener" class="flex items-center gap-3 flex-1 min-w-0 transition-transform duration-200 motion-safe:hover:translate-x-2">
     <img
       src={props.logo}
       alt={`${props.name} logo`}
@@ -249,10 +239,10 @@ const Experience = () => (
     <SectionTitle>Work Experience</SectionTitle>
 
     <div class="relative border-l border-neutral-200 ml-3 space-y-12">
-      <WorkExperienceItem
+      {/*<WorkExperienceItem
         company="CuePilot"
         link="https://www.cuepilot.com"
-        position="Full Stack Developer"
+        position="Rust-developer"
         period="2021 — 2022"
         description="Developed a full-stack application using React and Node.js. Implemented a RESTful API using Express.js and MongoDB."
       />
@@ -263,13 +253,16 @@ const Experience = () => (
         position="Full Stack Developer"
         period="2021 — 2022"
         description="Developed a full-stack application using React and Node.js. Implemented a RESTful API using Express.js and MongoDB."
-      />
+      />*/}
 
-
-      <WorkExperienceItem
-      company="Spacedrive"
-      position="Full Stack Developer" period="2022 — Present" description="Building a file manager from the future. Responsible for the Rust core, database integration, and cross-platform architecture. Working with Tauri, Rust, and React to deliver a high-performance local-first experience." link="https://spacedrive.com" />
-       </div>
+        <WorkExperienceItem
+          company="Spacedrive"
+          link="https://spacedrive.com"
+          position="Full Stack Developer"
+          period="May 2022 — May 2024"
+          description="Building a file manager from the future. Responsible for the Rust core, database integration, and cross-platform architecture. Working with Tauri, Rust, and React to deliver a high-performance local-first experience."
+        />
+      </div>
   </section>
 );
 
@@ -278,7 +271,7 @@ const WorkExperienceItem = (props: { company: string; position: string; period: 
     {/* Timeline dot */}
     <div class="absolute -left-1.25 top-2 h-2.5 w-2.5 rounded-full bg-neutral-300 ring-4 ring-white group-hover:bg-neutral-900 transition-colors duration-200"></div>
 
-    <div class="transition-transform duration-200 hover:translate-x-1">
+    <div class="transition-transform duration-200 motion-safe:hover:translate-x-1">
       <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-2">
         <a href={props.link} target="_blank" rel="noopener">
           <h3 class="text-lg font-bold text-neutral-900">
@@ -297,13 +290,25 @@ const WorkExperienceItem = (props: { company: string; position: string; period: 
   </div>
 );
 
+const Contact = () => (
+  <section class="pb-8 mt-4">
+    <div class="prose prose-gray max-w-none text-gray-600 leading-relaxed text-md">
+      <p>
+        If you’d like to collaborate or chat, feel free to email me at <button type="button" class="cursor-pointer hover:underline" onClick={(e) => {
+          window.location.href = `mailto:${e.currentTarget.textContent.replace(" at ", "@")}`;
+        }}>oscar at otbeaumont.me</button>
+      </p>
+    </div>
+  </section>
+);
+
 function Footer() {
   const [date] = createDateNow();
   const currentYear = createMemo(() => date().getFullYear());
 
   return (
     <footer class="pt-8 border-t border-gray-200 text-center text-gray-500">
-      <p>© {currentYear()} Oscar Beaumont. Built with <a href="https://solidjs.com" target="_blank" rel="noopener" class="hover:text-[#2c4f7c]">SolidJS</a> and <a href="https://tailwindcss.com" target="_blank" rel="noopener" class="hover:text-[#39BDF8]">TailwindCSS</a>.</p>
+      <p>© {currentYear()} Oscar Beaumont</p>
     </footer>
   );
 }
