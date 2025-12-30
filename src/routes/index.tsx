@@ -1,4 +1,4 @@
-import { createSignal, For } from "solid-js";
+import { createSignal, For, Show, type ParentProps } from "solid-js";
 import imageUrl from "./assets/logo.jpeg";
 
 export default function Home() {
@@ -8,7 +8,7 @@ export default function Home() {
         <Header />
         <About />
         <Projects />
-        <Skills />
+        <Experience />
         <Footer />
       </div>
     </div>
@@ -17,7 +17,7 @@ export default function Home() {
 
 function Header() {
   return (
-    <header class="mb-16">
+    <header class="mb-8">
       <div class="flex flex-col md:flex-row items-center gap-8 mb-8">
         <div class="relative">
           <div class="absolute inset-0 rounded-full bg-gray-200 animate-pulse"></div>
@@ -46,149 +46,232 @@ function Header() {
 }
 
 function About() {
+  const yearsExperience = new Date().getFullYear() - 2020;
+
   return (
-    <section class="mb-16">
-      <h2 class="text-2xl font-semibold mb-6 text-gray-800">About</h2>
-      <div class="prose prose-lg max-w-none">
-        <p class="text-gray-700 leading-relaxed mb-4">
-          I'm a self-taught software engineer who loves to create solutions to help people use technology effectively. I started development in high-school, learning from YouTube tutorials and have loved it ever since. For the past {new Date().getFullYear() - 2020} years i've been working professionally on everything from low-level FFI and networking all the way up to fullstack webapp development.
+    <section class="pb-8">
+      <div class="prose prose-gray max-w-none text-gray-700 leading-relaxed text-lg">
+        <p>
+          I'm a self-taught software engineer passionate about building tools that empower people.
+          With {yearsExperience} years of professional experience working full-stack on everything from webapps to desktop apps and building with many languages including <a class="font-semibold" href="https://www.rust-lang.org" target="_blank" rel="noopener">Rust</a> and <a class="font-semibold" href="https://www.typescriptlang.org" target="_blank" rel="noopener">TypeScript</a>.
         </p>
-         <p class="text-gray-700 leading-relaxed">Feel free to reach out via email at oscar at otbeaumont.me</p>
+
+        <p class="mt-4">
+          I am currently working on:
+        </p>
+
+        <p class="mt-4">
+          Feel free to reach out via email at oscar at otbeaumont.me
+        </p>
       </div>
     </section>
   );
 }
+
+const SectionTitle = (props: ParentProps) => <h2 class="text-sm font-bold text-neutral-400 uppercase tracking-wider mb-8">
+  {props.children}
+</h2>;
 
 function Projects() {
-  const projects = [
-    {
-      name: "Spacedrive",
-      description: "A file manager from the future, built with Rust and React. Cross-platform file organization made beautiful and efficient.",
-      tech: ["Rust", "React", "TypeScript", "Tauri"],
-      stars: "12.5k",
-      link: "https://github.com/spacedriveapp/spacedrive"
-    },
-    {
-      name: "rspc",
-      description: "A blazing fast and lightweight RPC framework for Rust with TypeScript bindings. Type-safe APIs made simple.",
-      tech: ["Rust", "TypeScript", "WebAssembly"],
-      stars: "1.2k",
-      link: "https://github.com/oscartbeaumont/rspc"
-    },
-    {
-      name: "Prisma Client Rust",
-      description: "Type-safe database client for Rust. Bringing the power of Prisma to the Rust ecosystem.",
-      tech: ["Rust", "Database", "Code Generation"],
-      stars: "1.8k",
-      link: "https://github.com/Brendonovich/prisma-client-rust"
-    }
-  ];
-
-  const [selectedProject, setSelectedProject] = createSignal(0);
-
   return (
-    <section class="mb-16">
-      <h2 class="text-2xl font-semibold mb-8 text-gray-800">Recent Projects</h2>
+    <section>
+      <SectionTitle>Projects</SectionTitle>
 
-      {/* Horizontal scrolling carousel */}
-      <div class="mb-6">
-        <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
-          <For each={projects}>
-            {(project, index) => (
-              <button
-                onClick={() => setSelectedProject(index())}
-                class={`flex-shrink-0 px-6 py-3 rounded-lg border transition-all duration-200 font-medium snap-start ${
-                  selectedProject() === index()
-                    ? 'bg-blue-600 text-white border-blue-600 shadow-md'
-                    : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400 hover:shadow-sm'
-                }`}
-              >
-                {project.name}
-              </button>
-            )}
-          </For>
-        </div>
-      </div>
 
-      {/* Selected project details */}
-      <ProjectCard project={projects[selectedProject()]} />
     </section>
-  );
+  )
 }
 
-function ProjectCard(props: { project: any }) {
-  const { project } = props;
 
-  return (
-    <div class="border border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-colors duration-200">
-      <div class="flex items-start justify-between mb-3">
-        <h3 class="text-lg font-semibold text-gray-900">{project.name}</h3>
-        <div class="flex items-center gap-1 text-sm text-gray-500">
-          <StarIcon />
-          <span>{project.stars}</span>
-        </div>
-      </div>
-      <p class="text-gray-700 mb-4 leading-relaxed">{project.description}</p>
-      <div class="flex flex-wrap gap-2 mb-4">
-        {project.tech.map((tech: string) => (
-          <span class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
-            {tech}
-          </span>
-        ))}
-      </div>
-      <a
-        href={project.link}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors duration-200"
-      >
-        View Project
-        <ExternalLinkIcon />
-      </a>
-    </div>
-  );
-}
-
-function Skills() {
-  const skillCategories = [
+function Experience() {
+  const experiences = [
     {
-      title: "Languages",
-      skills: ["Rust", "TypeScript", "JavaScript", "Python", "Go", "C++"]
+      company: "Spacedrive",
+      role: "Core Engineer",
+      period: "2022 — Present",
+      description: "Building a file manager from the future. Responsible for the Rust core, database integration, and cross-platform architecture. Working with Tauri, Rust, and React to deliver a high-performance local-first experience.",
+      link: "https://spacedrive.com"
     },
     {
-      title: "Frontend",
-      skills: ["React", "SolidJS", "Vue", "Svelte", "TailwindCSS", "Next.js"]
-    },
-    {
-      title: "Backend",
-      skills: ["Node.js", "Rust", "PostgreSQL", "Redis", "GraphQL", "REST APIs"]
-    },
-    {
-      title: "Tools",
-      skills: ["Docker", "AWS", "Git", "Linux", "Webpack", "Vite"]
+      company: "Freelance / Open Source",
+      role: "Full Stack Developer",
+      period: "2020 — 2022",
+      description: `Developed various full-stack applications and open-source libraries. Created rspc and contributed to the Rust ecosystem. Gained extensive experience with low-level FFI, networking, and modern web frameworks.`,
+      link: undefined
     }
   ];
 
   return (
-    <section class="mb-16">
-      <h2 class="text-2xl font-semibold mb-8 text-gray-800">Skills & Technologies</h2>
-      <div class="grid md:grid-cols-2 gap-8">
-        {skillCategories.map((category) => (
-          <div>
-            <h3 class="text-lg font-medium mb-4 text-gray-800">{category.title}</h3>
-            <div class="flex flex-wrap gap-2">
-              {category.skills.map((skill) => (
-                <span class="px-3 py-2 bg-gray-50 border border-gray-200 text-gray-700 rounded-md text-sm hover:bg-gray-100 transition-colors duration-200">
-                  {skill}
+    <section>
+      <SectionTitle>Work Experience</SectionTitle>
+      <div class="relative border-l border-neutral-200 ml-3 space-y-12">
+        <For each={experiences}>
+          {(job) => (
+            <div class="relative pl-8 md:pl-12 group">
+              {/* Timeline dot */}
+              <div class="absolute -left-1.25 top-2 h-2.5 w-2.5 rounded-full bg-neutral-300 ring-4 ring-white group-hover:bg-neutral-900 transition-colors duration-200"></div>
+
+              <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-2">
+                <h3 class="text-lg font-bold text-neutral-900">
+                  {job.company}
+                </h3>
+                <span class="text-sm font-medium text-neutral-500 tabular-nums">
+                  {job.period}
                 </span>
-              ))}
+              </div>
+              <div class="text-md font-medium text-neutral-700 mb-3">{job.role}</div>
+              <p class="text-neutral-600 leading-relaxed text-sm">
+                {job.description}
+              </p>
+              <Show when={job.link}>
+                <a
+                  href={job.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center mt-3 text-sm font-medium text-neutral-900 hover:underline decoration-neutral-400 underline-offset-2"
+                >
+                  Visit Website
+                  <ArrowUpRightIcon class="w-3 h-3 ml-1" />
+                </a>
+              </Show>
             </div>
-          </div>
-        ))}
+          )}
+        </For>
       </div>
     </section>
   );
 }
+
+// function Projects() {
+//   const projects = [
+//     {
+//       name: "Spacedrive",
+//       description: "A file manager from the future, built with Rust and React. Cross-platform file organization made beautiful and efficient.",
+//       tech: ["Rust", "React", "TypeScript", "Tauri"],
+//       stars: "12.5k",
+//       link: "https://github.com/spacedriveapp/spacedrive"
+//     },
+//     {
+//       name: "rspc",
+//       description: "A blazing fast and lightweight RPC framework for Rust with TypeScript bindings. Type-safe APIs made simple.",
+//       tech: ["Rust", "TypeScript", "WebAssembly"],
+//       stars: "1.2k",
+//       link: "https://github.com/oscartbeaumont/rspc"
+//     },
+//     {
+//       name: "Prisma Client Rust",
+//       description: "Type-safe database client for Rust. Bringing the power of Prisma to the Rust ecosystem.",
+//       tech: ["Rust", "Database", "Code Generation"],
+//       stars: "1.8k",
+//       link: "https://github.com/Brendonovich/prisma-client-rust"
+//     }
+//   ];
+
+//   const [selectedProject, setSelectedProject] = createSignal(0);
+
+//   return (
+//     <section class="mb-16">
+//       <h2 class="text-2xl font-semibold mb-8 text-gray-800">Recent Projects</h2>
+
+//       {/* Horizontal scrolling carousel */}
+//       <div class="mb-6">
+//         <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
+//           <For each={projects}>
+//             {(project, index) => (
+//               <button
+//                 onClick={() => setSelectedProject(index())}
+//                 class={`flex-shrink-0 px-6 py-3 rounded-lg border transition-all duration-200 font-medium snap-start ${
+//                   selectedProject() === index()
+//                     ? 'bg-blue-600 text-white border-blue-600 shadow-md'
+//                     : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400 hover:shadow-sm'
+//                 }`}
+//               >
+//                 {project.name}
+//               </button>
+//             )}
+//           </For>
+//         </div>
+//       </div>
+
+//       {/* Selected project details */}
+//       <ProjectCard project={projects[selectedProject()]} />
+//     </section>
+//   );
+// }
+
+// function ProjectCard(props: { project: any }) {
+//   const { project } = props;
+
+//   return (
+//     <div class="border border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-colors duration-200">
+//       <div class="flex items-start justify-between mb-3">
+//         <h3 class="text-lg font-semibold text-gray-900">{project.name}</h3>
+//         <div class="flex items-center gap-1 text-sm text-gray-500">
+//           <StarIcon />
+//           <span>{project.stars}</span>
+//         </div>
+//       </div>
+//       <p class="text-gray-700 mb-4 leading-relaxed">{project.description}</p>
+//       <div class="flex flex-wrap gap-2 mb-4">
+//         {project.tech.map((tech: string) => (
+//           <span class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
+//             {tech}
+//           </span>
+//         ))}
+//       </div>
+//       <a
+//         href={project.link}
+//         target="_blank"
+//         rel="noopener noreferrer"
+//         class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors duration-200"
+//       >
+//         View Project
+//         <ExternalLinkIcon />
+//       </a>
+//     </div>
+//   );
+// }
+
+// function Skills() {
+//   const skillCategories = [
+//     {
+//       title: "Languages",
+//       skills: ["Rust", "TypeScript", "JavaScript", "Python", "Go", "C++"]
+//     },
+//     {
+//       title: "Frontend",
+//       skills: ["React", "SolidJS", "Vue", "Svelte", "TailwindCSS", "Next.js"]
+//     },
+//     {
+//       title: "Backend",
+//       skills: ["Node.js", "Rust", "PostgreSQL", "Redis", "GraphQL", "REST APIs"]
+//     },
+//     {
+//       title: "Tools",
+//       skills: ["Docker", "AWS", "Git", "Linux", "Webpack", "Vite"]
+//     }
+//   ];
+
+//   return (
+//     <section class="mb-16">
+//       <h2 class="text-2xl font-semibold mb-8 text-gray-800">Skills & Technologies</h2>
+//       <div class="grid md:grid-cols-2 gap-8">
+//         {skillCategories.map((category) => (
+//           <div>
+//             <h3 class="text-lg font-medium mb-4 text-gray-800">{category.title}</h3>
+//             <div class="flex flex-wrap gap-2">
+//               {category.skills.map((skill) => (
+//                 <span class="px-3 py-2 bg-gray-50 border border-gray-200 text-gray-700 rounded-md text-sm hover:bg-gray-100 transition-colors duration-200">
+//                   {skill}
+//                 </span>
+//               ))}
+//             </div>
+//           </div>
+//         ))}
+//       </div>
+//     </section>
+//   );
+// }
 
 function Footer() {
   const [currentYear] = createSignal(new Date().getFullYear());
@@ -228,6 +311,14 @@ function SocialLink(props: { href: string; icon: string }) {
 }
 
 // Simple SVG Icons
+function ArrowUpRightIcon(props: { class?: string }) {
+  return (
+    <svg class={props.class} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M7 17l9.2-9.2M17 17V7H7" />
+    </svg>
+  );
+}
+
 function StarIcon() {
   return (
     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">

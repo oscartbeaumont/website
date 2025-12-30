@@ -21,7 +21,7 @@ function Header() {
     <header class="mb-24">
       <div class="flex flex-col md:flex-row items-center gap-8 mb-12">
         <div class="relative">
-          <div class="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 blur-xl"></div>
+          <div class="absolute inset-0 rounded-full bg-linear-to-br from-blue-500/20 to-purple-500/20 blur-xl"></div>
           <img
             src={imageUrl}
             alt="Oscar Beaumont"
@@ -29,7 +29,7 @@ function Header() {
           />
         </div>
         <div class="flex-1 text-center md:text-left">
-          <h1 class="text-6xl md:text-7xl font-bold mb-4 tracking-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+          <h1 class="text-6xl md:text-7xl font-bold mb-4 tracking-tight bg-linear-to-r from-white to-gray-400 bg-clip-text text-transparent">
             Oscar Beaumont
           </h1>
           <p class="text-2xl text-gray-400 mb-6 font-medium">
@@ -176,7 +176,7 @@ function ProjectCard(props: { project: any }) {
   const { project } = props;
 
   return (
-    <a 
+    <a
       href={project.link}
       target="_blank"
       rel="noopener noreferrer"
