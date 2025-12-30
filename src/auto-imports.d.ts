@@ -8,7 +8,6 @@ export {}
 declare global {
   const IconCatppuccinDrizzleOrm: typeof import('~icons/catppuccin/drizzle-orm.jsx').default
   const IconHeroiconsComputerDesktop20Solid: typeof import('~icons/heroicons/computer-desktop20-solid.jsx').default
-  const IconHeroiconsDesktop20Solid: typeof import('~icons/heroicons/desktop20-solid.jsx').default
   const IconHeroiconsMoon20Solid: typeof import('~icons/heroicons/moon20-solid.jsx').default
   const IconHeroiconsSun20Solid: typeof import('~icons/heroicons/sun20-solid.jsx').default
   const IconLogosDiscordIcon: typeof import('~icons/logos/discord-icon.jsx').default
@@ -22,7 +21,6 @@ declare global {
   const IconLogosPython: typeof import('~icons/logos/python.jsx').default
   const IconLogosReact: typeof import('~icons/logos/react.jsx').default
   const IconLogosRust: typeof import('~icons/logos/rust.jsx').default
-  const IconLogosSolid: typeof import('~icons/logos/solid.jsx').default
   const IconLogosSolidjsIcon: typeof import('~icons/logos/solidjs-icon.jsx').default
   const IconLogosSvelteIcon: typeof import('~icons/logos/svelte-icon.jsx').default
   const IconLogosTailwindcssIcon: typeof import('~icons/logos/tailwindcss-icon.jsx').default
@@ -31,7 +29,6 @@ declare global {
   const IconLogosTwitter: typeof import('~icons/logos/twitter.jsx').default
   const IconLogosTypescriptIcon: typeof import('~icons/logos/typescript-icon.jsx').default
   const IconLogosVitejs: typeof import('~icons/logos/vitejs.jsx').default
-  const IconSimpleIconPlanetscale: typeof import('~icons/si/mple-icon-planetscale.jsx').default
   const IconSimpleIconsPlanetscale: typeof import('~icons/simple-icons/planetscale.jsx').default
   const IconSimpleIconsTanstack: typeof import('~icons/simple-icons/tanstack.jsx').default
   const IconSimpleIconsWgpu: typeof import('~icons/simple-icons/wgpu.jsx').default

@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(
+		[data-kb-theme="dark"],
+		[data-kb-theme="dark"] *
+	));
+
 @theme {
 	@keyframes fadeIn {
 		from {
@@ -13,8 +18,3 @@
 		}
 	}
 }
-
-@custom-variant dark (&:where(
-		[data-kb-theme="dark"],
-		[data-kb-theme="dark"] *
-	));

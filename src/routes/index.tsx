@@ -267,7 +267,11 @@ const skills = [
 		href: "https://www.typescriptlang.org",
 		logo: IconLogosTypescriptIcon,
 	},
-	{ name: "SolidJS", href: "https://www.solidjs.com", logo: IconLogosSolid },
+	{
+		name: "SolidJS",
+		href: "https://www.solidjs.com",
+		logo: IconLogosSolidjsIcon,
+	},
 	{ name: "Vite", href: "https://vitejs.dev", logo: IconLogosVitejs },
 	{
 		name: "Tanstack Query",
@@ -296,49 +300,55 @@ const skills = [
 
 const Skills = () => {
 	let containerRef: HTMLDivElement | undefined;
+	let wrapperRef: HTMLDivElement | undefined;
 
 	onMount(() => {
-		const itemWidth = 120; // Approximate width of each skill item
-		const singleSetWidth = itemWidth * skills.length;
+		requestAnimationFrame(() => {
+			if (!containerRef || !wrapperRef) return;
 
-		let scrollPosition = 0;
-		const interval = setInterval(() => {
-			if (!containerRef) return;
+			// Clone the skills container for seamless scrolling
+			const clone = containerRef.cloneNode(true) as HTMLDivElement;
+			wrapperRef.appendChild(clone);
 
-			scrollPosition += 1;
+			const totalWidth = containerRef.scrollWidth;
+			let translateX = 0;
 
-			// When we've scrolled past the first set, seamlessly reset to the start
-			// This works because we have the skills duplicated
-			if (scrollPosition >= singleSetWidth) {
-				scrollPosition = 0;
-			}
+			const interval = setInterval(() => {
+				if (!wrapperRef) return;
 
-			containerRef!.scrollLeft = scrollPosition;
-		}, 30);
+				translateX -= 1;
 
-		onCleanup(() => clearInterval(interval));
+				// Reset when we've scrolled one full width
+				if (Math.abs(translateX) >= totalWidth) translateX = 0;
+
+				wrapperRef.style.transform = `translateX(${translateX}px)`;
+			}, 30);
+
+			onCleanup(() => clearInterval(interval));
+		});
 	});
 
 	return (
 		<section class="pb-8">
 			<SectionTitle>What I use?</SectionTitle>
 
-			<div class="relative overflow-hidden overflow-x-auto mask-[linear-gradient(to_right,transparent,black_20%,black_80%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]">
+			<div class="relative overflow-hidden mask-[linear-gradient(to_right,transparent,black_20%,black_80%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]">
 				<div
-					ref={containerRef}
-					class="flex gap-6 overflow-x-hidden"
-					style={{ "scroll-behavior": "auto" }}
+					ref={wrapperRef}
+					class="flex gap-6"
+					style={{ "will-change": "transform" }}
 				>
-					{/* Render skills three times for seamless infinite loop */}
-					{[...skills, ...skills, ...skills].map((skill) => (
-						<div class="shrink-0">
-							<SkillItem
-								name={skill.name}
-								href={skill.href}
-								logo={skill.logo}
-							/>
-						</div>
-					))}
+					<div ref={containerRef} class="flex gap-6 shrink-0">
+						{skills.map((skill) => (
+							<div class="shrink-0">
+								<SkillItem
+									name={skill.name}
+									href={skill.href}
+									logo={skill.logo}
+								/>
+							</div>
+						))}
+					</div>
 				</div>
 			</div>
 		</section>
