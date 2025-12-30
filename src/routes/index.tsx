@@ -37,7 +37,6 @@ import LogosVite from "~icons/logos/vitejs";
 import LogosPlanetscale from "~icons/simple-icons/planetscale";
 import LogosTanstack from "~icons/simple-icons/tanstack";
 import LogosWgpu from "~icons/simple-icons/wgpu";
-import LogosReactNative from "~icons/logos/react-native";
 
 import imageUrl from "./assets/logo.jpeg";
 import mattraxLogoUrl from "./assets/matrax-logo.png";
@@ -350,8 +349,8 @@ const Skills = () => {
 					style={{ "scroll-behavior": "auto" }}
 				>
 					{/* Render skills three times for seamless infinite loop */}
-					{[...skills, ...skills, ...skills].map((skill, index) => (
-						<div class="shrink-0" key={`${skill.name}-${index}`}>
+					{[...skills, ...skills, ...skills].map((skill) => (
+						<div class="shrink-0">
 							<SkillItem
 								name={skill.name}
 								href={skill.href}
