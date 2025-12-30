@@ -4,7 +4,8 @@
 import type { APIEvent } from "@solidjs/start/server";
 
 async function handler(e: APIEvent) {
-    // Determine target hostname based on static or dynamic ingestion
+  try {
+    // Determine taarget hostname based on static or dynamic ingestion
     const hostname = e.nativeEvent.url.pathname.startsWith('/ph_4DkU/static/')
       ? 'us-assets.i.posthog.com' // change us to eu for EU Cloud
       : 'us.i.posthog.com';  // change us to eu for EU Cloud
@@ -28,6 +29,9 @@ async function handler(e: APIEvent) {
       // @ts-expect-error: not valid in types but this is a thing
       duplex: "half"
     });
+  } catch (err) {
+    console.error("PROXY BUG", err);
+  }
 }
 
 export const GET = handler;
