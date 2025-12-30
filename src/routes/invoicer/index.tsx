@@ -1,7 +1,7 @@
 import { createDateNow } from "@solid-primitives/date";
 import { Meta, Title } from "@solidjs/meta";
 import parse from "parse-duration";
-import { For, Match, onCleanup, onMount, Show, Switch } from "solid-js";
+import { For, Match, onMount, Show, Switch } from "solid-js";
 import { CaptureAsPdf, defaultDocumentStyles } from "./CaptureAsPdf";
 import { createMutableLocalStorage } from "./util";
 

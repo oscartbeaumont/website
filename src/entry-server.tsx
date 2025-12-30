@@ -2,9 +2,9 @@
 
 import { randomBytes } from "node:crypto";
 import _headers from "virtual:_headers";
+import { ColorModeScript } from "@kobalte/core";
 import { HttpHeader } from "@solidjs/start";
 import { createHandler, StartServer } from "@solidjs/start/server";
-import { ColorModeScript } from "@kobalte/core";
 
 export default createHandler(
 	(event) => (

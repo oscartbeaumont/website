@@ -1,8 +1,5 @@
-import {
-	createDate,
-	createDateNow,
-	createTimeAgo,
-} from "@solid-primitives/date";
+import { useColorMode } from "@kobalte/core";
+import { createDateNow } from "@solid-primitives/date";
 import { useNavigate } from "@solidjs/router";
 import clsx from "clsx";
 import {
@@ -11,16 +8,26 @@ import {
 	onCleanup,
 	onMount,
 	type ParentProps,
+	Show,
 } from "solid-js";
+
 import LogosDrizzle from "~icons/catppuccin/drizzle-orm";
-
+import HeroDesktop from "~icons/heroicons/computer-desktop-20-solid";
+import HeroMoon from "~icons/heroicons/moon-20-solid";
+import HeroSun from "~icons/heroicons/sun-20-solid";
 import IconDiscord from "~icons/logos/discord-icon";
+import LogosElectron from "~icons/logos/electron";
 import IconGitHub from "~icons/logos/github-icon";
+import LogosGo from "~icons/logos/go";
 import IconLinkedIn from "~icons/logos/linkedin-icon";
+import LogosWindows from "~icons/logos/microsoft-windows-icon";
+import LogosNext from "~icons/logos/nextjs-icon";
 import LogosPostHog from "~icons/logos/posthog-icon";
-
+import LogosPython from "~icons/logos/python";
+import LogosReact from "~icons/logos/react";
 import LogosRust from "~icons/logos/rust";
 import LogosSolid from "~icons/logos/solidjs-icon";
+import LogosSvelte from "~icons/logos/svelte-icon";
 import LogosTailwind from "~icons/logos/tailwindcss-icon";
 import LogosTauri from "~icons/logos/tauri";
 import LogosTrpc from "~icons/logos/trpc";
@@ -29,14 +36,11 @@ import LogosTypescript from "~icons/logos/typescript-icon";
 import LogosVite from "~icons/logos/vitejs";
 import LogosPlanetscale from "~icons/simple-icons/planetscale";
 import LogosTanstack from "~icons/simple-icons/tanstack";
-import IconMoon from "~icons/heroicons/moon-20-solid";
-import IconSun from "~icons/heroicons/sun-20-solid";
-import IconComputerDesktop from "~icons/heroicons/computer-desktop-20-solid";
+import LogosWgpu from "~icons/simple-icons/wgpu";
 
 import imageUrl from "./assets/logo.jpeg";
 import mattraxLogoUrl from "./assets/matrax-logo.png";
 import spectaLogoUrl from "./assets/specta-logo.png";
-import { useColorMode } from "@kobalte/core";
 
 export default function Home() {
 	return (
@@ -53,7 +57,7 @@ export default function Home() {
 
 export const Layout = (props: ParentProps) => (
 	<div class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-		<div class="max-w-4xl mx-auto px-6 py-12">
+		<div class="max-w-4xl mx-auto px-6 pt-12 pb-6">
 			{props.children}
 
 			<Footer />
@@ -151,17 +155,17 @@ const SocialLink = (props: {
 );
 
 function About() {
-	const [startDate] = createDate("Sep 1, 2020");
-	const [timeago] = createTimeAgo(startDate);
+	const [now] = createDateNow();
+	const yearsOfExperience = createMemo(() => now().getFullYear() - 2020);
 
 	return (
 		<section class="pb-8">
 			<div class="prose prose-gray max-w-none text-gray-700 dark:text-gray-300 leading-relaxed text-lg">
 				<p>
 					I'm a self-taught software engineer passionate about building tools
-					that empower people. With {timeago()} years of professional experience
-					working full-stack on everything from webapps to desktop apps and
-					building with many languages including{" "}
+					that empower people. With {yearsOfExperience()} years of professional
+					experience working full-stack on everything from webapps to desktop
+					apps while building with many languages including{" "}
 					<a
 						class="font-semibold hover:text-[#B7410E]"
 						href="https://www.rust-lang.org"
@@ -383,32 +387,119 @@ const Experience = () => (
 		<SectionTitle>Work Experience</SectionTitle>
 
 		<div class="relative border-l border-neutral-200 dark:border-neutral-700 ml-3 space-y-12">
-			{/*<WorkExperienceItem
-        company="CuePilot"
-        link="https://www.cuepilot.com"
-        position="Rust-developer"
-        period="2021 — 2022"
-        description="Developed a full-stack application using React and Node.js. Implemented a RESTful API using Express.js and MongoDB."
-      />
-
-      <WorkExperienceItem
-        company="Cap.so"
-        link="https://cap.so"
-        position="Full Stack Developer"
-        period="2021 — 2022"
-        description="Developed a full-stack application using React and Node.js. Implemented a RESTful API using Express.js and MongoDB."
-      />*/}
+			<WorkExperienceItem
+				title={
+					<h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-[#2663EB]">
+						Cap.so
+					</h3>
+				}
+				link="https://cap.so"
+				position="Contractor - Full Stack"
+				period="Jul 2025 — Nov 2025"
+				description="Cap is the open source screen recorder and sharing tool. I worked on the desktop application and web backend including working with GPU shaders to render higher quality cursors, building a tracking system for upload progress, overhauling the recording flow UI, and moving the camera preview to native GPU rendering."
+				technologies={() => (
+					<>
+						<WorkExperienceItemTechnology name="Rust" logo={LogosRust} />
+						<WorkExperienceItemTechnology
+							name="TypeScript"
+							logo={LogosTypescript}
+						/>
+						<WorkExperienceItemTechnology name="Tauri" logo={LogosTauri} />
+						<WorkExperienceItemTechnology name="wgpu" logo={LogosWgpu} />
+						<WorkExperienceItemTechnology name="Solid" logo={LogosSolid} />
+						<WorkExperienceItemTechnology
+							name="Tailwind"
+							logo={LogosTailwind}
+						/>
+						<WorkExperienceItemTechnology name="Next" logo={LogosNext} />
+						<WorkExperienceItemTechnology name="PostHog" logo={LogosPostHog} />
+					</>
+				)}
+			/>
 
 			<WorkExperienceItem
 				title={
-					<h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-400 hover:from-violet-500 hover:to-fuchsia-500 bg-clip-text group-hover:text-transparent">
+					<h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-[#C790FF]">
+						CrabNebula
+					</h3>
+				}
+				link="https://crabnebula.dev"
+				position="Contractor - Full Stack"
+				period="Apr 2025 — Jun 2025"
+				description="I worked on client projects and also the Specta. I worked on an AI computer control application and also ran training sessions for a development team on using Tauri effectively."
+				technologies={() => (
+					<>
+						<WorkExperienceItemTechnology name="Rust" logo={LogosRust} />
+						<WorkExperienceItemTechnology
+							name="TypeScript"
+							logo={LogosTypescript}
+						/>
+						<WorkExperienceItemTechnology name="Tauri" logo={LogosTauri} />
+						<WorkExperienceItemTechnology name="React" logo={LogosReact} />
+						<WorkExperienceItemTechnology
+							name="Tailwind"
+							logo={LogosTailwind}
+						/>
+					</>
+				)}
+			/>
+
+			<WorkExperienceItem
+				title={
+					<h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:bg-linear-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-400 hover:from-violet-500 hover:to-fuchsia-500 bg-clip-text group-hover:text-transparent">
 						Spacedrive
 					</h3>
 				}
 				link="https://spacedrive.com"
-				position="Full Stack Developer"
+				position="Founding Engineer - Full Stack"
 				period="May 2022 — May 2024"
-				description="Building a file manager from the future. Responsible for the Rust core, database integration, and cross-platform architecture. Working with Tauri, Rust, and React to deliver a high-performance local-first experience."
+				description="Building the file manager for the future. I worked on building the desktop application, Rust core for filesystem operations and peer to peer networking system. I also developed the system for us to ship our Rust core inside a React Native app."
+				technologies={() => (
+					<>
+						<WorkExperienceItemTechnology name="Rust" logo={LogosRust} />
+						<WorkExperienceItemTechnology
+							name="TypeScript"
+							logo={LogosTypescript}
+						/>
+						<WorkExperienceItemTechnology name="Tauri" logo={LogosTauri} />
+						<WorkExperienceItemTechnology name="React" logo={LogosReact} />
+						<WorkExperienceItemTechnology
+							name="Tailwind"
+							logo={LogosTailwind}
+						/>
+					</>
+				)}
+			/>
+
+			<WorkExperienceItem
+				title={
+					<h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-neutral-700">
+						Freelancer
+					</h3>
+				}
+				period="Aug 2020 — May 2022"
+				description="I worked for multiple clients to bring their vision to life. I built multiple Windows Device Management servers, a dash camera manager application in Electron and worked on a web interface for managing a telephony system."
+				technologies={() => (
+					<>
+						<WorkExperienceItemTechnology name="Windows" logo={LogosWindows} />
+						<WorkExperienceItemTechnology name="Go" logo={LogosGo} />
+						<WorkExperienceItemTechnologySplit />
+
+						<WorkExperienceItemTechnology
+							name="Electron"
+							logo={LogosElectron}
+						/>
+						<WorkExperienceItemTechnology name="Svelte" logo={LogosSvelte} />
+						<WorkExperienceItemTechnologySplit />
+
+						<WorkExperienceItemTechnology name="Next" logo={LogosNext} />
+						<WorkExperienceItemTechnology
+							name="Tailwind"
+							logo={LogosTailwind}
+						/>
+						<WorkExperienceItemTechnology name="Python" logo={LogosPython} />
+					</>
+				)}
 			/>
 		</div>
 	</section>
@@ -416,10 +507,12 @@ const Experience = () => (
 
 const WorkExperienceItem = (props: {
 	title: JSX.Element;
-	position: string;
-	period: string;
+	position?: string;
+	period?: string;
 	description: string;
-	link: string;
+	link?: string;
+	// TODO: Change this to just `JSX.Element`. Seems to break hydration right now???
+	technologies?: () => JSX.Element;
 }) => (
 	<div class="relative pl-8 md:pl-12 group">
 		{/* Timeline dot */}
@@ -427,21 +520,49 @@ const WorkExperienceItem = (props: {
 
 		<div class="group transition-transform duration-200 motion-safe:hover:translate-x-1">
 			<div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-2">
-				<a href={props.link} target="_blank" rel="noopener">
-					{props.title}
-				</a>
-				<span class="text-sm font-mono text-gray-500 dark:text-gray-400 tabular-nums">
-					{props.period}
-				</span>
+				<Show when={props.link} fallback={props.title}>
+					<a href={props.link} target="_blank" rel="noopener">
+						{props.title}
+					</a>
+				</Show>
+
+				<Show when={props.period}>
+					<span class="text-sm font-mono text-gray-500 dark:text-gray-400 tabular-nums">
+						{props.period}
+					</span>
+				</Show>
 			</div>
-			<div class="text-md font-medium text-neutral-700 dark:text-neutral-300 mb-3">
-				{props.position}
-			</div>
-			<p class="text-neutral-600 dark:text-neutral-400 leading-relaxed text-sm">
+			<Show when={props.position}>
+				<div class="text-md font-medium text-neutral-700 dark:text-neutral-300 mb-3">
+					{props.position}
+				</div>
+			</Show>
+			<p class="text-neutral-600 dark:text-neutral-400 leading-relaxed text-sm mb-4">
 				{props.description}
 			</p>
+			<Show when={props.technologies}>
+				<div class="flex flex-wrap gap-3 mt-3 items-center">
+					{props.technologies?.()}
+				</div>
+			</Show>
 		</div>
 	</div>
+);
+
+const WorkExperienceItemTechnology = (props: {
+	name: string;
+	logo: (_: { class: string }) => JSX.Element;
+}) => (
+	<div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+		{props.logo({ class: "w-4 h-4" })}
+		<span class="text-xs font-medium text-gray-700 dark:text-gray-300">
+			{props.name}
+		</span>
+	</div>
+);
+
+const WorkExperienceItemTechnologySplit = () => (
+	<div class="w-px h-4 bg-gray-300 dark:bg-gray-600"></div>
 );
 
 const Contact = () => (
@@ -469,7 +590,7 @@ function Footer() {
 
 	return (
 		<footer class="pt-8 border-t border-gray-200 dark:border-gray-700">
-			<div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4 sm:mb-2">
+			<div class="flex flex-col sm:flex-row items-center justify-between gap-4">
 				<p class="text-gray-500 dark:text-gray-400">
 					© {currentYear()} Oscar Beaumont
 				</p>
@@ -493,19 +614,18 @@ export function ThemeSwitcher() {
 				aria-label={`Current theme: ${colorMode() === "light" ? "Light" : colorMode() === "dark" ? "Dark" : "System"}. Click to cycle themes.`}
 			>
 				{colorMode() === "light" ? (
-					<IconSun class="w-4 h-4 text-gray-700 dark:text-gray-300" />
+					<HeroSun class="w-4 h-4 text-gray-700 dark:text-gray-300" />
 				) : (
-					<IconMoon class="w-4 h-4 text-gray-700 dark:text-gray-300" />
+					<HeroMoon class="w-4 h-4 text-gray-700 dark:text-gray-300" />
 				)}
 			</button>
 			<button
 				type="button"
 				onClick={() => setColorMode("system")}
-				// disabled={colorMode() === "system"}
 				class="p-2.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 border border-gray-200 dark:border-gray-700"
 				aria-label="Use system theme"
 			>
-				<IconComputerDesktop class="w-4 h-4 text-gray-700 dark:text-gray-300" />
+				<HeroDesktop class="w-4 h-4 text-gray-700 dark:text-gray-300" />
 			</button>
 		</div>
 	);

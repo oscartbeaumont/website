@@ -3,10 +3,10 @@ import { cloudflare } from "@cloudflare/vite-plugin";
 import { vitePlugin as OGPlugin } from "@solid-mediakit/og/unplugin";
 import { solidStart } from "@solidjs/start/config";
 import tailwindcss from "@tailwindcss/vite";
+import { visualizer } from "rollup-plugin-visualizer";
 import Icons from "unplugin-icons/vite";
 import { defineConfig } from "vite";
 import { headersPlugin } from "./src/vite-plugin-headers";
-import { visualizer } from "rollup-plugin-visualizer";
 
 export default defineConfig({
 	plugins: [
