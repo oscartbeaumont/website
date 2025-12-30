@@ -36,6 +36,7 @@
 		"@iconify-json/simple-icons": "^1.2.64",
 		"@tailwindcss/vite": "^4.1.18",
 		"@types/node": "^25.0.3",
+		"rollup-plugin-visualizer": "^6.0.5",
 		"tailwindcss": "^4.1.18",
 		"typescript": "^5.9.3",
 		"unplugin-icons": "^22.5.0",

@@ -36,7 +36,8 @@ export default createHandler(
 			"Content-Security-Policy",
 			[
 				`default-src 'none'`,
-				`script-src 'nonce-${nonce}'`,
+				// TODO: `strict-dynamic` is required for `import` to work (required for SPA routing)
+				`script-src 'strict-dynamic' 'nonce-${nonce}'`,
 				`img-src 'self'`,
 				`style-src 'self' 'unsafe-inline'`,
 				`font-src 'self'`,
