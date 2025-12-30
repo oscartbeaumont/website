@@ -11,7 +11,7 @@ export function RandomDogPhoto() {
         "x-api-key": THE_DOG_API_KEY,
       },
     }).then(async (res) => {
-      const body = await res.json();
+      const body: any = await res.json();
       setImgUrl(body[0].url);
     });
   });
@@ -24,12 +24,12 @@ export function RandomDogPhoto() {
           version="1.1"
           id="L9"
           xmlns="http://www.w3.org/2000/svg"
-          // @ts-expect-error: SolidJS is probs missing it?
           xmlns:xlink="http://www.w3.org/1999/xlink"
           x="0px"
           y="0px"
           viewBox="0 0 100 100"
           enable-background="new 0 0 0 0"
+          // @ts-expect-error: SolidJS is probs missing it?
           xml:space="preserve"
           class="w-24 m-auto"
         >

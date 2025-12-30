@@ -22,11 +22,11 @@ const parse = (raw: string | null, initialValue: any) => {
   }
 };
 
-export const createMutableLocalStorage = <T extends StoreNode>(
+export const createMutableLocalStorage = <T extends StoreNode = {}>(
   name: string,
   initialValue?: T
-) => {
-  if (import.meta.env.SSR) return createMutable(initialValue ?? {});
+): T => {
+  if (import.meta.env.SSR) return createMutable(initialValue ?? {} as T);
 
   const mutable = createMutable<T>(
     parse(localStorage.getItem(name), initialValue ?? {})

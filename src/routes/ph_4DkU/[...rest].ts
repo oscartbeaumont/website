@@ -1,7 +1,7 @@
 // This endpoint proxies requests to PostHog's API.
 // It has a random name to make blocking less likely.
 
-import type { APIEvent } from "@solidjs/start";
+import type { APIEvent } from "@solidjs/start/server";
 
 async function handler(e: APIEvent) {
     // Determine target hostname based on static or dynamic ingestion

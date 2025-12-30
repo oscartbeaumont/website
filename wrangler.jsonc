@@ -17,9 +17,5 @@
     {
       "binding": "KV"
     }
-  ],
-  "vars": {
-    "PNPM_VERSION": "10.26.2",
-    "NODE_VERSION": "24.12.0"
-  }
+  ]
 }
