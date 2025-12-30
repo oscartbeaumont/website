@@ -9,9 +9,7 @@ import path from "node:path";
 
 export default defineConfig({
   plugins: [
-    solidStart({
-      middleware: "./src/middleware.ts"
-    }),
+    solidStart(),
     OGPlugin(),
     tailwindcss(),
     Icons({
