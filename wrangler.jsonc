@@ -5,7 +5,7 @@
 	"compatibility_date": "2025-10-11",
 	"compatibility_flags": ["nodejs_compat"],
 	"route": {
-		"pattern": "webv5.otbeaumont.me",
+		"pattern": "otbeaumont.me",
 		"custom_domain": true
 	},
 	"observability": {
