@@ -15,29 +15,26 @@
     "@solid-mediakit/og": "^0.4.1",
     "@solid-primitives/date": "^2.1.4",
     "@solidjs/meta": "^0.29.4",
-    "@solidjs/router": "^0.15.3",
-    "@solidjs/start": "^2.0.0-alpha.1",
+    "@solidjs/router": "^0.15.4",
+    "@solidjs/start": "2.0.0-alpha.1",
     "html2canvas": "^1.4.1",
-    "html2canvas-pro": "^1.5.12",
-    "jspdf": "^3.0.3",
-    "parse-duration": "^2.1.4",
-    "posthog-js": "^1.282.0",
+    "html2canvas-pro": "^1.6.2",
+    "jspdf": "^3.0.4",
+    "parse-duration": "^2.1.5",
+    "posthog-js": "^1.311.0",
     "solid-js": "^1.9.10"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "^1.13.18",
-    "@cloudflare/workers-types": "^4.20251014.0",
-    "@tailwindcss/vite": "^4.1.16",
-    "@types/node": "^24.9.2",
-    "tailwindcss": "^4.1.16",
+    "@cloudflare/vite-plugin": "^1.17.1",
+    "@cloudflare/workers-types": "^4.20251230.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "@types/node": "^25.0.3",
+    "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
-    "vite": "^7.1.12",
-    "wrangler": "^4.45.3"
+    "vite": "^7.3.0",
+    "wrangler": "^4.54.0"
   },
   "pnpm": {
-    "overrides": {
-      "vite-plugin-solid": "https://pkg.pr.new/vite-plugin-solid@228"
-    },
     "patchedDependencies": {
       "@vercel/og": "patches/@vercel__og.patch"
     }
