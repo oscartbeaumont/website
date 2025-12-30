@@ -154,22 +154,22 @@ const SectionTitle = (props: ParentProps) => <h2 class="text-sm font-bold text-n
   {props.children}
 </h2>;
 
+const skills = [
+  { name: "Rust", href: "https://www.rust-lang.org", logo: LogosRust },
+  { name: "TypeScript", href: "https://www.typescriptlang.org", logo: LogosTypescript },
+  { name: "SolidJS", href: "https://www.solidjs.com", logo: LogosSolid },
+  { name: "Tanstack Query", href: "https://tanstack.com/query", logo: LogosTanstack },
+  { name: "Tailwind", href: "https://tailwindcss.com", logo: LogosTailwind },
+  { name: "Tauri", href: "https://tauri.app", logo: LogosTauri },
+  { name: "tRPC", href: "https://trpc.io", logo: LogosTrpc },
+  { name: "Drizzle ORM", href: "https://orm.drizzle.team", logo: LogosDrizzle },
+  { name: "PostHog", href: "https://posthog.com", logo: LogosPostHog },
+  { name: "PlanetScale", href: "https://planetscale.com", logo: LogosPlanetscale },
+];
+
 const Skills = () => {
   let containerRef: HTMLDivElement | undefined;
-  // const [_, setScrollPosition] = createSignal(0);
 
-  const skills = [
-    { name: "Rust", href: "https://www.rust-lang.org", logo: LogosRust },
-    { name: "TypeScript", href: "https://www.typescriptlang.org", logo: LogosTypescript },
-    { name: "SolidJS", href: "https://www.solidjs.com", logo: LogosSolid },
-    { name: "Tanstack Query", href: "https://tanstack.com/query", logo: LogosTanstack },
-    { name: "Tailwind", href: "https://tailwindcss.com", logo: LogosTailwind },
-    { name: "Tauri", href: "https://tauri.app", logo: LogosTauri },
-    { name: "tRPC", href: "https://trpc.io", logo: LogosTrpc },
-    { name: "Drizzle ORM", href: "https://orm.drizzle.team", logo: LogosDrizzle },
-    { name: "PostHog", href: "https://posthog.com", logo: LogosPostHog },
-    { name: "PlanetScale", href: "https://planetscale.com", logo: LogosPlanetscale },
-  ];
 
   onMount(() => {
     const itemWidth = 120; // Approximate width of each skill item
@@ -194,7 +194,7 @@ const Skills = () => {
     <section class="pb-8">
       <SectionTitle>Skills</SectionTitle>
 
-      <div class="relative overflow-hidden">
+      <div class="relative overflow-hidden overflow-x-auto mask-[linear-gradient(to_right,transparent,black_20%,black_80%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]">
         <div
           ref={containerRef}
           class="flex gap-6 overflow-x-hidden"
