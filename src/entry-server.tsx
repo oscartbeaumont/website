@@ -4,18 +4,23 @@ import { randomBytes } from "node:crypto";
 import _headers from "virtual:_headers";
 import { HttpHeader } from "@solidjs/start";
 import { createHandler, StartServer } from "@solidjs/start/server";
+import { ColorModeScript } from "@kobalte/core";
 
 export default createHandler(
-	() => (
+	(event) => (
 		<StartServer
 			document={({ assets, children, scripts }) => (
-				<html lang="en">
+				<html lang="en" class="dark:bg-gray-900 scheme-light dark:scheme-dark">
 					<head>
 						<meta charset="utf-8" />
 						<meta
 							name="viewport"
 							content="width=device-width, initial-scale=1"
 						/>
+						{event.nativeEvent.url.pathname !== "/invoicer" && (
+							<ColorModeScript storageType="localStorage" nonce={event.nonce} />
+						)}
+
 						<HttpHeader name="Cache-Control" value="no-store, no-transform" />
 
 						{assets}

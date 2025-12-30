@@ -1,7 +1,7 @@
 import { createDateNow } from "@solid-primitives/date";
 import { Meta, Title } from "@solidjs/meta";
 import parse from "parse-duration";
-import { For, Match, Show, Switch } from "solid-js";
+import { For, Match, onCleanup, onMount, Show, Switch } from "solid-js";
 import { CaptureAsPdf, defaultDocumentStyles } from "./CaptureAsPdf";
 import { createMutableLocalStorage } from "./util";
 
@@ -38,6 +38,13 @@ function initState() {
 
 export default function Page() {
 	const state = initState();
+
+	// This will break the theme until the page is reloaded but that's fineeeee
+	onMount(() => {
+		// This overrides the Kobalte script
+		document.documentElement.setAttribute("data-kb-theme", "light");
+		document.documentElement.style.colorScheme = "light";
+	});
 
 	return (
 		<div class="flex justify-between">

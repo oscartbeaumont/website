@@ -14,22 +14,22 @@ const Header = () => (
 	<header class="mb-8">
 		<a
 			href="/"
-			class="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors duration-200 mb-4 text-sm font-medium"
+			class="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-200 mb-4 text-sm font-medium"
 		>
 			<span>←</span>
 			<span>Back to Home</span>
 		</a>
-		<h1 class="text-5xl md:text-6xl font-bold mb-3 tracking-tight">
+		<h1 class="text-5xl md:text-6xl font-bold mb-3 tracking-tight text-gray-900 dark:text-gray-100">
 			Brand Assets
 		</h1>
-		<p class="text-xl text-gray-600 mb-4 leading-relaxed font-medium">
+		<p class="text-xl text-gray-600 dark:text-gray-400 mb-4 leading-relaxed font-medium">
 			Logos, photos, and other media assets
 		</p>
 	</header>
 );
 
 const SectionTitle = (props: ParentProps) => (
-	<h2 class="text-sm font-bold text-neutral-400 uppercase tracking-wider mb-8">
+	<h2 class="text-sm font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider mb-8">
 		{props.children}
 	</h2>
 );
@@ -92,8 +92,8 @@ const Assets = () => (
 );
 
 const AssetCard = (props: { asset: Asset }) => (
-	<div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-200">
-		<div class="bg-gray-50 p-4 flex items-center justify-center min-h-[200px]">
+	<div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden hover:shadow-lg dark:hover:shadow-gray-900/50 transition-all duration-200 bg-white dark:bg-gray-800">
+		<div class="bg-gray-50 dark:bg-gray-900/50 p-4 flex items-center justify-center min-h-[200px] border-b border-gray-100 dark:border-gray-700">
 			{props.asset.type === "image" ? (
 				<img
 					src={props.asset.path}
@@ -101,14 +101,14 @@ const AssetCard = (props: { asset: Asset }) => (
 					class="max-h-[180px] max-w-full object-contain"
 				/>
 			) : (
-				<div class="flex items-center justify-center text-gray-400">
+				<div class="flex items-center justify-center text-gray-400 dark:text-gray-500">
 					<span class="text-4xl">{getFileIcon(props.asset.type)}</span>
 				</div>
 			)}
 		</div>
-		<div class="p-4 bg-white">
+		<div class="p-4">
 			<div
-				class="font-medium text-gray-900 mb-2 truncate"
+				class="font-medium text-gray-900 dark:text-gray-100 mb-3 truncate"
 				title={props.asset.filename}
 			>
 				{props.asset.filename}
@@ -117,7 +117,7 @@ const AssetCard = (props: { asset: Asset }) => (
 				<a
 					href={props.asset.path}
 					download={props.asset.filename}
-					class="flex-1 text-center px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors duration-200 text-sm font-medium"
+					class="flex-1 text-center px-4 py-2 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 rounded-md hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors duration-200 text-sm font-medium"
 				>
 					Download
 				</a>
@@ -125,7 +125,7 @@ const AssetCard = (props: { asset: Asset }) => (
 					href={props.asset.path}
 					target="_blank"
 					rel="noopener"
-					class="flex-1 text-center px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors duration-200 text-sm font-medium"
+					class="flex-1 text-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 text-sm font-medium"
 				>
 					View
 				</a>

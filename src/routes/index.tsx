@@ -29,9 +29,14 @@ import LogosTypescript from "~icons/logos/typescript-icon";
 import LogosVite from "~icons/logos/vitejs";
 import LogosPlanetscale from "~icons/simple-icons/planetscale";
 import LogosTanstack from "~icons/simple-icons/tanstack";
+import IconMoon from "~icons/heroicons/moon-20-solid";
+import IconSun from "~icons/heroicons/sun-20-solid";
+import IconComputerDesktop from "~icons/heroicons/computer-desktop-20-solid";
+
 import imageUrl from "./assets/logo.jpeg";
 import mattraxLogoUrl from "./assets/matrax-logo.png";
 import spectaLogoUrl from "./assets/specta-logo.png";
+import { useColorMode } from "@kobalte/core";
 
 export default function Home() {
 	return (
@@ -47,7 +52,7 @@ export default function Home() {
 }
 
 export const Layout = (props: ParentProps) => (
-	<div class="min-h-screen bg-white text-gray-900">
+	<div class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
 		<div class="max-w-4xl mx-auto px-6 py-12">
 			{props.children}
 
@@ -63,11 +68,11 @@ function Header() {
 		<header class="mb-8">
 			<div class="flex flex-col md:flex-row items-center gap-8 mb-8">
 				<div class="relative">
-					<div class="absolute inset-0 rounded-full bg-gray-200 animate-pulse"></div>
+					<div class="absolute inset-0 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
 					<img
 						src={imageUrl}
 						alt="Oscar Beaumont"
-						class="relative rounded-full h-36 w-36 border-2 border-gray-50 shadow-sm"
+						class="relative rounded-full h-36 w-36 border-2 border-gray-50 dark:border-gray-800 shadow-sm"
 						onContextMenu={(e) => {
 							e.preventDefault();
 							navigate("/brand");
@@ -78,7 +83,7 @@ function Header() {
 					<h1 class="text-5xl md:text-6xl font-bold mb-3 tracking-tight">
 						Oscar Beaumont
 					</h1>
-					<p class="text-xl text-gray-600 mb-4 leading-relaxed font-medium">
+					<p class="text-xl text-gray-600 dark:text-gray-400 mb-4 leading-relaxed font-medium">
 						Software Engineer{" "}
 						<span class="text-md font-light">
 							from{" "}
@@ -86,7 +91,7 @@ function Header() {
 								href="https://maps.app.goo.gl/5F1tMoTEUg9WpGXW8"
 								target="_blank"
 								rel="noopener"
-								class="hover:text-[#00A5AF]"
+								class="hover:text-[#00A5AF] dark:hover:text-[#00D4E0]"
 							>
 								Western Australia
 							</a>
@@ -129,7 +134,7 @@ const SocialLink = (props: {
 		target="_blank"
 		rel="noopener noreferrer"
 		class={clsx(
-			"inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors duration-200 brightness-0 hover:brightness-100",
+			"inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-200 brightness-0 hover:brightness-100",
 			props.class,
 		)}
 	>
@@ -144,14 +149,14 @@ function About() {
 
 	return (
 		<section class="pb-8">
-			<div class="prose prose-gray max-w-none text-gray-700 leading-relaxed text-lg">
+			<div class="prose prose-gray max-w-none text-gray-700 dark:text-gray-300 leading-relaxed text-lg">
 				<p>
 					I'm a self-taught software engineer passionate about building tools
 					that empower people. With {timeago()} years of professional experience
 					working full-stack on everything from webapps to desktop apps and
 					building with many languages including{" "}
 					<a
-						class="font-semibold hover:text-[#B7410E]"
+						class="font-semibold hover:text-[#B7410E] dark:hover:text-[#E6886C]"
 						href="https://www.rust-lang.org"
 						target="_blank"
 						rel="noopener"
@@ -160,7 +165,7 @@ function About() {
 					</a>{" "}
 					and{" "}
 					<a
-						class="font-semibold hover:text-[#3178C6]"
+						class="font-semibold hover:text-[#3178C6] dark:hover:text-[#5B9DD9]"
 						href="https://www.typescriptlang.org"
 						target="_blank"
 						rel="noopener"
@@ -247,12 +252,16 @@ const ProjectPanel = (props: {
 				class="w-12 object-contain"
 			/>
 			<div class="min-w-0 flex-1">
-				<div class="font-semibold text-gray-900">{props.name}</div>
-				<div class="text-sm text-gray-600">{props.description}</div>
+				<div class="font-semibold text-gray-900 dark:text-gray-100">
+					{props.name}
+				</div>
+				<div class="text-sm text-gray-600 dark:text-gray-400">
+					{props.description}
+				</div>
 			</div>
 		</a>
 		<div class="flex items-center gap-3 shrink-0">
-			<div class="flex items-center gap-1 text-sm text-gray-500">
+			<div class="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
 				{props.right}
 			</div>
 		</div>
@@ -260,7 +269,7 @@ const ProjectPanel = (props: {
 );
 
 const SectionTitle = (props: ParentProps) => (
-	<h2 class="text-sm font-bold text-neutral-400 uppercase tracking-wider mb-8">
+	<h2 class="text-sm font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider mb-8">
 		{props.children}
 	</h2>
 );
@@ -347,14 +356,14 @@ const SkillItem = (props: {
 		href={props.href}
 		target="_blank"
 		rel="noopener"
-		class="flex flex-col items-center gap-2 p-4 rounded-lg hover:bg-gray-50 transition-colors duration-200 group"
+		class="flex flex-col items-center gap-2 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200 group"
 		title={props.name}
 	>
 		{props.logo({
 			class:
 				"w-12 h-12 object-contain grayscale group-hover:grayscale-0 transition-all duration-200",
 		})}
-		<span class="text-xs font-medium text-gray-600 group-hover:text-gray-900 transition-colors duration-200">
+		<span class="text-xs font-medium text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors duration-200">
 			{props.name}
 		</span>
 	</a>
@@ -364,7 +373,7 @@ const Experience = () => (
 	<section class="pb-8">
 		<SectionTitle>Work Experience</SectionTitle>
 
-		<div class="relative border-l border-neutral-200 ml-3 space-y-12">
+		<div class="relative border-l border-neutral-200 dark:border-neutral-700 ml-3 space-y-12">
 			{/*<WorkExperienceItem
         company="CuePilot"
         link="https://www.cuepilot.com"
@@ -405,21 +414,21 @@ const WorkExperienceItem = (props: {
 }) => (
 	<div class="relative pl-8 md:pl-12 group">
 		{/* Timeline dot */}
-		<div class="absolute -left-1.25 top-2 h-2.5 w-2.5 rounded-full bg-neutral-300 ring-4 ring-white group-hover:bg-neutral-900 transition-colors duration-200"></div>
+		<div class="absolute -left-1.25 top-2 h-2.5 w-2.5 rounded-full bg-neutral-300 dark:bg-neutral-600 ring-4 ring-white dark:ring-gray-900 group-hover:bg-neutral-900 dark:group-hover:bg-neutral-300 transition-colors duration-200"></div>
 
 		<div class="group transition-transform duration-200 motion-safe:hover:translate-x-1">
 			<div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-2">
 				<a href={props.link} target="_blank" rel="noopener">
 					{props.title}
 				</a>
-				<span class="text-sm font-mono text-gray-500 tabular-nums">
+				<span class="text-sm font-mono text-gray-500 dark:text-gray-400 tabular-nums">
 					{props.period}
 				</span>
 			</div>
-			<div class="text-md font-medium text-neutral-700 mb-3">
+			<div class="text-md font-medium text-neutral-700 dark:text-neutral-300 mb-3">
 				{props.position}
 			</div>
-			<p class="text-neutral-600 leading-relaxed text-sm">
+			<p class="text-neutral-600 dark:text-neutral-400 leading-relaxed text-sm">
 				{props.description}
 			</p>
 		</div>
@@ -428,9 +437,9 @@ const WorkExperienceItem = (props: {
 
 const Contact = () => (
 	<section class="pb-8 mt-4">
-		<div class="prose prose-gray max-w-none text-gray-600 leading-relaxed text-md">
+		<div class="prose prose-gray max-w-none text-gray-600 dark:text-gray-400 leading-relaxed text-md">
 			<p>
-				If you’d like to collaborate or chat, feel free to email me at{" "}
+				If you'd like to collaborate or chat, feel free to email me at{" "}
 				<button
 					type="button"
 					class="cursor-pointer hover:underline"
@@ -450,8 +459,49 @@ function Footer() {
 	const currentYear = createMemo(() => date().getFullYear());
 
 	return (
-		<footer class="pt-8 border-t border-gray-200 text-center text-gray-500">
-			<p>© {currentYear()} Oscar Beaumont</p>
+		<footer class="pt-8 border-t border-gray-200 dark:border-gray-700">
+			<div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
+				<p class="text-gray-500 dark:text-gray-400">
+					© {currentYear()} Oscar Beaumont
+				</p>
+
+				<ThemeSwitcher />
+			</div>
 		</footer>
+	);
+}
+
+export function ThemeSwitcher() {
+	const { colorMode, setColorMode } = useColorMode();
+
+	const modes = [
+		{ value: "light" as const, icon: IconSun, label: "Light" },
+		{ value: "dark" as const, icon: IconMoon, label: "Dark" },
+		{ value: "system" as const, icon: IconComputerDesktop, label: "System" },
+	];
+
+	return (
+		<fieldset
+			class="inline-flex gap-1 p-1 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
+			aria-label="Theme selector"
+		>
+			{modes.map((mode) => (
+				<button
+					type="button"
+					onClick={() => setColorMode(mode.value)}
+					class={clsx(
+						"p-2 rounded-md transition-all duration-200 text-sm font-medium",
+						colorMode() === mode.value
+							? "bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm"
+							: "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-750",
+					)}
+					title={`${mode.label} mode`}
+					aria-label={`Switch to ${mode.label} mode`}
+					aria-pressed={colorMode() === mode.value}
+				>
+					<mode.icon class="w-4 h-4" />
+				</button>
+			))}
+		</fieldset>
 	);
 }
