@@ -459,7 +459,7 @@ const Experience = () => (
 
 			<WorkExperienceItem
 				title={
-					<h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-neutral-700">
+					<h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-neutral-700 dark:group-hover:text-neutral-300">
 						Freelancer
 					</h3>
 				}
@@ -553,7 +553,7 @@ const WorkExperienceItemTechnology = (props: {
 }) => (
 	<div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
 		{props.logo({ class: "w-4 h-4" })}
-		<span class="text-xs font-medium text-gray-700 dark:text-gray-300">
+		<span class="text-xs font-medium text-gray-700 dark:text-gray-300 text-nowrap">
 			{props.name}
 		</span>
 	</div>
