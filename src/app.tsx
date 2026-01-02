@@ -6,6 +6,7 @@ import { Suspense } from "solid-js";
 import { getRequestEvent, isServer } from "solid-js/web";
 import "./app.css";
 import openGraphImage from "./assets/og.png";
+import { openGraphImageSize } from "./constants";
 
 const title = "Oscar Beaumont";
 const description =
@@ -40,8 +41,14 @@ export default function App() {
 							<Meta property="og:url" content={canonical} />
 						)}
 						<Meta property="og:image" content={`${origin}${openGraphImage}`} />
-						<Meta property="og:image:width" content="1200" />
-						<Meta property="og:image:height" content="630" />
+						<Meta
+							property="og:image:width"
+							content={openGraphImageSize[0].toString()}
+						/>
+						<Meta
+							property="og:image:height"
+							content={openGraphImageSize[1].toString()}
+						/>
 						<Meta property="og:image:type" content="image/png" />
 					</ColorModeProvider>
 				</MetaProvider>

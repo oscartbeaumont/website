@@ -2,6 +2,7 @@
 
 import React, { type JSX } from "react";
 import { ImageResponse } from "@takumi-rs/image-response";
+import { openGraphImageSize } from "./constants";
 
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -75,8 +76,8 @@ async function generateOGImage() {
 			</div>
 		</div>,
 		{
-			width: 1200,
-			height: 630,
+			width: openGraphImageSize[0],
+			height: openGraphImageSize[1],
 			format: "png",
 		},
 	);
