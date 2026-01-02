@@ -5,6 +5,7 @@ import { FileRoutes } from "@solidjs/start/router";
 import { Suspense } from "solid-js";
 import { getRequestEvent, isServer } from "solid-js/web";
 import "./app.css";
+import openGraphImage from "./assets/og.png";
 
 const title = "Oscar Beaumont";
 const description =
@@ -38,14 +39,8 @@ export default function App() {
 						{import.meta.env.PROD && (
 							<Meta property="og:url" content={canonical} />
 						)}
-
-						{/* TODO: Replace this with Solid OpenGraph */}
-						<Meta property="og:image" content={`${origin}/assets/me.jpg`} />
-						{/*<OpenGraph origin={origin}>
-            <DynamicImage>
-              <div>This is very cool!</div>
-            </DynamicImage>
-          </OpenGraph>*/}
+						<Meta property="og:image" content={`${origin}${openGraphImage}`} />
+						<Meta property="debug" content={openGraphImage} />
 					</ColorModeProvider>
 				</MetaProvider>
 			)}

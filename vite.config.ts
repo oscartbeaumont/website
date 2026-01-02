@@ -1,6 +1,5 @@
 import path from "node:path";
 import { cloudflare } from "@cloudflare/vite-plugin";
-import { vitePlugin as OGPlugin } from "@solid-mediakit/og/unplugin";
 import { solidStart } from "@solidjs/start/config";
 import tailwindcss from "@tailwindcss/vite";
 import { visualizer } from "rollup-plugin-visualizer";
@@ -12,8 +11,11 @@ import { headersPlugin } from "./src/vite-plugin-headers";
 
 export default defineConfig({
 	plugins: [
-		solidStart(),
-		OGPlugin(),
+		solidStart({
+			solid: {
+				exclude: ["src/routes/og.tsx"],
+			},
+		}),
 		tailwindcss(),
 		FixedAutoImport({
 			dts: "src/auto-imports.d.ts",
@@ -31,7 +33,7 @@ export default defineConfig({
 		cloudflare({ viteEnvironment: { name: "ssr" } }),
 		headersPlugin(),
 		visualizer({
-			emitFile: true,
+			emitFile: process.env.CI !== undefined,
 			filename: "stats.html",
 			gzipSize: true,
 			brotliSize: true,

@@ -17,6 +17,7 @@ export default createHandler(
 							name="viewport"
 							content="width=device-width, initial-scale=1"
 						/>
+						{/* TODO: This is a little cursed */}
 						{event.nativeEvent.url.pathname !== "/invoicer" && (
 							<ColorModeScript storageType="localStorage" nonce={event.nonce} />
 						)}

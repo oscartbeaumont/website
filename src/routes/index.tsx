@@ -4,6 +4,7 @@ import { useNavigate } from "@solidjs/router";
 import clsx from "clsx";
 import {
 	createMemo,
+	For,
 	type JSX,
 	onCleanup,
 	onMount,
@@ -11,9 +12,9 @@ import {
 	Show,
 } from "solid-js";
 
-import imageUrl from "./assets/logo.jpeg";
-import mattraxLogoUrl from "./assets/matrax-logo.png";
-import spectaLogoUrl from "./assets/specta-logo.png";
+import imageUrl from "../assets/logo.jpeg";
+import mattraxLogoUrl from "../assets/matrax-logo.png";
+import spectaLogoUrl from "../assets/specta-logo.png";
 
 export default function Home() {
 	return (
@@ -339,15 +340,17 @@ const Skills = () => {
 					style={{ "will-change": "transform" }}
 				>
 					<div ref={containerRef} class="flex gap-6 shrink-0">
-						{skills.map((skill) => (
-							<div class="shrink-0">
-								<SkillItem
-									name={skill.name}
-									href={skill.href}
-									logo={skill.logo}
-								/>
-							</div>
-						))}
+						<For each={skills}>
+							{(skill) => (
+								<div class="shrink-0">
+									<SkillItem
+										name={skill.name}
+										href={skill.href}
+										logo={skill.logo}
+									/>
+								</div>
+							)}
+						</For>
 					</div>
 				</div>
 			</div>
