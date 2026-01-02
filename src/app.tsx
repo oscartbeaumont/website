@@ -51,6 +51,17 @@ export default function App() {
 						/>
 						<Meta property="og:image:type" content="image/png" />
 						<Meta name="twitter:card" content="summary_large_image" />
+
+						<Meta name="twitter:image" content={`${origin}${openGraphImage}`} />
+						<Meta
+							name="twitter:image:width"
+							content={openGraphImageSize[0].toString()}
+						/>
+						<Meta
+							name="twitter:image:height"
+							content={openGraphImageSize[1].toString()}
+						/>
+						<Meta name="twitter:image:type" content="image/png" />
 					</ColorModeProvider>
 				</MetaProvider>
 			)}
