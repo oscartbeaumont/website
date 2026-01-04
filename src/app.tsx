@@ -50,18 +50,23 @@ export default function App() {
 							content={openGraphImageSize[1].toString()}
 						/>
 						<Meta property="og:image:type" content="image/png" />
-						<Meta name="twitter:card" content="summary_large_image" />
+						<Meta property="og:image:alt" content="Oscar Beaumont" />
+						<Meta property="twitter:card" content="summary_large_image" />
 
-						<Meta name="twitter:image" content={`${origin}${openGraphImage}`} />
 						<Meta
-							name="twitter:image:width"
+							property="twitter:image"
+							content={`${origin}${openGraphImage}`}
+						/>
+						<Meta
+							property="twitter:image:width"
 							content={openGraphImageSize[0].toString()}
 						/>
 						<Meta
-							name="twitter:image:height"
+							property="twitter:image:height"
 							content={openGraphImageSize[1].toString()}
 						/>
-						<Meta name="twitter:image:type" content="image/png" />
+						<Meta property="twitter:image:type" content="image/png" />
+						<Meta property="twitter:image:alt" content="Oscar Beaumont" />
 					</ColorModeProvider>
 				</MetaProvider>
 			)}
