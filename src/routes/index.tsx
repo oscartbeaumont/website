@@ -136,10 +136,10 @@ function About() {
 		<section class="pb-8">
 			<div class="prose prose-gray max-w-none text-gray-700 dark:text-gray-300 leading-relaxed text-lg">
 				<p>
-					I'm a self-taught software engineer passionate about building tools
-					that empower people. With {yearsOfExperience()} years of professional
-					experience working full-stack on everything from webapps to desktop
-					apps while building with many languages including{" "}
+					I'm a self-taught software engineer who is passionate about building
+					tools that empower people. With {yearsOfExperience()} years of
+					professional experience working on everything from webapps to desktop
+					apps and building with many languages including{" "}
 					<a
 						class="font-semibold hover:text-[#B7410E]"
 						href="https://www.rust-lang.org"
@@ -394,7 +394,7 @@ const Experience = () => (
 				link="https://cap.so"
 				position="Contractor - Full Stack"
 				period="Jul 2025 — Nov 2025"
-				description="Cap is the open source screen recorder and sharing tool. I worked on the desktop application and web backend including working with GPU shaders to render higher quality cursors, building a tracking system for upload progress, overhauling the recording flow UI, and moving the camera preview to native GPU rendering."
+				description="Cap is an open source screen recording and sharing tool. I worked on the desktop application and web backend including working with GPU shaders to render higher quality cursors, building a tracking system for the progress of uploading files, overhauling the recording flow GUI, and moving the camera preview to native GPU rendering."
 				technologies={() => (
 					<>
 						<WorkExperienceItemTechnology name="Tauri" logo={IconLogosTauri} />
@@ -431,7 +431,7 @@ const Experience = () => (
 				link="https://crabnebula.dev"
 				position="Contractor - Full Stack"
 				period="Apr 2025 — Jun 2025"
-				description="I worked on client projects and also the Specta. I worked on an AI computer control application and also ran training sessions for a development team on using Tauri effectively."
+				description="I worked on client projects, conducted Rust training sessions and contributed to open-source. I contributed to an AI chat-based computer automation application built in Tauri and also conducted training sessions for a 8-15 person development team on using Tauri and Rust effectively."
 			/>
 
 			<WorkExperienceItem
@@ -467,7 +467,7 @@ const Experience = () => (
 					</h3>
 				}
 				period="Aug 2020 — May 2022"
-				description="I worked for multiple clients to bring their vision to life. I built multiple Windows Device Management servers, a dash camera manager application in Electron and worked on a web interface for managing a telephony system."
+				description="I worked with multiple clients to bring their vision to life. I built multiple Windows Device Management servers, a car dash camera manager application in Electron and worked on a modern web interface for managing a telephony system."
 				technologies={() => (
 					<>
 						<WorkExperienceItemTechnology
