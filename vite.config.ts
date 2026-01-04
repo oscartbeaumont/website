@@ -11,11 +11,7 @@ import { headersPlugin } from "./src/vite-plugin-headers";
 
 export default defineConfig({
 	plugins: [
-		solidStart({
-			solid: {
-				exclude: ["src/routes/og.tsx"],
-			},
-		}),
+		solidStart(),
 		tailwindcss(),
 		FixedAutoImport({
 			dts: "src/auto-imports.d.ts",
