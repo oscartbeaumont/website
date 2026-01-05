@@ -36,6 +36,24 @@ export default createHandler(
 		/>
 	),
 	(event) => {
+		// WWW-Authenticate middleware for /sudo route
+		const url = new URL(event.request.url);
+		if (url.pathname === "/sudo" || url.pathname.startsWith("/sudo/")) {
+			const authHeader = event.request.headers.get("Authorization");
+
+			if (!authHeader || !authHeader.startsWith("Basic ")) {
+				// Send 401 Unauthorized with WWW-Authenticate header
+				const response = new Response("Unauthorized", {
+					status: 401,
+					headers: {
+						"WWW-Authenticate": 'Basic realm="sudo", charset="UTF-8"',
+						"Content-Type": "text/plain",
+					},
+				});
+				throw response;
+			}
+		}
+
 		// Nonce CSP
 		const nonce = randomBytes(16).toString("base64");
 		event.response.headers.set(

@@ -5,6 +5,7 @@ declare namespace Cloudflare {
 	interface Env {
 		KV: KVNamespace;
 		SUDO_PASSWORD_HASH: "855bfd95136a6b47b4a24449ff31f9f270cf3c4b0158785a5f7bb44a0dee76a0";
+		SUDO_USERNAME: "admin";
 	}
 }
 interface Env extends Cloudflare.Env {}
@@ -12,7 +13,7 @@ type StringifyValues<EnvType extends Record<string, unknown>> = {
 	[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;
 };
 declare namespace NodeJS {
-	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "SUDO_PASSWORD_HASH">> {}
+	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "SUDO_PASSWORD_HASH" | "SUDO_USERNAME">> {}
 }
 
 // Begin runtime types

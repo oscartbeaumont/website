@@ -1,36 +1,62 @@
-import { redirect } from "@solidjs/router";
 import { action } from "@solidjs/router";
 import { createSignal, onMount } from "solid-js";
 import { getRequestEvent } from "solid-js/web";
 import { env } from "cloudflare:workers";
 
-// Password verification function
-async function verifyPassword(password: string): Promise<boolean> {
-	const encoder = new TextEncoder();
-	const data = encoder.encode(password);
-	const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-	const hashArray = Array.from(new Uint8Array(hashBuffer));
-	const hashHex = hashArray
-		.map((b) => b.toString(16).padStart(2, "0"))
-		.join("");
-	return hashHex === env.SUDO_PASSWORD_HASH;
+/**
+ * Sudo route with Basic authentication
+ *
+ * Usage:
+ * 1. Access /sudo in browser - you'll get a 401 with WWW-Authenticate header
+ * 2. Use a tool like curl with Basic auth:
+ *    curl -u username:password https://yoursite.com/sudo
+ * 3. The username must match SUDO_USERNAME and password should hash to SUDO_PASSWORD_HASH
+ */
+
+// Basic auth verification function
+async function verifyBasicAuth(authHeader: string): Promise<boolean> {
+	if (!authHeader.startsWith("Basic ")) {
+		return false;
+	}
+
+	try {
+		// Decode the base64 credentials
+		const base64Credentials = authHeader.substring(6); // Remove "Basic " prefix
+		const credentials = atob(base64Credentials);
+		const [username, password] = credentials.split(":");
+
+		// Check username
+		if (username !== env.SUDO_USERNAME) {
+			return false;
+		}
+
+		// Hash the password and compare
+		const encoder = new TextEncoder();
+		const data = encoder.encode(password);
+		const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+		const hashArray = Array.from(new Uint8Array(hashBuffer));
+		const hashHex = hashArray
+			.map((b) => b.toString(16).padStart(2, "0"))
+			.join("");
+
+		return hashHex === env.SUDO_PASSWORD_HASH;
+	} catch {
+		return false;
+	}
 }
 
-const getLatestConfigAction = action(async (formData: FormData) => {
+const getLatestConfigAction = action(async () => {
 	"use server";
 
 	const auth = getRequestEvent()?.request.headers.get("Authorization");
-	if (!auth) throw redirect("/login");
-
-	const password = formData.get("password") as string;
-	if (!password) {
-		return { error: "Password is required" };
+	if (!auth || !auth.startsWith("Basic ")) {
+		return { error: "Basic authentication required" };
 	}
 
-	// Verify password
-	const isValidPassword = await verifyPassword(password);
-	if (!isValidPassword) {
-		return { error: "Invalid password" };
+	// Verify Basic authentication
+	const isValidAuth = await verifyBasicAuth(auth);
+	if (!isValidAuth) {
+		return { error: "Invalid username or password" };
 	}
 
 	try {
@@ -46,17 +72,14 @@ const writeConfigAction = action(async (formData: FormData) => {
 	"use server";
 
 	const auth = getRequestEvent()?.request.headers.get("Authorization");
-	if (!auth) throw redirect("/login");
-
-	const password = formData.get("password") as string;
-	if (!password) {
-		return { error: "Password is required" };
+	if (!auth || !auth.startsWith("Basic ")) {
+		return { error: "Basic authentication required" };
 	}
 
-	// Verify password
-	const isValidPassword = await verifyPassword(password);
-	if (!isValidPassword) {
-		return { error: "Invalid password" };
+	// Verify Basic authentication
+	const isValidAuth = await verifyBasicAuth(auth);
+	if (!isValidAuth) {
+		return { error: "Invalid username or password" };
 	}
 
 	try {
@@ -74,6 +97,11 @@ const writeConfigAction = action(async (formData: FormData) => {
 });
 
 export default function Page() {
+	// TODO: Actually check it's correct
+	// TODO: Make this not break hydration
+	if (getRequestEvent()?.request.headers.get("Authorization") === undefined)
+		return <p>Unauthorized!</p>;
+
 	const [hasLocalConfig, setHasLocalConfig] = createSignal(false);
 
 	// Check for localStorage config on mount
@@ -83,16 +111,8 @@ export default function Page() {
 	});
 
 	const handleGetConfig = async () => {
-		const password = prompt("Enter password:");
-		if (!password) {
-			return;
-		}
-
-		const formData = new FormData();
-		formData.append("password", password);
-
 		try {
-			const result = await getLatestConfigAction(formData);
+			const result = await getLatestConfigAction();
 			if (result.error) {
 				alert(`Error: ${result.error}`);
 			} else if (result.success) {
@@ -117,13 +137,7 @@ export default function Page() {
 			return;
 		}
 
-		const password = prompt("Enter password:");
-		if (!password) {
-			return;
-		}
-
 		const formData = new FormData();
-		formData.append("password", password);
 		formData.append("config", config);
 
 		try {
