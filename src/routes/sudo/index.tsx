@@ -45,7 +45,7 @@ async function verifyBasicAuth(authHeader: string): Promise<boolean> {
 	}
 }
 
-const getLatestConfigAction = action(async () => {
+const getLatestConfigAction = action(async (key: string) => {
 	"use server";
 
 	const auth = getRequestEvent()?.request.headers.get("Authorization");
@@ -60,7 +60,7 @@ const getLatestConfigAction = action(async () => {
 	}
 
 	try {
-		const config = await env.KV.get("invoicer");
+		const config = await env.KV.get(key);
 		return { success: true, config: config || undefined };
 	} catch (error) {
 		console.error("Failed to fetch configuration:", error);
@@ -83,12 +83,13 @@ const writeConfigAction = action(async (formData: FormData) => {
 	}
 
 	try {
+		const key = formData.get("key") as string;
 		const configJson = formData.get("config") as string;
-		if (!configJson) {
-			return { error: "No configuration found in localStorage" };
+		if (!configJson || !key) {
+			return { error: "No configuration or key provided" };
 		}
 
-		await env.KV.put("invoicer", configJson);
+		await env.KV.put(key, configJson);
 		return { success: true, message: "Configuration saved to KV" };
 	} catch (error) {
 		console.error("Failed to save configuration:", error);
@@ -102,26 +103,36 @@ export default function Page() {
 	if (getRequestEvent()?.request.headers.get("Authorization") === undefined)
 		return <p>Unauthorized!</p>;
 
-	const [hasLocalConfig, setHasLocalConfig] = createSignal(false);
+	const [hasInvoicerConfig, setHasInvoicerConfig] = createSignal(false);
+	const [hasTimeTrackerConfig, setHasTimeTrackerConfig] = createSignal(false);
 
 	// Check for localStorage config on mount
 	onMount(() => {
-		const config = localStorage.getItem("invoicer");
-		setHasLocalConfig(!!config);
+		const invoicerConfig = localStorage.getItem("invoicer");
+		setHasInvoicerConfig(!!invoicerConfig);
+
+		const timeTrackerConfig = localStorage.getItem("time-tracker");
+		setHasTimeTrackerConfig(!!timeTrackerConfig);
 	});
 
-	const handleGetConfig = async () => {
+	const handleGetConfig = async (key: string) => {
 		try {
-			const result = await getLatestConfigAction();
+			const result = await getLatestConfigAction(key);
 			if (result.error) {
 				alert(`Error: ${result.error}`);
 			} else if (result.success) {
 				if (result.config) {
-					localStorage.setItem("invoicer", result.config);
-					setHasLocalConfig(true);
-					alert("Configuration loaded from KV and saved to localStorage");
+					localStorage.setItem(key, result.config);
+					if (key === "invoicer") {
+						setHasInvoicerConfig(true);
+					} else if (key === "time-tracker") {
+						setHasTimeTrackerConfig(true);
+					}
+					alert(
+						`${key} configuration loaded from KV and saved to localStorage`,
+					);
 				} else {
-					alert("No configuration found in KV");
+					alert(`No ${key} configuration found in KV`);
 				}
 			}
 		} catch (error) {
@@ -130,14 +141,15 @@ export default function Page() {
 		}
 	};
 
-	const handleWriteConfig = async () => {
-		const config = localStorage.getItem("invoicer");
+	const handleWriteConfig = async (key: string) => {
+		const config = localStorage.getItem(key);
 		if (!config) {
-			alert("No configuration found in localStorage");
+			alert(`No ${key} configuration found in localStorage`);
 			return;
 		}
 
 		const formData = new FormData();
+		formData.append("key", key);
 		formData.append("config", config);
 
 		try {
@@ -156,31 +168,73 @@ export default function Page() {
 	return (
 		<div class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
 			<div class="max-w-2xl mx-auto px-6 py-12">
-				<div class="space-y-6">
+				<div class="space-y-8">
 					<h1 class="text-4xl font-bold mb-2">Sudo</h1>
-					<h3 class="text-2xl font-bold">Invoicer</h3>
 
-					<div class="flex space-x-4">
-						<button
-							type="button"
-							onClick={handleGetConfig}
-							class="bg-white dark:bg-gray-800 text-black dark:text-white font-bold uppercase rounded-md py-2 px-4 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
+					{/* Invoicer Section */}
+					<div class="space-y-4">
+						<a
+							href="/invoicer"
+							class="text-2xl font-bold hover:text-blue-600 dark:hover:text-blue-400 transition-colors inline-block"
 						>
-							Load Config from KV
-						</button>
+							Invoicer →
+						</a>
 
-						<button
-							type="button"
-							onClick={handleWriteConfig}
-							disabled={!hasLocalConfig()}
-							class={`font-bold uppercase rounded-md py-2 px-4 transition-colors duration-200 ${
-								hasLocalConfig()
-									? "bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
-									: "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600 cursor-not-allowed opacity-60"
-							}`}
+						<div class="flex space-x-4">
+							<button
+								type="button"
+								onClick={() => handleGetConfig("invoicer")}
+								class="bg-white dark:bg-gray-800 text-black dark:text-white font-bold uppercase rounded-md py-2 px-4 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
+							>
+								Load Config from KV
+							</button>
+
+							<button
+								type="button"
+								onClick={() => handleWriteConfig("invoicer")}
+								disabled={!hasInvoicerConfig()}
+								class={`font-bold uppercase rounded-md py-2 px-4 transition-colors duration-200 ${
+									hasInvoicerConfig()
+										? "bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+										: "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600 cursor-not-allowed opacity-60"
+								}`}
+							>
+								Save Config to KV
+							</button>
+						</div>
+					</div>
+
+					{/* Time Tracker Section */}
+					<div class="space-y-4">
+						<a
+							href="/sudo/time"
+							class="text-2xl font-bold hover:text-blue-600 dark:hover:text-blue-400 transition-colors inline-block"
 						>
-							Save Config to KV
-						</button>
+							Time Tracker →
+						</a>
+
+						<div class="flex space-x-4">
+							<button
+								type="button"
+								onClick={() => handleGetConfig("time-tracker")}
+								class="bg-white dark:bg-gray-800 text-black dark:text-white font-bold uppercase rounded-md py-2 px-4 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
+							>
+								Load Data from KV
+							</button>
+
+							<button
+								type="button"
+								onClick={() => handleWriteConfig("time-tracker")}
+								disabled={!hasTimeTrackerConfig()}
+								class={`font-bold uppercase rounded-md py-2 px-4 transition-colors duration-200 ${
+									hasTimeTrackerConfig()
+										? "bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+										: "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600 cursor-not-allowed opacity-60"
+								}`}
+							>
+								Save Data to KV
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
