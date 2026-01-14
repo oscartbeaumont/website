@@ -15,5 +15,9 @@
 		{
 			"binding": "KV"
 		}
-	]
+	],
+	"vars": {
+		"SUDO_USERNAME": "oscar",
+		"SUDO_PASSWORD_HASH": "855bfd95136a6b47b4a24449ff31f9f270cf3c4b0158785a5f7bb44a0dee76a0"
+	}
 }

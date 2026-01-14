@@ -7,6 +7,7 @@ import { getRequestEvent, isServer } from "solid-js/web";
 import "./app.css";
 import openGraphImage from "./assets/og.png";
 import { openGraphImageSize } from "./constants";
+import { SudoKeyListener } from "./components/SudoKeyListener";
 
 const title = "Oscar Beaumont";
 const description =
@@ -26,6 +27,7 @@ export default function App() {
 			root={(props) => (
 				<MetaProvider>
 					<ColorModeProvider storageManager={localStorageManager}>
+						<SudoKeyListener />
 						<Suspense>{props.children}</Suspense>
 
 						<Title>Oscar Beaumont</Title>
