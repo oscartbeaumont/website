@@ -20,7 +20,7 @@
 		"@solidjs/start": "2.0.0-alpha.1",
 		"clsx": "^2.1.1",
 		"html2canvas": "^1.4.1",
-		"html2canvas-pro": "^1.6.2",
+		"html2canvas-pro": "^1.6.4",
 		"jspdf": "^3.0.4",
 		"parse-duration": "^2.1.5",
 		"posthog-js": "^1.311.0",
