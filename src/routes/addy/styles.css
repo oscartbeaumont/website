@@ -1,4 +1,4 @@
-/* Modern Sapphire Anniversary Page */
+/* Romantic Sapphire Anniversary Page */
 
 :root {
 	--primary-color: #0f52ba;
@@ -6,6 +6,7 @@
 	--accent-color: #4169e1;
 	--light-blue: #87ceeb;
 	--deep-blue: #082567;
+	--soft-purple: #9370db;
 	--text-dark: #2c3e50;
 	--text-light: #ffffff;
 	--bg-light: #f0f8ff;
@@ -25,9 +26,69 @@
 	background: var(--bg-light);
 	min-height: 100vh;
 	overflow-x: hidden;
+	position: relative;
 }
 
-/* Hero Section - With Photo */
+/* Floating Hearts Background Animation */
+.anniversary-page::before {
+	content: "♥";
+	position: fixed;
+	top: -50px;
+	left: 10%;
+	font-size: 2rem;
+	color: rgba(30, 144, 255, 0.15);
+	animation: floatingHeart1 15s infinite ease-in-out;
+	pointer-events: none;
+	z-index: 0;
+}
+
+.anniversary-page::after {
+	content: "♥";
+	position: fixed;
+	top: -50px;
+	right: 15%;
+	font-size: 1.5rem;
+	color: rgba(15, 82, 186, 0.12);
+	animation: floatingHeart2 18s infinite ease-in-out;
+	pointer-events: none;
+	z-index: 0;
+}
+
+@keyframes floatingHeart1 {
+	0% {
+		transform: translateY(-50px) rotate(0deg);
+		opacity: 0;
+	}
+	10% {
+		opacity: 1;
+	}
+	90% {
+		opacity: 1;
+	}
+	100% {
+		transform: translateY(100vh) rotate(360deg);
+		opacity: 0;
+	}
+}
+
+@keyframes floatingHeart2 {
+	0% {
+		transform: translateY(-50px) rotate(0deg) scale(1);
+		opacity: 0;
+	}
+	15% {
+		opacity: 1;
+	}
+	85% {
+		opacity: 1;
+	}
+	100% {
+		transform: translateY(100vh) rotate(-360deg) scale(1.5);
+		opacity: 0;
+	}
+}
+
+/* Hero Section - Romantic Style */
 .hero {
 	position: relative;
 	min-height: 100vh;
@@ -60,12 +121,45 @@
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: linear-gradient(
-		135deg,
-		rgba(8, 37, 103, 0.85) 0%,
-		rgba(15, 82, 186, 0.75) 40%,
-		rgba(30, 144, 255, 0.7) 100%
-	);
+	background:
+		radial-gradient(
+			ellipse at top,
+			rgba(147, 112, 219, 0.3) 0%,
+			transparent 50%
+		),
+		radial-gradient(
+			ellipse at bottom,
+			rgba(8, 37, 103, 0.85) 0%,
+			rgba(15, 82, 186, 0.7) 60%
+		),
+		linear-gradient(
+			135deg,
+			rgba(30, 144, 255, 0.6) 0%,
+			rgba(15, 82, 186, 0.75) 100%
+		);
+}
+
+/* Starry Effect */
+.hero-overlay::before {
+	content: "✦ ✧ ✦ ✧ ✦";
+	position: absolute;
+	top: 10%;
+	left: 50%;
+	transform: translateX(-50%);
+	font-size: 1.5rem;
+	color: rgba(255, 255, 255, 0.4);
+	letter-spacing: 3rem;
+	animation: twinkle 3s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+	0%,
+	100% {
+		opacity: 0.4;
+	}
+	50% {
+		opacity: 1;
+	}
 }
 
 .hero-content {
@@ -83,21 +177,60 @@
 	position: relative;
 }
 
+/* Romantic Photo Border Effect */
+.hero-photo-frame::before {
+	content: "";
+	position: absolute;
+	top: -15px;
+	left: -15px;
+	right: -15px;
+	bottom: -15px;
+	background: linear-gradient(
+		45deg,
+		var(--light-blue),
+		var(--secondary-color),
+		var(--soft-purple),
+		var(--secondary-color),
+		var(--light-blue)
+	);
+	background-size: 300% 300%;
+	border-radius: 40px;
+	animation: gradientShift 8s ease infinite;
+	opacity: 0.6;
+	filter: blur(15px);
+}
+
+@keyframes gradientShift {
+	0%,
+	100% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+}
+
 .hero-photo {
 	width: 100%;
 	height: 500px;
 	object-fit: cover;
 	border-radius: 32px;
 	box-shadow:
-		0 25px 80px rgba(0, 0, 0, 0.4),
-		0 10px 40px rgba(0, 0, 0, 0.3),
-		0 0 100px rgba(135, 206, 235, 0.3);
-	border: 6px solid rgba(255, 255, 255, 0.2);
-	transition: transform 0.4s ease;
+		0 25px 80px rgba(0, 0, 0, 0.5),
+		0 10px 40px rgba(30, 144, 255, 0.4),
+		inset 0 0 50px rgba(255, 255, 255, 0.1);
+	border: 6px solid rgba(255, 255, 255, 0.3);
+	transition: all 0.4s ease;
+	position: relative;
+	z-index: 1;
 }
 
 .hero-photo:hover {
-	transform: scale(1.03) rotate(1deg);
+	transform: scale(1.03);
+	box-shadow:
+		0 30px 90px rgba(0, 0, 0, 0.6),
+		0 15px 50px rgba(135, 206, 235, 0.6),
+		inset 0 0 60px rgba(255, 255, 255, 0.15);
 }
 
 .hero-text {
@@ -113,19 +246,45 @@
 	letter-spacing: -3px;
 	text-shadow:
 		0 5px 15px rgba(0, 0, 0, 0.5),
-		0 10px 30px rgba(30, 144, 255, 0.4);
+		0 10px 30px rgba(135, 206, 235, 0.6),
+		0 0 60px rgba(147, 112, 219, 0.4);
 	line-height: 0.9;
+	position: relative;
+	display: inline-block;
+}
+
+/* Sparkle effect on title */
+.hero-title::after {
+	content: "✨";
+	position: absolute;
+	top: -20px;
+	right: -40px;
+	font-size: 2rem;
+	animation: sparkle 2s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+	0%,
+	100% {
+		opacity: 0.5;
+		transform: rotate(0deg) scale(1);
+	}
+	50% {
+		opacity: 1;
+		transform: rotate(20deg) scale(1.2);
+	}
 }
 
 .hero-subtitle {
-	font-size: 1.6rem;
+	font-size: 1.8rem;
 	margin-bottom: 3rem;
 	color: rgba(255, 255, 255, 0.95);
 	font-weight: 300;
 	letter-spacing: 1px;
+	font-style: italic;
 }
 
-/* Counter - Text Style */
+/* Counter - Romantic Text Style */
 .counter-text {
 	font-size: 3.5rem;
 	font-weight: 300;
@@ -141,27 +300,30 @@
 	font-weight: 800;
 	color: white;
 	text-shadow:
-		0 3px 15px rgba(0, 0, 0, 0.3),
-		0 0 40px rgba(135, 206, 235, 0.4);
+		0 3px 15px rgba(0, 0, 0, 0.4),
+		0 0 40px rgba(135, 206, 235, 0.5),
+		0 0 80px rgba(147, 112, 219, 0.3);
 	display: inline-block;
 	transition: all 0.3s ease;
 }
 
 .counter-number:hover {
-	transform: scale(1.1);
+	transform: scale(1.15) translateY(-3px);
 	text-shadow:
-		0 5px 20px rgba(0, 0, 0, 0.4),
-		0 0 60px rgba(135, 206, 235, 0.6);
+		0 5px 20px rgba(0, 0, 0, 0.5),
+		0 0 60px rgba(135, 206, 235, 0.7),
+		0 0 100px rgba(147, 112, 219, 0.5);
 }
 
 .counter-description {
-	font-size: 1.3rem;
+	font-size: 1.4rem;
 	color: rgba(255, 255, 255, 0.9);
 	font-weight: 300;
 	letter-spacing: 0.5px;
+	font-style: italic;
 }
 
-/* Section Titles - Redesigned */
+/* Section Titles - Romantic Style */
 .section-title {
 	text-align: center;
 	font-size: 3.5rem;
@@ -171,6 +333,29 @@
 	letter-spacing: -1px;
 	position: relative;
 	padding-bottom: 2rem;
+	font-style: italic;
+}
+
+.section-title::before {
+	content: "♥";
+	position: absolute;
+	left: 50%;
+	top: -40px;
+	transform: translateX(-50%);
+	font-size: 2rem;
+	color: var(--light-blue);
+	opacity: 0.5;
+	animation: heartPulse 2s ease-in-out infinite;
+}
+
+@keyframes heartPulse {
+	0%,
+	100% {
+		transform: translateX(-50%) scale(1);
+	}
+	50% {
+		transform: translateX(-50%) scale(1.2);
+	}
 }
 
 .section-title::after {
@@ -179,18 +364,33 @@
 	bottom: 0;
 	left: 50%;
 	transform: translateX(-50%);
-	width: 100px;
-	height: 5px;
+	width: 150px;
+	height: 3px;
 	background: linear-gradient(
 		90deg,
 		transparent,
+		var(--light-blue),
 		var(--secondary-color),
+		var(--soft-purple),
+		var(--secondary-color),
+		var(--light-blue),
 		transparent
 	);
+	background-size: 200% 100%;
 	border-radius: 10px;
+	animation: shimmer 3s linear infinite;
 }
 
-/* Timeline Section - Completely Redesigned */
+@keyframes shimmer {
+	0% {
+		background-position: -200% 0;
+	}
+	100% {
+		background-position: 200% 0;
+	}
+}
+
+/* Timeline Section - Romantic Enhancement */
 .timeline-section {
 	padding: 8rem 2rem;
 	max-width: 1200px;
@@ -214,13 +414,13 @@
 		180deg,
 		var(--light-blue) 0%,
 		var(--secondary-color) 25%,
-		var(--primary-color) 50%,
+		var(--soft-purple) 50%,
 		var(--secondary-color) 75%,
 		var(--light-blue) 100%
 	);
 	transform: translateX(-50%);
 	border-radius: 10px;
-	box-shadow: 0 0 20px rgba(30, 144, 255, 0.3);
+	box-shadow: 0 0 20px rgba(30, 144, 255, 0.4);
 }
 
 .timeline-item {
@@ -259,15 +459,26 @@
 	padding: 2.5rem;
 	border-radius: 24px;
 	box-shadow:
-		0 10px 30px rgba(15, 82, 186, 0.12),
+		0 10px 30px rgba(15, 82, 186, 0.15),
 		0 5px 15px rgba(0, 0, 0, 0.08);
 	transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-	border: 1px solid rgba(30, 144, 255, 0.1);
+	border: 2px solid rgba(135, 206, 235, 0.3);
 	position: relative;
 	overflow: hidden;
 }
 
+/* Romantic corner decoration */
 .timeline-content::before {
+	content: "✦";
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	font-size: 1.2rem;
+	color: var(--light-blue);
+	opacity: 0.3;
+}
+
+.timeline-content::after {
 	content: "";
 	position: absolute;
 	top: 0;
@@ -277,37 +488,54 @@
 	background: linear-gradient(
 		90deg,
 		var(--secondary-color),
-		var(--primary-color)
+		var(--soft-purple),
+		var(--secondary-color)
 	);
 	transform: scaleX(0);
 	transition: transform 0.4s ease;
 }
 
-.timeline-content:hover::before {
+.timeline-content:hover::after {
 	transform: scaleX(1);
 }
 
 .timeline-content:hover {
 	transform: translateY(-10px) scale(1.02);
 	box-shadow:
-		0 20px 50px rgba(15, 82, 186, 0.2),
-		0 10px 25px rgba(0, 0, 0, 0.1);
+		0 20px 50px rgba(15, 82, 186, 0.25),
+		0 10px 25px rgba(147, 112, 219, 0.15);
 	border-color: var(--secondary-color);
 }
 
 .timeline-marker {
 	position: absolute;
 	top: 2.5rem;
-	width: 20px;
-	height: 20px;
+	width: 24px;
+	height: 24px;
 	background: white;
 	border: 4px solid var(--secondary-color);
 	border-radius: 50%;
 	box-shadow:
-		0 0 0 8px rgba(30, 144, 255, 0.15),
-		0 0 20px rgba(30, 144, 255, 0.3);
+		0 0 0 8px rgba(135, 206, 235, 0.2),
+		0 0 20px rgba(30, 144, 255, 0.4),
+		0 0 40px rgba(147, 112, 219, 0.2);
 	transition: all 0.4s ease;
 	z-index: 2;
+	animation: markerPulse 2s ease-in-out infinite;
+}
+
+@keyframes markerPulse {
+	0%,
+	100% {
+		box-shadow:
+			0 0 0 8px rgba(135, 206, 235, 0.2),
+			0 0 20px rgba(30, 144, 255, 0.4);
+	}
+	50% {
+		box-shadow:
+			0 0 0 12px rgba(135, 206, 235, 0.3),
+			0 0 30px rgba(30, 144, 255, 0.6);
+	}
 }
 
 .timeline-item:hover .timeline-marker {
@@ -315,8 +543,9 @@
 	background: var(--secondary-color);
 	border-color: white;
 	box-shadow:
-		0 0 0 12px rgba(30, 144, 255, 0.25),
-		0 0 30px rgba(30, 144, 255, 0.5);
+		0 0 0 12px rgba(135, 206, 235, 0.3),
+		0 0 30px rgba(30, 144, 255, 0.6),
+		0 0 50px rgba(147, 112, 219, 0.4);
 }
 
 .timeline-item-left .timeline-marker {
@@ -338,6 +567,7 @@
 	padding: 0.5rem 1rem;
 	background: rgba(30, 144, 255, 0.1);
 	border-radius: 20px;
+	border: 1px solid rgba(30, 144, 255, 0.2);
 }
 
 .timeline-title {
@@ -353,6 +583,7 @@
 	line-height: 1.7;
 	color: var(--text-dark);
 	opacity: 0.8;
+	font-style: italic;
 }
 
 .timeline-image-container {
@@ -360,6 +591,19 @@
 	border-radius: 16px;
 	overflow: hidden;
 	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+	position: relative;
+}
+
+.timeline-image-container::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(
+		to bottom,
+		transparent 60%,
+		rgba(30, 144, 255, 0.1) 100%
+	);
+	pointer-events: none;
 }
 
 .timeline-image {
@@ -373,14 +617,27 @@
 	transform: scale(1.08);
 }
 
-/* Photos Section - Redesigned */
+/* Photos Section - Romantic Enhancement */
 .photos-section {
 	padding: 8rem 2rem;
 	max-width: 1400px;
 	margin: 0 auto;
+	position: relative;
 }
 
-/* Option 1: Gallery Grid - Enhanced */
+/* Decorative elements */
+.photos-section::before {
+	content: "♥ ✦ ♥";
+	position: absolute;
+	top: 3rem;
+	left: 50%;
+	transform: translateX(-50%);
+	font-size: 1.5rem;
+	color: rgba(30, 144, 255, 0.2);
+	letter-spacing: 2rem;
+}
+
+/* Option 1: Gallery Grid - Romantic Style */
 .photo-gallery {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -396,15 +653,42 @@
 		0 10px 30px rgba(15, 82, 186, 0.15),
 		0 5px 15px rgba(0, 0, 0, 0.1);
 	transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-	border: 3px solid white;
+	border: 3px solid rgba(135, 206, 235, 0.3);
+}
+
+.photo-item::before {
+	content: "";
+	position: absolute;
+	top: -2px;
+	left: -2px;
+	right: -2px;
+	bottom: -2px;
+	background: linear-gradient(
+		45deg,
+		var(--light-blue),
+		var(--secondary-color),
+		var(--soft-purple),
+		var(--secondary-color),
+		var(--light-blue)
+	);
+	background-size: 300% 300%;
+	border-radius: 24px;
+	opacity: 0;
+	transition: opacity 0.5s;
+	animation: gradientShift 8s ease infinite;
+	z-index: -1;
+}
+
+.photo-item:hover::before {
+	opacity: 0.5;
 }
 
 .photo-item:hover {
 	transform: translateY(-15px) scale(1.03);
 	box-shadow:
-		0 25px 60px rgba(30, 144, 255, 0.25),
-		0 15px 35px rgba(0, 0, 0, 0.15);
-	border-color: var(--light-blue);
+		0 25px 60px rgba(30, 144, 255, 0.3),
+		0 15px 35px rgba(147, 112, 219, 0.2);
+	border-color: var(--secondary-color);
 }
 
 .photo-image {
@@ -445,9 +729,10 @@
 	font-weight: 600;
 	letter-spacing: 0.5px;
 	text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+	font-style: italic;
 }
 
-/* Option 3: Carousel - Enhanced */
+/* Option 3: Carousel - Romantic Enhancement */
 .carousel {
 	position: relative;
 	max-width: 1000px;
@@ -458,9 +743,29 @@
 	border-radius: 32px;
 	overflow: hidden;
 	box-shadow:
-		0 20px 60px rgba(30, 144, 255, 0.25),
-		0 10px 30px rgba(0, 0, 0, 0.15);
-	border: 4px solid white;
+		0 20px 60px rgba(30, 144, 255, 0.3),
+		0 10px 30px rgba(147, 112, 219, 0.2);
+	border: 4px solid rgba(135, 206, 235, 0.4);
+	position: relative;
+}
+
+.carousel-container::before {
+	content: "";
+	position: absolute;
+	inset: -4px;
+	background: linear-gradient(
+		45deg,
+		var(--light-blue),
+		var(--secondary-color),
+		var(--soft-purple),
+		var(--secondary-color),
+		var(--light-blue)
+	);
+	background-size: 300% 300%;
+	border-radius: 32px;
+	animation: gradientShift 8s ease infinite;
+	opacity: 0.3;
+	z-index: -1;
 }
 
 .carousel-image {
@@ -476,7 +781,7 @@
 	transform: translateY(-50%);
 	background: rgba(255, 255, 255, 0.95);
 	backdrop-filter: blur(10px);
-	border: 2px solid rgba(30, 144, 255, 0.2);
+	border: 2px solid rgba(135, 206, 235, 0.5);
 	width: 64px;
 	height: 64px;
 	border-radius: 50%;
@@ -496,8 +801,10 @@
 	background: var(--secondary-color);
 	color: white;
 	transform: translateY(-50%) scale(1.15);
-	border-color: var(--secondary-color);
-	box-shadow: 0 12px 35px rgba(30, 144, 255, 0.4);
+	border-color: var(--soft-purple);
+	box-shadow:
+		0 12px 35px rgba(30, 144, 255, 0.4),
+		0 0 40px rgba(147, 112, 219, 0.3);
 }
 
 .carousel-button-prev {
@@ -530,15 +837,17 @@
 	background: var(--light-blue);
 	transform: scale(1.3);
 	border-color: var(--light-blue);
+	box-shadow: 0 0 15px rgba(135, 206, 235, 0.5);
 }
 
 .carousel-dot-active {
 	background: var(--secondary-color);
 	border-color: var(--secondary-color);
 	transform: scale(1.3);
+	box-shadow: 0 0 15px rgba(30, 144, 255, 0.5);
 }
 
-/* Option 4: Collage - Enhanced */
+/* Option 4: Collage - Romantic Enhancement */
 .photo-collage {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -554,15 +863,16 @@
 		0 8px 25px rgba(15, 82, 186, 0.15),
 		0 4px 12px rgba(0, 0, 0, 0.1);
 	transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-	border: 3px solid white;
+	border: 3px solid rgba(135, 206, 235, 0.3);
 }
 
 .collage-item:hover {
 	transform: rotate(2deg) scale(1.08);
 	z-index: 10;
 	box-shadow:
-		0 20px 50px rgba(30, 144, 255, 0.25),
-		0 10px 25px rgba(0, 0, 0, 0.15);
+		0 20px 50px rgba(30, 144, 255, 0.3),
+		0 10px 25px rgba(147, 112, 219, 0.2);
+	border-color: var(--secondary-color);
 }
 
 .collage-image {
@@ -594,9 +904,10 @@
 	color: white;
 	font-size: 0.95rem;
 	font-weight: 600;
+	font-style: italic;
 }
 
-/* Footer Message - Redesigned */
+/* Footer Message - Romantic Enhancement */
 .footer-message {
 	text-align: center;
 	padding: 8rem 2rem;
@@ -615,15 +926,30 @@
 	top: 0;
 	left: 0;
 	right: 0;
-	height: 2px;
+	height: 3px;
 	background: linear-gradient(
 		90deg,
 		transparent 0%,
 		var(--light-blue) 20%,
-		var(--secondary-color) 50%,
+		var(--secondary-color) 40%,
+		var(--soft-purple) 50%,
+		var(--secondary-color) 60%,
 		var(--light-blue) 80%,
 		transparent 100%
 	);
+	background-size: 200% 100%;
+	animation: shimmer 4s linear infinite;
+}
+
+.footer-message::after {
+	content: "✦ ♥ ✦ ♥ ✦";
+	position: absolute;
+	bottom: 3rem;
+	left: 50%;
+	transform: translateX(-50%);
+	font-size: 1.5rem;
+	color: rgba(30, 144, 255, 0.2);
+	letter-spacing: 2rem;
 }
 
 .footer-title {
@@ -632,7 +958,44 @@
 	margin-bottom: 2.5rem;
 	font-weight: 800;
 	letter-spacing: -2px;
-	text-shadow: 0 4px 12px rgba(15, 82, 186, 0.15);
+	text-shadow:
+		0 4px 12px rgba(15, 82, 186, 0.2),
+		0 0 40px rgba(135, 206, 235, 0.2);
+	position: relative;
+	display: inline-block;
+}
+
+.footer-title::before,
+.footer-title::after {
+	content: "♥";
+	position: absolute;
+	font-size: 2rem;
+	color: var(--light-blue);
+	opacity: 0.5;
+	animation: heartFloat 3s ease-in-out infinite;
+}
+
+.footer-title::before {
+	left: -60px;
+	top: 0;
+}
+
+.footer-title::after {
+	right: -60px;
+	top: 0;
+	animation-delay: 1.5s;
+}
+
+@keyframes heartFloat {
+	0%,
+	100% {
+		transform: translateY(0) scale(1);
+		opacity: 0.5;
+	}
+	50% {
+		transform: translateY(-10px) scale(1.1);
+		opacity: 0.8;
+	}
 }
 
 .footer-text {
@@ -643,6 +1006,7 @@
 	margin: 0 auto 3rem;
 	font-weight: 400;
 	opacity: 0.85;
+	font-style: italic;
 }
 
 .heart {
@@ -650,7 +1014,7 @@
 	color: var(--secondary-color);
 	animation: heartbeat 2s ease-in-out infinite;
 	display: inline-block;
-	filter: drop-shadow(0 5px 15px rgba(30, 144, 255, 0.3));
+	filter: drop-shadow(0 5px 15px rgba(30, 144, 255, 0.4));
 }
 
 @keyframes heartbeat {
@@ -659,13 +1023,13 @@
 		transform: scale(1);
 	}
 	10% {
-		transform: scale(1.15);
+		transform: scale(1.2);
 	}
 	20% {
 		transform: scale(1);
 	}
 	30% {
-		transform: scale(1.2);
+		transform: scale(1.25);
 	}
 	40% {
 		transform: scale(1);
@@ -730,8 +1094,13 @@
 		letter-spacing: -1px;
 	}
 
+	.hero-title::after {
+		right: -30px;
+		font-size: 1.5rem;
+	}
+
 	.hero-subtitle {
-		font-size: 1.2rem;
+		font-size: 1.3rem;
 		margin-bottom: 2rem;
 	}
 
@@ -794,6 +1163,19 @@
 		font-size: 3.5rem;
 	}
 
+	.footer-title::before,
+	.footer-title::after {
+		font-size: 1.5rem;
+	}
+
+	.footer-title::before {
+		left: -40px;
+	}
+
+	.footer-title::after {
+		right: -40px;
+	}
+
 	.footer-text {
 		font-size: 1.1rem;
 	}
@@ -829,8 +1211,12 @@
 		margin-bottom: 1rem;
 	}
 
+	.hero-title::after {
+		display: none;
+	}
+
 	.hero-subtitle {
-		font-size: 1rem;
+		font-size: 1.1rem;
 		margin-bottom: 1.5rem;
 	}
 
@@ -886,6 +1272,11 @@
 
 	.footer-title {
 		font-size: 2.5rem;
+	}
+
+	.footer-title::before,
+	.footer-title::after {
+		display: none;
 	}
 
 	.footer-text {
