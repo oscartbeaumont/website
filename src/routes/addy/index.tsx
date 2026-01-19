@@ -109,42 +109,37 @@ export default function AnniversaryPage() {
 		<div class="anniversary-page">
 			{/* Hero Section with Counter */}
 			<section class="hero">
-				<div class="hero-content">
-					<h1 class="hero-title">Our Love Story</h1>
-					<p class="hero-subtitle">Every moment with you is a treasure</p>
+				<div class="hero-background">
+					<img src="/photos/hero.jpg" alt="Us together" class="hero-image" />
+					<div class="hero-overlay"></div>
+				</div>
 
-					<div class="counter">
-						<div class="counter-item">
-							<span class="counter-number">{timeElapsed().days}</span>
-							<span class="counter-label">Days</span>
-						</div>
-						<div class="counter-divider">:</div>
-						<div class="counter-item">
-							<span class="counter-number">{timeElapsed().hours}</span>
-							<span class="counter-label">Hours</span>
-						</div>
-						<div class="counter-divider">:</div>
-						<div class="counter-item">
-							<span class="counter-number">{timeElapsed().minutes}</span>
-							<span class="counter-label">Minutes</span>
-						</div>
-						<div class="counter-divider">:</div>
-						<div class="counter-item">
-							<span class="counter-number">{timeElapsed().seconds}</span>
-							<span class="counter-label">Seconds</span>
-						</div>
+				<div class="hero-content">
+					<div class="hero-photo-frame">
+						<img src="/photos/hero.jpg" alt="Us" class="hero-photo" />
 					</div>
 
-					<p class="counter-description">
-						...and counting every beautiful moment
-					</p>
+					<div class="hero-text">
+						<h1 class="hero-title">us :)</h1>
+						<p class="hero-subtitle">here's to all our adventures together</p>
+
+						<div class="counter-text">
+							<span class="counter-number">{timeElapsed().days}</span> days,{" "}
+							<span class="counter-number">{timeElapsed().hours}</span> hours,{" "}
+							<span class="counter-number">{timeElapsed().minutes}</span>{" "}
+							minutes,{" "}
+							<span class="counter-number">{timeElapsed().seconds}</span>{" "}
+							seconds
+						</div>
+
+						<p class="counter-description">together (and counting!)</p>
+					</div>
 				</div>
-				<div class="hero-decoration"></div>
 			</section>
 
 			{/* Timeline Section */}
 			<section class="timeline-section">
-				<h2 class="section-title">Our Journey Together</h2>
+				<h2 class="section-title">our story so far</h2>
 
 				<div class="timeline">
 					<For each={timelineEvents}>
@@ -172,7 +167,7 @@ export default function AnniversaryPage() {
 
 			{/* OPTION 1: Gallery Grid (CURRENTLY ACTIVE) */}
 			<section class="photos-section">
-				<h2 class="section-title">Our Memories</h2>
+				<h2 class="section-title">some of my favorite pics of us</h2>
 				<div class="photo-gallery">
 					<For each={galleryPhotos}>
 						{(photo) => (
@@ -266,11 +261,11 @@ export default function AnniversaryPage() {
 
 			{/* Footer Message */}
 			<section class="footer-message">
-				<h2 class="footer-title">I Love You</h2>
+				<h2 class="footer-title">i love you</h2>
 				<p class="footer-text">
-					Thank you for every laugh, every adventure, and every quiet moment
-					together. Here's to all the memories we've made and all the ones still
-					to come.
+					thanks for all the laughs, adventures, late night talks, and
+					everything in between. can't wait for all the memories we haven't made
+					yet.
 				</p>
 				<div class="heart">♥</div>
 			</section>
