@@ -21,7 +21,7 @@ const files = [
 
 export default function Page() {
 	const [startDate] = createDate("Jun 20, 2025");
-	const [date, { difference }] = createTimeAgo(startDate);
+	const [, { difference }] = createTimeAgo(startDate);
 	const diff = createMemo(() => getCountdown(difference() * -1));
 
 	return (
