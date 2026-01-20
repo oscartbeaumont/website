@@ -25,7 +25,7 @@ export default function Page() {
 	const diff = createMemo(() => getCountdown(difference() * -1));
 
 	return (
-		<div class="font-['Lora'] min-h-screen w-full bg-linear-to-br from-sky-50 via-blue-50 to-indigo-50 animate-gradient">
+		<div class="font-['Lora'] text-black min-h-screen w-full bg-linear-to-br from-sky-50 via-blue-50 to-indigo-50 animate-gradient">
 			<section class="min-h-screen flex flex-col items-center justify-center px-4 py-16 relative overflow-hidden">
 				<Title>A really cute model</Title>
 				<Meta name="robots" content="noindex" />
