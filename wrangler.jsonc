@@ -15,5 +15,10 @@
 		{
 			"binding": "KV"
 		}
+	],
+	"r2_buckets": [
+		{
+			"binding": "DATA"
+		}
 	]
 }
