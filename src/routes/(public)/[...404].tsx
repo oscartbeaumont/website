@@ -1,6 +1,6 @@
 import { A } from "@solidjs/router";
 import { HttpStatusCode } from "@solidjs/start";
-import { Layout } from ".";
+import { Layout } from "./index";
 
 export default function Page() {
 	return (
