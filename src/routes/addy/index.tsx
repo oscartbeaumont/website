@@ -35,19 +35,21 @@ export default function Page() {
 						Addy
 					</h1>
 
-					<p class="text-xl md:text-2xl text-primary font-semibold mb-3">
+					<p class="text-xl md:text-2xl text-primary font-semibold mb-3 animate-[fadeIn_0.3s_0s_both]">
 						Together {diff().days} days since 20 June 2025 ❤️
 					</p>
 
-					<p class="text-muted-foreground max-w-xl mx-auto leading-relaxed text-lg">
-						Your the best! We have had some of the best times together!
-					</p>
+					<div class="animate-[fadeIn_0.3s_0.3s_both]">
+						<p class="text-muted-foreground max-w-xl mx-auto leading-relaxed text-lg">
+							Your the best! We have had some of the best times together!
+						</p>
 
-					<p class="text-muted-foreground mb-10 max-w-xl mx-auto leading-relaxed text-lg">
-						I can't wait to see what comes next! 😘
-					</p>
+						<p class="text-muted-foreground mb-10 max-w-xl mx-auto leading-relaxed text-lg">
+							I can't wait to see what comes next! 😘
+						</p>
+					</div>
 
-					<div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+					<div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  animate-[fadeIn_0.3s_0.5s_both]">
 						<For each={files}>
 							{(file) => (
 								<img
