@@ -21,7 +21,6 @@ export default createHandler(
 						{event.nativeEvent.url.pathname !== "/invoicer" && (
 							<ColorModeScript storageType="localStorage" nonce={event.nonce} />
 						)}
-
 						<HttpHeader name="Cache-Control" value="no-store, no-transform" />
 
 						{assets}

@@ -12,9 +12,9 @@ import {
 	Show,
 } from "solid-js";
 
-import imageUrl from "../assets/logo.jpeg";
-import mattraxLogoUrl from "../assets/matrax-logo.png";
-import spectaLogoUrl from "../assets/specta-logo.png";
+import imageUrl from "../../assets/logo.jpeg";
+import mattraxLogoUrl from "../../assets/matrax-logo.png";
+import spectaLogoUrl from "../../assets/specta-logo.png";
 
 export default function Home() {
 	return (
