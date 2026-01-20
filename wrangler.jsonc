@@ -18,7 +18,8 @@
 	],
 	"r2_buckets": [
 		{
-			"binding": "DATA"
+			"binding": "DATA",
+			"bucket_name": "website-data"
 		}
 	]
 }
