@@ -1,9 +1,10 @@
 import { createDateNow } from "@solid-primitives/date";
 import { Meta, Title } from "@solidjs/meta";
 import parse from "parse-duration";
-import { For, Match, onMount, Show, Switch } from "solid-js";
+import { For, Match, onMount, Show, Switch, type ParentProps } from "solid-js";
 import { CaptureAsPdf, defaultDocumentStyles } from "./CaptureAsPdf";
 import { createMutableLocalStorage } from "./util";
+import { ClientOnly } from "../../components/ClientOnly";
 
 const defaultClient = () =>
 	({
@@ -51,11 +52,13 @@ export default function Page() {
 			<Title>Invoicer</Title>
 			<Meta name="robots" content="noindex" />
 
-			<div id="document" class="flex flex-col" style={defaultDocumentStyles}>
-				<InvoiceTemplate state={state} />
-			</div>
+			<ClientOnly>
+				<div id="document" class="flex flex-col" style={defaultDocumentStyles}>
+					<InvoiceTemplate state={state} />
+				</div>
 
-			<Sidebar state={state} />
+				<Sidebar state={state} />
+			</ClientOnly>
 		</div>
 	);
 }
