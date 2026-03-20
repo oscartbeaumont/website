@@ -18,7 +18,7 @@
 		"@solid-primitives/date": "^2.1.6",
 		"@solidjs/meta": "^0.29.4",
 		"@solidjs/router": "^0.16.1",
-		"@solidjs/start": "^2.0.0-alpha.2",
+		"@solidjs/start": "https://pkg.pr.new/solidjs/solid-start/@solidjs/start@5d04604",
 		"clsx": "^2.1.1",
 		"html2canvas": "^1.4.1",
 		"html2canvas-pro": "^2.0.2",
@@ -48,7 +48,7 @@
 		"typescript": "^5.9.3",
 		"unplugin-auto-import": "^21.0.0",
 		"unplugin-icons": "^23.0.1",
-		"vite": "^7.3.1",
+		"vite": "^8.0.1",
 		"wrangler": "^4.75.0"
 	},
 	"engines": {
