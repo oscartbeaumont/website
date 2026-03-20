@@ -3,8 +3,8 @@ import {
 	createTimeAgo,
 	getCountdown,
 } from "@solid-primitives/date";
+import { Meta, Title } from "@solidjs/meta";
 import { createMemo, For } from "solid-js";
-import { Title, Meta } from "@solidjs/meta";
 import "@fontsource/lora";
 
 const files = [
@@ -21,8 +21,26 @@ const files = [
 
 export default function Page() {
 	const [startDate] = createDate("Jun 20, 2025");
-	const [, { difference }] = createTimeAgo(startDate);
+	const [, { now: nowTime, difference }] = createTimeAgo(startDate);
 	const diff = createMemo(() => getCountdown(difference() * -1));
+	const anniversaryBanner = createMemo(() => {
+		const start = startDate();
+		const now = nowTime();
+
+		if (now.getTime() < start.getTime()) return null;
+		if (now.getDate() !== start.getDate()) return null;
+
+		const monthsDiff =
+			(now.getFullYear() - start.getFullYear()) * 12 +
+			(now.getMonth() - start.getMonth());
+		const yearsDiff = now.getFullYear() - start.getFullYear();
+
+		if (now.getMonth() === start.getMonth() && yearsDiff >= 1)
+			return `Happy ${yearsDiff}-year anniversary ❤️`;
+		else if (monthsDiff >= 1) return `Happy ${monthsDiff}-month anniversary ❤️`;
+
+		return null;
+	});
 
 	return (
 		<div class="font-['Lora'] text-black min-h-screen w-full bg-linear-to-br from-sky-50 via-blue-50 to-indigo-50 animate-gradient">
@@ -31,6 +49,12 @@ export default function Page() {
 				<Meta name="robots" content="noindex" />
 
 				<div class="text-center max-w-4xl mx-auto relative z-10">
+					{anniversaryBanner() && (
+						<p class="inline-flex items-center rounded-full border border-rose-200 bg-rose-50/90 px-5 py-2 text-sm md:text-base font-semibold text-rose-700 mb-6 animate-[fadeIn_0.3s_0s_both]">
+							{anniversaryBanner()}
+						</p>
+					)}
+
 					<h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6 text-balance">
 						Addy
 					</h1>
