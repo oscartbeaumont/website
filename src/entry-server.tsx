@@ -37,13 +37,14 @@ export default createHandler(
 	(event) => {
 		// Nonce CSP
 		const nonce = randomBytes(16).toString("base64");
+		const isInvoicerRoute = event.nativeEvent.url.pathname === "/invoicer";
 		event.response.headers.set(
 			"Content-Security-Policy",
 			[
 				`default-src 'none'`,
 				// TODO: `strict-dynamic` is required for `import` to work (required for SPA routing)
 				`script-src 'strict-dynamic' 'nonce-${nonce}'`,
-				`img-src 'self'`,
+				isInvoicerRoute ? `img-src 'self' data:` : `img-src 'self'`,
 				`style-src 'self' 'unsafe-inline'`,
 				`font-src 'self'`,
 				`connect-src 'self'`,

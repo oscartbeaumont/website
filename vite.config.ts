@@ -1,4 +1,3 @@
-import path from "node:path";
 import { cloudflare } from "@cloudflare/vite-plugin";
 import { solidStart } from "@solidjs/start/config";
 import tailwindcss from "@tailwindcss/vite";
@@ -35,11 +34,6 @@ export default defineConfig({
 			brotliSize: true,
 		}),
 	],
-	resolve: {
-		alias: {
-			html2canvas: path.resolve(__dirname, "node_modules/html2canvas-pro"),
-		},
-	},
 });
 
 // Auto import plugin doesn't like module ids that have query params
