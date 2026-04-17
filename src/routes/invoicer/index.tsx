@@ -1,10 +1,10 @@
 import { createDateNow } from "@solid-primitives/date";
 import { Meta, Title } from "@solidjs/meta";
 import parse from "parse-duration";
-import { For, Match, onMount, Show, Switch, type ParentProps } from "solid-js";
+import { For, Match, onMount, type ParentProps, Show, Switch } from "solid-js";
+import { ClientOnly } from "../../components/ClientOnly";
 import { CaptureAsPdf, defaultDocumentStyles } from "./CaptureAsPdf";
 import { createMutableLocalStorage } from "./util";
-import { ClientOnly } from "../../components/ClientOnly";
 
 const defaultClient = () =>
 	({

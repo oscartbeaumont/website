@@ -2,9 +2,9 @@ import { cloudflare } from "@cloudflare/vite-plugin";
 import { solidStart } from "@solidjs/start/config";
 import tailwindcss from "@tailwindcss/vite";
 import { visualizer } from "rollup-plugin-visualizer";
-import Icons from "unplugin-icons/vite";
 import AutoImport from "unplugin-auto-import/vite";
 import IconsResolver from "unplugin-icons/resolver";
+import Icons from "unplugin-icons/vite";
 import { defineConfig } from "vite";
 import { headersPlugin } from "./src/vite-plugin-headers";
 

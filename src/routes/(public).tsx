@@ -1,6 +1,6 @@
+import { Link, Meta, Title } from "@solidjs/meta";
 import type { ParentProps } from "solid-js";
 import { getRequestEvent, isServer } from "solid-js/web";
-import { Link, Meta, Title } from "@solidjs/meta";
 import openGraphImage from "../assets/og.png";
 import { openGraphImageSize } from "../constants";
 
