@@ -14,6 +14,7 @@ import {
 
 import imageUrl from "../../assets/logo.jpeg";
 import mattraxLogoUrl from "../../assets/matrax-logo.png";
+import osdriveLogoUrl from "../../assets/osdrive-logo.png";
 import spectaLogoUrl from "../../assets/specta-logo.png";
 
 export default function Home() {
@@ -169,6 +170,27 @@ const WorkingOn = () => (
 		<SectionTitle>What i'm working on?</SectionTitle>
 
 		<div class="mt-3 ml-6 space-y-3">
+			<ProjectPanel
+				name="OSDrive"
+				description="TODO"
+				href="https://osdrive.app"
+				logo={osdriveLogoUrl}
+				logoProps="dark:invert"
+				right={
+					<div class="flex space-x-4">
+						{/*<a
+							href="https://discord.gg/WPBHmDSfAn"
+							target="_blank"a
+							rel="noopener"
+						>
+							<IconLogosDiscordIcon class="brightness-0 dark:invert hover:brightness-100 dark:hover:invert-0 w-5 h-5 transition-colors duration-300 ease-in-out" />
+						</a>*/}
+						<a href="https://github.com/osdrive" target="_blank" rel="noopener">
+							<IconLogosGithubIcon class="brightness-0 dark:invert hover:brightness-100 w-5 h-5 transition-colors duration-300 ease-in-out" />
+						</a>
+					</div>
+				}
+			/>
 			<ProjectPanel
 				name="Mattrax"
 				description="Manage all your Windows, Apple and Android devices from one simple dashboard"
