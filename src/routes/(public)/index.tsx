@@ -3,6 +3,7 @@ import { createDateNow } from "@solid-primitives/date";
 import { useNavigate } from "@solidjs/router";
 import clsx from "clsx";
 import {
+	children,
 	createMemo,
 	For,
 	type JSX,
@@ -213,46 +214,83 @@ const WorkingOn = () => (
 						</a>
 					</div>
 				}
-			/>
+			>
+				<ProjectSubsection
+					href="https://github.com/specta-rs/rspc"
+					name="rspc"
+				/>
+				<ProjectSubsection
+					href="https://github.com/specta-rs/specta"
+					name="specta"
+				/>
+				<ProjectSubsection
+					href="https://github.com/specta-rs/tauri-plugin-midi"
+					name="tauri-plugin-midi"
+				/>
+			</ProjectPanel>
 		</div>
 	</section>
 );
 
-const ProjectPanel = (props: {
-	name: string;
-	description: string;
-	href: string;
-	logo: string;
-	logoProps?: string;
-	right?: JSX.Element;
-}) => (
-	<div class="flex items-center justify-between gap-4 py-2">
-		<a
-			href={props.href}
-			target="_blank"
-			rel="noopener"
-			class="flex items-center gap-3 flex-1 min-w-0 transition-transform duration-300 ease-in-out motion-safe:hover:translate-x-2"
-		>
-			<img
-				src={props.logo}
-				alt={`${props.name} logo`}
-				class={clsx("w-12 object-contain", props.logoProps)}
-			/>
-			<div class="min-w-0 flex-1">
-				<div class="font-semibold text-gray-900 dark:text-gray-100">
-					{props.name}
-				</div>
-				<div class="text-sm text-gray-600 dark:text-gray-400">
-					{props.description}
+const ProjectPanel = (
+	props: ParentProps<{
+		name: string;
+		description: string;
+		href: string;
+		logo: string;
+		logoProps?: string;
+		right?: JSX.Element;
+	}>,
+) => {
+	const subsections = children(() => props.children);
+
+	return (
+		<div class="py-2">
+			<div class="flex items-center justify-between gap-4">
+				<a
+					href={props.href}
+					target="_blank"
+					rel="noopener"
+					class="flex items-center gap-3 flex-1 min-w-0 transition-transform duration-300 ease-in-out motion-safe:hover:translate-x-2"
+				>
+					<img
+						src={props.logo}
+						alt={`${props.name} logo`}
+						class={clsx("w-12 object-contain", props.logoProps)}
+					/>
+					<div class="min-w-0 flex-1">
+						<div class="font-semibold text-gray-900 dark:text-gray-100">
+							{props.name}
+						</div>
+						<div class="text-sm text-gray-600 dark:text-gray-400">
+							{props.description}
+						</div>
+					</div>
+				</a>
+				<div class="flex items-center gap-3 shrink-0">
+					<div class="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+						{props.right}
+					</div>
 				</div>
 			</div>
-		</a>
-		<div class="flex items-center gap-3 shrink-0">
-			<div class="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-				{props.right}
-			</div>
+			<Show when={subsections()}>
+				{(content) => (
+					<div class="ml-[3.75rem] mt-2 flex flex-wrap gap-2">{content()}</div>
+				)}
+			</Show>
 		</div>
-	</div>
+	);
+};
+
+const ProjectSubsection = (props: { href: string; name: string }) => (
+	<a
+		href={props.href}
+		target="_blank"
+		rel="noopener"
+		class="font-mono text-xs px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+	>
+		{props.name}
+	</a>
 );
 
 const SectionTitle = (props: ParentProps) => (
