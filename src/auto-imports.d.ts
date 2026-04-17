@@ -11,6 +11,7 @@ declare global {
   const IconHeroiconsMoon20Solid: typeof import('~icons/heroicons/moon20-solid.jsx').default
   const IconHeroiconsSun20Solid: typeof import('~icons/heroicons/sun20-solid.jsx').default
   const IconLogosDiscordIcon: typeof import('~icons/logos/discord-icon.jsx').default
+  const IconLogosEffect: typeof import("~icons/logos/effect.jsx").default
   const IconLogosElectron: typeof import('~icons/logos/electron.jsx').default
   const IconLogosGithubIcon: typeof import('~icons/logos/github-icon.jsx').default
   const IconLogosGo: typeof import('~icons/logos/go.jsx').default

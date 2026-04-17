@@ -12,6 +12,7 @@ import {
 	type ParentProps,
 	Show,
 } from "solid-js";
+import IconLogosEffectIcon from "~icons/logos/effect-icon";
 
 import imageUrl from "../../assets/logo.jpeg";
 import mattraxLogoUrl from "../../assets/matrax-logo.png";
@@ -300,12 +301,6 @@ const SectionTitle = (props: ParentProps) => (
 );
 
 const skills = [
-	{ name: "Rust", href: "https://www.rust-lang.org", logo: IconLogosRust },
-	{
-		name: "TypeScript",
-		href: "https://www.typescriptlang.org",
-		logo: IconLogosTypescriptIcon,
-	},
 	{
 		name: "SolidJS",
 		href: "https://www.solidjs.com",
@@ -322,6 +317,11 @@ const skills = [
 		href: "https://tailwindcss.com",
 		logo: IconLogosTailwindcssIcon,
 	},
+	{
+		name: "EffectTS",
+		href: "https://effect.website",
+		logo: IconLogosEffectIcon,
+	},
 	{ name: "Tauri", href: "https://tauri.app", logo: IconLogosTauri },
 	{ name: "tRPC", href: "https://trpc.io", logo: IconLogosTrpc },
 	{
@@ -334,6 +334,12 @@ const skills = [
 		name: "PlanetScale",
 		href: "https://planetscale.com",
 		logo: IconSimpleIconsPlanetscale,
+	},
+	{ name: "Rust", href: "https://www.rust-lang.org", logo: IconLogosRust },
+	{
+		name: "TypeScript",
+		href: "https://www.typescriptlang.org",
+		logo: IconLogosTypescriptIcon,
 	},
 ];
 
