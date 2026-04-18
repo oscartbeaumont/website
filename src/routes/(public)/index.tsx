@@ -230,6 +230,46 @@ const WorkingOn = () => (
 				/>
 			</ProjectPanel>
 		</div>
+
+		<div class="mt-5 ml-6 pt-4 border-t border-gray-100 dark:border-gray-800 flex flex-wrap items-center gap-x-6 gap-y-2">
+			<a
+				href="https://tauri.app"
+				target="_blank"
+				rel="noopener"
+				class="group inline-flex items-center gap-2 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
+			>
+				<IconLogosTauri class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
+				<span>Tauri Working Group Member</span>
+			</a>
+			<a
+				href="https://github.com/oscartbeaumont/netlify-dynamic-dns"
+				target="_blank"
+				rel="noopener"
+				class="group inline-flex items-center gap-2 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
+			>
+				<IconLogosNetlifyIcon class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
+				<span class="line-through decoration-gray-300 dark:decoration-gray-600">Netlify Dynamic DNS</span>
+				<span class="text-xs px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500">deprecated</span>
+			</a>
+			<a
+				href="https://github.com/oscartbeaumont/vite-plugin-relay"
+				target="_blank"
+				rel="noopener"
+				class="group inline-flex items-center gap-2 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
+			>
+				<IconLogosRelay class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
+				<span>vite-plugin-relay</span>
+			</a>
+			<a
+				href="https://github.com/oscartbeaumont/ElectronPlayer"
+				target="_blank"
+				rel="noopener"
+				class="group inline-flex items-center gap-2 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
+			>
+				<IconLogosElectron class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
+				<span>ElectronPlayer</span>
+			</a>
+		</div>
 	</section>
 );
 
