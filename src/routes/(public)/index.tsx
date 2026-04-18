@@ -17,6 +17,7 @@ import IconLogosEffectIcon from "~icons/logos/effect-icon";
 import imageUrl from "../../assets/logo.jpeg";
 import mattraxLogoUrl from "../../assets/matrax-logo.png";
 import spectaLogoUrl from "../../assets/specta-logo.png";
+import { RspcLogo, SpectaLogo } from "../../components/icons";
 
 export default function Home() {
 	return (
@@ -101,6 +102,14 @@ function Header() {
 								<IconLogosLinkedinIcon class="brightness-0 group-hover:brightness-100 dark:invert dark:group-hover:invert-0 w-5 h-5" />
 							}
 							class="motion-safe:animate-[fadeIn_0.3s_0.4s_both]"
+						/>
+						<SocialLink
+							title="Blog"
+							href="https://dev.to/oscartbeaumont"
+							icon={
+								<IconSimpleIconsDevdotto class="brightness-0 group-hover:brightness-100 dark:invert dark:group-hover:invert-0 w-5 h-5" />
+							}
+							class="motion-safe:animate-[fadeIn_0.3s_0.6s_both]"
 						/>
 					</div>
 				</div>
@@ -219,14 +228,23 @@ const WorkingOn = () => (
 				<ProjectSubsection
 					href="https://github.com/specta-rs/specta"
 					name="specta"
+					logo={<SpectaLogo />}
+				/>
+				<ProjectSubsection
+					href="https://github.com/specta-rs/tauri-specta"
+					name="tauri-specta"
+					logo={<IconLogosTauri />}
 				/>
 				<ProjectSubsection
 					href="https://github.com/specta-rs/tauri-plugin-midi"
 					name="tauri-plugin-midi"
+					logo={<IconSimpleIconsMidi />}
 				/>
 				<ProjectSubsection
 					href="https://github.com/specta-rs/rspc"
 					name="rspc"
+					logo={<RspcLogo />}
+					deprecated
 				/>
 			</ProjectPanel>
 		</div>
@@ -326,16 +344,42 @@ const ProjectPanel = (
 	);
 };
 
-const ProjectSubsection = (props: { href: string; name: string }) => (
-	<a
-		href={props.href}
-		target="_blank"
-		rel="noopener"
-		class="font-mono text-xs px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
-	>
-		{props.name}
-	</a>
-);
+const ProjectSubsection = (props: {
+	href: string;
+	name: string;
+	logo?: JSX.Element;
+	deprecated?: boolean;
+}) => {
+	const logo = children(() => props.logo);
+	return (
+		<a
+			href={props.href}
+			target="_blank"
+			rel="noopener"
+			class={clsx(
+				"inline-flex items-center gap-1.5 font-mono text-xs px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200",
+				props.deprecated
+					? "text-gray-400 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-500"
+					: "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100",
+			)}
+			title={props.deprecated ? `${props.name} (deprecated)` : undefined}
+		>
+			<Show when={logo()}>
+				<span
+					class={clsx(
+						"w-3 h-3 shrink-0 [&>svg]:w-3 [&>svg]:h-3",
+						props.deprecated && "opacity-50",
+					)}
+				>
+					{logo()}
+				</span>
+			</Show>
+			<span class={clsx(props.deprecated && "line-through decoration-dotted")}>
+				{props.name}
+			</span>
+		</a>
+	);
+};
 
 const SectionTitle = (props: ParentProps) => (
 	<h2 class="text-sm font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider mb-8">

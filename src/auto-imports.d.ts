@@ -7,6 +7,7 @@
 export {};
 declare global {
 	const IconCatppuccinDrizzleOrm: typeof import("~icons/catppuccin/drizzle-orm.jsx").default;
+	const IconHeroiconsArrowTopRightOnSquare20Solid: typeof import("~icons/heroicons/arrow-top-right-on-square20-solid.jsx").default;
 	const IconHeroiconsComputerDesktop20Solid: typeof import("~icons/heroicons/computer-desktop20-solid.jsx").default;
 	const IconHeroiconsMoon20Solid: typeof import("~icons/heroicons/moon20-solid.jsx").default;
 	const IconHeroiconsSun20Solid: typeof import("~icons/heroicons/sun20-solid.jsx").default;
@@ -32,6 +33,8 @@ declare global {
 	const IconLogosTwitter: typeof import("~icons/logos/twitter.jsx").default;
 	const IconLogosTypescriptIcon: typeof import("~icons/logos/typescript-icon.jsx").default;
 	const IconLogosVitejs: typeof import("~icons/logos/vitejs.jsx").default;
+	const IconSimpleIconsDevdotto: typeof import("~icons/simple-icons/devdotto.jsx").default;
+	const IconSimpleIconsMidi: typeof import("~icons/simple-icons/midi.jsx").default;
 	const IconSimpleIconsPlanetscale: typeof import("~icons/simple-icons/planetscale.jsx").default;
 	const IconSimpleIconsTanstack: typeof import("~icons/simple-icons/tanstack.jsx").default;
 	const IconSimpleIconsWgpu: typeof import("~icons/simple-icons/wgpu.jsx").default;
