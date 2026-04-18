@@ -33,4 +33,5 @@ declare global {
 	const IconSimpleIconsPlanetscale: typeof import("~icons/simple-icons/planetscale.jsx").default;
 	const IconSimpleIconsTanstack: typeof import("~icons/simple-icons/tanstack.jsx").default;
 	const IconSimpleIconsWgpu: typeof import("~icons/simple-icons/wgpu.jsx").default;
+	const IconVscodeIconsFileTypeRust: typeof import("~icons/vscode-icons/file-type-rust.jsx").default;
 }

@@ -217,16 +217,16 @@ const WorkingOn = () => (
 				}
 			>
 				<ProjectSubsection
-					href="https://github.com/specta-rs/rspc"
-					name="rspc"
-				/>
-				<ProjectSubsection
 					href="https://github.com/specta-rs/specta"
 					name="specta"
 				/>
 				<ProjectSubsection
 					href="https://github.com/specta-rs/tauri-plugin-midi"
 					name="tauri-plugin-midi"
+				/>
+				<ProjectSubsection
+					href="https://github.com/specta-rs/rspc"
+					name="rspc"
 				/>
 			</ProjectPanel>
 		</div>
@@ -308,6 +308,11 @@ const skills = [
 		logo: IconSimpleIconsTanstack,
 	},
 	{
+		name: "Rust",
+		href: "https://www.rust-lang.org",
+		logo: IconVscodeIconsFileTypeRust,
+	},
+	{
 		name: "SolidJS",
 		href: "https://www.solidjs.com",
 		logo: IconLogosSolidjsIcon,
@@ -335,7 +340,6 @@ const skills = [
 		href: "https://planetscale.com",
 		logo: IconSimpleIconsPlanetscale,
 	},
-	{ name: "Rust", href: "https://www.rust-lang.org", logo: IconLogosRust },
 	{
 		name: "TypeScript",
 		href: "https://www.typescriptlang.org",
@@ -436,7 +440,7 @@ const SkillItem = (props: {
 			class:
 				"w-12 h-12 object-contain grayscale group-hover:grayscale-0 transition-colors duration-300 ease-in-out",
 		})}
-		<span class="text-xs font-medium text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors duration-300 ease-in-out">
+		<span class="min-h-[2rem] text-center text-xs leading-tight font-medium text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors duration-300 ease-in-out">
 			{props.name}
 		</span>
 	</a>
