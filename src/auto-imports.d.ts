@@ -17,10 +17,12 @@ declare global {
 	const IconLogosGo: typeof import("~icons/logos/go.jsx").default;
 	const IconLogosLinkedinIcon: typeof import("~icons/logos/linkedin-icon.jsx").default;
 	const IconLogosMicrosoftWindowsIcon: typeof import("~icons/logos/microsoft-windows-icon.jsx").default;
+	const IconLogosNetlifyIcon: typeof import("~icons/logos/netlify-icon.jsx").default;
 	const IconLogosNextjsIcon: typeof import("~icons/logos/nextjs-icon.jsx").default;
 	const IconLogosPosthogIcon: typeof import("~icons/logos/posthog-icon.jsx").default;
 	const IconLogosPython: typeof import("~icons/logos/python.jsx").default;
 	const IconLogosReact: typeof import("~icons/logos/react.jsx").default;
+	const IconLogosRelay: typeof import("~icons/logos/relay.jsx").default;
 	const IconLogosRust: typeof import("~icons/logos/rust.jsx").default;
 	const IconLogosSolidjsIcon: typeof import("~icons/logos/solidjs-icon.jsx").default;
 	const IconLogosSvelteIcon: typeof import("~icons/logos/svelte-icon.jsx").default;
