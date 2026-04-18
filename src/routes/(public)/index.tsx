@@ -301,11 +301,6 @@ const SectionTitle = (props: ParentProps) => (
 );
 
 const skills = [
-	{
-		name: "SolidJS",
-		href: "https://www.solidjs.com",
-		logo: IconLogosSolidjsIcon,
-	},
 	{ name: "Vite", href: "https://vitejs.dev", logo: IconLogosVitejs },
 	{
 		name: "Tanstack Query",
@@ -313,9 +308,9 @@ const skills = [
 		logo: IconSimpleIconsTanstack,
 	},
 	{
-		name: "Tailwind",
-		href: "https://tailwindcss.com",
-		logo: IconLogosTailwindcssIcon,
+		name: "SolidJS",
+		href: "https://www.solidjs.com",
+		logo: IconLogosSolidjsIcon,
 	},
 	{
 		name: "EffectTS",
@@ -328,6 +323,11 @@ const skills = [
 		name: "Drizzle ORM",
 		href: "https://orm.drizzle.team",
 		logo: IconCatppuccinDrizzleOrm,
+	},
+	{
+		name: "Tailwind",
+		href: "https://tailwindcss.com",
+		logo: IconLogosTailwindcssIcon,
 	},
 	{ name: "PostHog", href: "https://posthog.com", logo: IconLogosPosthogIcon },
 	{
@@ -348,28 +348,46 @@ const Skills = () => {
 	let wrapperRef: HTMLDivElement | undefined;
 
 	onMount(() => {
-		requestAnimationFrame(() => {
+		let animationFrame: number | undefined;
+		let clone: HTMLDivElement | undefined;
+		let previousTime: number | undefined;
+
+		animationFrame = requestAnimationFrame(() => {
 			if (!containerRef || !wrapperRef) return;
 
 			// Clone the skills container for seamless scrolling
-			const clone = containerRef.cloneNode(true) as HTMLDivElement;
+			clone = containerRef.cloneNode(true) as HTMLDivElement;
 			wrapperRef.appendChild(clone);
 
 			const totalWidth = containerRef.scrollWidth;
 			let translateX = 0;
+			const pixelsPerSecond = 33;
 
-			const interval = setInterval(() => {
+			const step = (time: number) => {
 				if (!wrapperRef) return;
+				if (previousTime === undefined) previousTime = time;
 
-				translateX -= 1;
+				const delta = time - previousTime;
+				previousTime = time;
+
+				translateX -= (pixelsPerSecond * delta) / 1000;
 
 				// Reset when we've scrolled one full width
-				if (Math.abs(translateX) >= totalWidth) translateX = 0;
+				if (Math.abs(translateX) >= totalWidth) {
+					translateX += totalWidth;
+				}
 
 				wrapperRef.style.transform = `translateX(${translateX}px)`;
-			}, 30);
+				animationFrame = requestAnimationFrame(step);
+			};
 
-			onCleanup(() => clearInterval(interval));
+			animationFrame = requestAnimationFrame(step);
+		});
+
+		onCleanup(() => {
+			if (animationFrame !== undefined) cancelAnimationFrame(animationFrame);
+			if (wrapperRef) wrapperRef.style.transform = "";
+			clone?.remove();
 		});
 	});
 
@@ -380,7 +398,7 @@ const Skills = () => {
 			<div class="relative overflow-hidden mask-[linear-gradient(to_right,transparent,black_20%,black_80%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]">
 				<div
 					ref={wrapperRef}
-					class="flex gap-6"
+					class="flex"
 					style={{ "will-change": "transform" }}
 				>
 					<div ref={containerRef} class="flex gap-6 shrink-0">
@@ -411,7 +429,7 @@ const SkillItem = (props: {
 		href={props.href}
 		target="_blank"
 		rel="noopener"
-		class="flex flex-col items-center gap-2 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-300 ease-in-out group"
+		class="w-24 flex flex-col items-center gap-2 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-300 ease-in-out group"
 		title={props.name}
 	>
 		{props.logo({
