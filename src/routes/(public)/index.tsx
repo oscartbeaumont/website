@@ -249,47 +249,48 @@ const WorkingOn = () => (
 			</ProjectPanel>
 		</div>
 
-		<div class="mt-5 ml-6 pt-4 border-t border-gray-100 dark:border-gray-800 flex flex-wrap items-center gap-x-4 gap-y-2">
+		<div class="mt-5 sm:ml-6 pt-4 border-t border-gray-100 dark:border-gray-800 flex flex-col gap-y-2">
 			<a
 				href="https://tauri.app"
 				target="_blank"
 				rel="noopener"
-				class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
+				class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200 mx-auto sm:mx-0"
 			>
 				<IconLogosTauri class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
 				<span>Tauri Working Group Member</span>
 			</a>
-			<span class="text-gray-200 dark:text-gray-700 leading-none">·</span>
-			<span class="text-xs font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-wider leading-none">
-				Previously
-			</span>
-			<a
-				href="https://github.com/oscartbeaumont/netlify-dynamic-dns"
-				target="_blank"
-				rel="noopener"
-				class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
-			>
-				<IconLogosNetlifyIcon class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
-				<span>Netlify Dynamic DNS</span>
-			</a>
-			<a
-				href="https://github.com/oscartbeaumont/vite-plugin-relay"
-				target="_blank"
-				rel="noopener"
-				class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
-			>
-				<IconLogosRelay class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
-				<span>vite-plugin-relay</span>
-			</a>
-			<a
-				href="https://github.com/oscartbeaumont/ElectronPlayer"
-				target="_blank"
-				rel="noopener"
-				class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
-			>
-				<IconLogosElectron class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
-				<span>ElectronPlayer</span>
-			</a>
+			<div class="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-2">
+				<span class="text-xs font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-wider leading-none">
+					Previously
+				</span>
+				<a
+					href="https://github.com/oscartbeaumont/netlify-dynamic-dns"
+					target="_blank"
+					rel="noopener"
+					class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
+				>
+					<IconLogosNetlifyIcon class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
+					<span>Netlify Dynamic DNS</span>
+				</a>
+				<a
+					href="https://github.com/oscartbeaumont/vite-plugin-relay"
+					target="_blank"
+					rel="noopener"
+					class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
+				>
+					<IconLogosRelay class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
+					<span>vite-plugin-relay</span>
+				</a>
+				<a
+					href="https://github.com/oscartbeaumont/ElectronPlayer"
+					target="_blank"
+					rel="noopener"
+					class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
+				>
+					<IconLogosElectron class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
+					<span>ElectronPlayer</span>
+				</a>
+			</div>
 		</div>
 	</section>
 );
