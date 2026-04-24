@@ -249,7 +249,7 @@ const WorkingOn = () => (
 			</ProjectPanel>
 		</div>
 
-		<div class="mt-5 sm:ml-6 pt-4 border-t border-gray-100 dark:border-gray-800 flex flex-col gap-y-2">
+		<div class="mt-5 sm:ml-6 pt-4 border-t border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-y-2 sm:gap-x-4">
 			<a
 				href="https://tauri.app"
 				target="_blank"
