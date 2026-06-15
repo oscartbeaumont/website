@@ -77,6 +77,7 @@ const assets: Asset[] = [
 	{ filename: "smaller.png", path: "/assets/smaller.png", type: "image" },
 	{ filename: "wallpaper.jpeg", path: "/assets/wallpaper.jpeg", type: "image" },
 	{ filename: "wallpaper2.jpg", path: "/assets/wallpaper2.jpg", type: "image" },
+	{ filename: "wallpaper3.jpg", path: "/assets/wallpaper3.jpg", type: "image" },
 ];
 
 const Assets = () => (
