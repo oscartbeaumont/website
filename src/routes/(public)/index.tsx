@@ -529,8 +529,8 @@ const Experience = () => (
             >
               The AI Platform
             </a>{" "}
-            a system for multi-agent, multi-human for maximizing human potential across the entire
-            organization.
+            a superapp for multi-agent, multi-human communication for maximizing human potential
+            across the entire organization.
           </>
         }
       />
