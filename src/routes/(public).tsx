@@ -1,6 +1,6 @@
 import { Link, Meta, Title } from "@solidjs/meta";
+import { getRequestEvent, isServer } from "@solidjs/web";
 import type { ParentProps } from "solid-js";
-import { getRequestEvent, isServer } from "solid-js/web";
 import openGraphImage from "../assets/og.png";
 import { openGraphImageSize } from "../constants";
 
@@ -11,10 +11,10 @@ const canonical = "http://otbeaumont.me";
 
 export default function Layout(props: ParentProps) {
 	const origin = isServer
-		? getRequestEvent()!.nativeEvent.url.origin
+		? new URL(getRequestEvent()!.request.url).origin
 		: window.location.origin;
 	const path = isServer
-		? getRequestEvent()!.nativeEvent.url.pathname
+		? new URL(getRequestEvent()!.request.url).pathname
 		: window.location.pathname;
 
 	return (

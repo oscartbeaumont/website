@@ -1,8 +1,5 @@
 import { env } from "cloudflare:workers";
-import type { APIEvent } from "@solidjs/start/server";
-
-export async function GET({ params }: APIEvent) {
-	const fileName = params.file;
+export async function getAddyImage(fileName: string) {
 	if (!fileName) return new Response("File name is required", { status: 400 });
 
 	try {

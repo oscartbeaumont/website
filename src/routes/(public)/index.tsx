@@ -1,16 +1,14 @@
-import { useColorMode } from "@kobalte/core";
-import { createDateNow } from "@solid-primitives/date";
 import { useNavigate } from "@solidjs/router";
+import { isServer, type JSX } from "@solidjs/web";
 import clsx from "clsx";
 import {
-  children,
-  createMemo,
-  For,
-  type JSX,
-  onCleanup,
-  onMount,
-  type ParentProps,
-  Show,
+	children,
+	createMemo,
+	createSignal,
+	For,
+	onSettled,
+	type ParentProps,
+	Show,
 } from "solid-js";
 import IconLogosEffectIcon from "~icons/logos/effect-icon";
 
@@ -18,723 +16,825 @@ import imageUrl from "../../assets/logo.jpeg";
 import mattraxLogoUrl from "../../assets/matrax-logo.png";
 import spectaLogoUrl from "../../assets/specta-logo.png";
 import { RspcLogo, SpectaLogo } from "../../components/icons";
+import { createDateNow } from "../../date";
 
 export default function Home() {
-  return (
-    <Layout>
-      <Header />
-      <About />
-      <WorkingOn />
-      <Skills />
-      <Experience />
-      <Contact />
-    </Layout>
-  );
+	return (
+		<Layout>
+			<Header />
+			<About />
+			<WorkingOn />
+			<Skills />
+			<Experience />
+			<Contact />
+		</Layout>
+	);
 }
 
 export const Layout = (props: ParentProps) => (
-  <div class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-    <div class="max-w-4xl mx-auto px-6 pt-12 pb-3 sm:pb-6">
-      {props.children}
+	<div class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+		<div class="max-w-4xl mx-auto px-6 pt-12 pb-3 sm:pb-6">
+			{props.children}
 
-      <Footer />
-    </div>
-  </div>
+			<Footer />
+		</div>
+	</div>
 );
 
 function Header() {
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
-  return (
-    <header class="mb-8">
-      <div class="flex flex-col md:flex-row items-center gap-8 mb-8">
-        <div class="relative">
-          <div class="absolute inset-0 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
-          <img
-            src={imageUrl}
-            alt="Oscar Beaumont"
-            class="relative rounded-full h-36 w-36 border-2 border-gray-50 dark:border-gray-800 shadow-sm"
-            onContextMenu={(e) => {
-              e.preventDefault();
-              navigate("/brand");
-            }}
-          />
-        </div>
-        <div class="flex-1 text-center md:text-left">
-          <h1 class="text-5xl md:text-6xl font-bold mb-3 tracking-tight">Oscar Beaumont</h1>
-          <p class="text-xl text-gray-600 dark:text-gray-400 mb-4 leading-relaxed font-medium">
-            <a
-              href="https://zephyr-cloud.io"
-              target="_blank"
-              rel="noopener"
-              class="hover:text-black dark:hover:text-white transition-colors duration-200"
-            >
-              Platform Engineer at Zephyr Cloud
-            </a>{" "}
-            <span class="text-md font-light">
-              from{" "}
-              <a
-                href="https://maps.app.goo.gl/5F1tMoTEUg9WpGXW8"
-                target="_blank"
-                rel="noopener"
-                class="hover:text-[#00A5AF]"
-              >
-                Western Australia
-              </a>
-            </span>
-          </p>
-          <div class="flex gap-6 items-center justify-center md:justify-start">
-            <SocialLink
-              title="GitHub"
-              href="https://github.com/oscartbeaumont"
-              icon={
-                <IconLogosGithubIcon class="brightness-0 group-hover:brightness-100 dark:invert w-5 h-5" />
-              }
-              class="motion-safe:animate-[fadeIn_0.3s_0s_both]"
-            />
-            <SocialLink
-              title="Twitter"
-              href="https://twitter.com/oscartbeaumont"
-              icon={
-                <IconLogosTwitter class="brightness-0 group-hover:brightness-100 dark:invert dark:group-hover:invert-0 w-5 h-5" />
-              }
-              class="motion-safe:animate-[fadeIn_0.3s_0.2s_both]"
-            />
-            <SocialLink
-              title="LinkedIn"
-              href="https://linkedin.com/in/oscartbeaumont"
-              icon={
-                <IconLogosLinkedinIcon class="brightness-0 group-hover:brightness-100 dark:invert dark:group-hover:invert-0 w-5 h-5" />
-              }
-              class="motion-safe:animate-[fadeIn_0.3s_0.4s_both]"
-            />
-            <SocialLink
-              title="Blog"
-              href="https://dev.to/oscartbeaumont"
-              icon={
-                <IconSimpleIconsDevdotto class="brightness-0 group-hover:brightness-100 dark:invert dark:group-hover:invert-0 w-5 h-5" />
-              }
-              class="motion-safe:animate-[fadeIn_0.3s_0.6s_both]"
-            />
-          </div>
-        </div>
-      </div>
-    </header>
-  );
+	return (
+		<header class="mb-8">
+			<div class="flex flex-col md:flex-row items-center gap-8 mb-8">
+				<div class="relative">
+					<div class="absolute inset-0 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+					<img
+						src={imageUrl}
+						alt="Oscar Beaumont"
+						class="relative rounded-full h-36 w-36 border-2 border-gray-50 dark:border-gray-800 shadow-sm"
+						onContextMenu={(e) => {
+							e.preventDefault();
+							navigate("/brand");
+						}}
+					/>
+				</div>
+				<div class="flex-1 text-center md:text-left">
+					<h1 class="text-5xl md:text-6xl font-bold mb-3 tracking-tight">
+						Oscar Beaumont
+					</h1>
+					<p class="text-xl text-gray-600 dark:text-gray-400 mb-4 leading-relaxed font-medium">
+						Software Engineer{" "}
+						<span class="text-md font-light">
+							from{" "}
+							<a
+								href="https://maps.app.goo.gl/5F1tMoTEUg9WpGXW8"
+								target="_blank"
+								rel="noopener"
+								class="hover:text-[#00A5AF]"
+							>
+								Western Australia
+							</a>
+						</span>
+					</p>
+					<div class="flex gap-6 items-center justify-center md:justify-start">
+						<SocialLink
+							title="GitHub"
+							href="https://github.com/oscartbeaumont"
+							icon={
+								<IconLogosGithubIcon class="brightness-0 group-hover:brightness-100 dark:invert w-5 h-5" />
+							}
+							class="motion-safe:animate-[fadeIn_0.3s_0s_both]"
+						/>
+						<SocialLink
+							title="Twitter"
+							href="https://twitter.com/oscartbeaumont"
+							icon={
+								<IconLogosTwitter class="brightness-0 group-hover:brightness-100 dark:invert dark:group-hover:invert-0 w-5 h-5" />
+							}
+							class="motion-safe:animate-[fadeIn_0.3s_0.2s_both]"
+						/>
+						<SocialLink
+							title="LinkedIn"
+							href="https://linkedin.com/in/oscartbeaumont"
+							icon={
+								<IconLogosLinkedinIcon class="brightness-0 group-hover:brightness-100 dark:invert dark:group-hover:invert-0 w-5 h-5" />
+							}
+							class="motion-safe:animate-[fadeIn_0.3s_0.4s_both]"
+						/>
+						<SocialLink
+							title="Blog"
+							href="https://dev.to/oscartbeaumont"
+							icon={
+								<IconSimpleIconsDevdotto class="brightness-0 group-hover:brightness-100 dark:invert dark:group-hover:invert-0 w-5 h-5" />
+							}
+							class="motion-safe:animate-[fadeIn_0.3s_0.6s_both]"
+						/>
+					</div>
+				</div>
+			</div>
+		</header>
+	);
 }
 
-const SocialLink = (props: { href: string; title: string; icon: JSX.Element; class: string }) => (
-  <a
-    href={props.href}
-    target="_blank"
-    rel="noopener noreferrer"
-    class={clsx(
-      "group inline-flex items-center gap-2  text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-300",
-      props.class,
-    )}
-  >
-    {props.icon}
+const SocialLink = (props: {
+	href: string;
+	title: string;
+	icon: JSX.Element;
+	class: string;
+}) => (
+	<a
+		href={props.href}
+		target="_blank"
+		rel="noopener noreferrer"
+		class={clsx(
+			"group inline-flex items-center gap-2  text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-300",
+			props.class,
+		)}
+	>
+		{props.icon}
 
-    <span class="hidden sm:inline font-medium">{props.title}</span>
-  </a>
+		<span class="hidden sm:inline font-medium">{props.title}</span>
+	</a>
 );
 
 function About() {
-  const [now] = createDateNow();
-  const yearsOfExperience = createMemo(() => now().getFullYear() - 2020);
+	const [now] = createDateNow();
+	const yearsOfExperience = createMemo(() => now().getFullYear() - 2020);
 
-  return (
-    <section class="pb-8">
-      <div class="prose prose-gray max-w-none text-gray-700 dark:text-gray-300 leading-relaxed text-lg">
-        <p>
-          I'm a self-taught software engineer who is passionate about building tools that empower
-          people. With {yearsOfExperience()} years of professional experience working on everything
-          from webapps to desktop apps and building with many languages including{" "}
-          <a
-            class="font-semibold hover:text-[#B7410E]"
-            href="https://www.rust-lang.org"
-            target="_blank"
-            rel="noopener"
-          >
-            Rust
-          </a>{" "}
-          and{" "}
-          <a
-            class="font-semibold hover:text-[#3178C6]"
-            href="https://www.typescriptlang.org"
-            target="_blank"
-            rel="noopener"
-          >
-            TypeScript
-          </a>
-          .
-        </p>
-      </div>
-    </section>
-  );
+	return (
+		<section class="pb-8">
+			<div class="prose prose-gray max-w-none text-gray-700 dark:text-gray-300 leading-relaxed text-lg">
+				<p>
+					I'm a self-taught software engineer who is passionate about building
+					tools that empower people. With {yearsOfExperience()} years of
+					professional experience working on everything from webapps to desktop
+					apps and building with many languages including{" "}
+					<a
+						class="font-semibold hover:text-[#B7410E]"
+						href="https://www.rust-lang.org"
+						target="_blank"
+						rel="noopener"
+					>
+						Rust
+					</a>{" "}
+					and{" "}
+					<a
+						class="font-semibold hover:text-[#3178C6]"
+						href="https://www.typescriptlang.org"
+						target="_blank"
+						rel="noopener"
+					>
+						TypeScript
+					</a>
+					.
+				</p>
+			</div>
+		</section>
+	);
 }
 
 const WorkingOn = () => (
-  <section class="pb-8">
-    <SectionTitle>What i'm working on?</SectionTitle>
+	<section class="pb-8">
+		<SectionTitle>What i'm working on?</SectionTitle>
 
-    <div class="mt-3 ml-6 space-y-3">
-      <ProjectPanel
-        name="Mattrax"
-        description="Manage all your Windows, Apple and Android devices from one simple dashboard"
-        href="https://mattrax.app"
-        logo={mattraxLogoUrl}
-        logoProps="dark:invert"
-        right={
-          <div class="flex space-x-4">
-            <a href="https://discord.gg/WPBHmDSfAn" target="_blank" rel="noopener">
-              <IconLogosDiscordIcon class="brightness-0 dark:invert hover:brightness-100 dark:hover:invert-0 w-5 h-5 transition-colors duration-300 ease-in-out" />
-            </a>
-            <a href="https://github.com/mattrax" target="_blank" rel="noopener">
-              <IconLogosGithubIcon class="brightness-0 dark:invert hover:brightness-100 w-5 h-5 transition-colors duration-300 ease-in-out" />
-            </a>
-          </div>
-        }
-      />
-      <ProjectPanel
-        name="Specta"
-        description="Rust crates for building better web apps"
-        href="https://specta.dev"
-        logo={spectaLogoUrl}
-        right={
-          <div class="flex space-x-4">
-            <a href="https://discord.com/invite/JgqH8b4ycw" target="_blank" rel="noopener">
-              <IconLogosDiscordIcon class="brightness-0 dark:invert hover:brightness-100 dark:hover:invert-0 w-5 h-5 transition-colors duration-300 ease-in-out" />
-            </a>
-            <a href="https://github.com/specta-rs" target="_blank" rel="noopener">
-              <IconLogosGithubIcon class="brightness-0 dark:invert hover:brightness-100 w-5 h-5 transition-colors duration-300 ease-in-out" />
-            </a>
-          </div>
-        }
-      >
-        <ProjectSubsection
-          href="https://github.com/specta-rs/specta"
-          name="specta"
-          logo={<SpectaLogo />}
-        />
-        <ProjectSubsection
-          href="https://github.com/specta-rs/tauri-specta"
-          name="tauri-specta"
-          logo={<IconLogosTauri />}
-        />
-        <ProjectSubsection
-          href="https://github.com/specta-rs/tauri-plugin-midi"
-          name="tauri-plugin-midi"
-          logo={<IconSimpleIconsMidi />}
-        />
-        <ProjectSubsection
-          href="https://github.com/specta-rs/rspc"
-          name="rspc"
-          logo={<RspcLogo />}
-          deprecated
-        />
-      </ProjectPanel>
-    </div>
+		<div class="mt-3 ml-6 space-y-3">
+			<ProjectPanel
+				name="Mattrax"
+				description="Manage all your Windows, Apple and Android devices from one simple dashboard"
+				href="https://mattrax.app"
+				logo={mattraxLogoUrl}
+				logoProps="dark:invert"
+				right={
+					<div class="flex space-x-4">
+						<a
+							href="https://discord.gg/WPBHmDSfAn"
+							target="_blank"
+							rel="noopener"
+						>
+							<IconLogosDiscordIcon class="brightness-0 dark:invert hover:brightness-100 dark:hover:invert-0 w-5 h-5 transition-colors duration-300 ease-in-out" />
+						</a>
+						<a href="https://github.com/mattrax" target="_blank" rel="noopener">
+							<IconLogosGithubIcon class="brightness-0 dark:invert hover:brightness-100 w-5 h-5 transition-colors duration-300 ease-in-out" />
+						</a>
+					</div>
+				}
+			/>
+			<ProjectPanel
+				name="Specta"
+				description="Rust crates for building better web apps"
+				href="https://specta.dev"
+				logo={spectaLogoUrl}
+				right={
+					<div class="flex space-x-4">
+						<a
+							href="https://discord.com/invite/JgqH8b4ycw"
+							target="_blank"
+							rel="noopener"
+						>
+							<IconLogosDiscordIcon class="brightness-0 dark:invert hover:brightness-100 dark:hover:invert-0 w-5 h-5 transition-colors duration-300 ease-in-out" />
+						</a>
+						<a
+							href="https://github.com/specta-rs"
+							target="_blank"
+							rel="noopener"
+						>
+							<IconLogosGithubIcon class="brightness-0 dark:invert hover:brightness-100 w-5 h-5 transition-colors duration-300 ease-in-out" />
+						</a>
+					</div>
+				}
+			>
+				<ProjectSubsection
+					href="https://github.com/specta-rs/specta"
+					name="specta"
+					logo={<SpectaLogo />}
+				/>
+				<ProjectSubsection
+					href="https://github.com/specta-rs/tauri-specta"
+					name="tauri-specta"
+					logo={<IconLogosTauri />}
+				/>
+				<ProjectSubsection
+					href="https://github.com/specta-rs/tauri-plugin-midi"
+					name="tauri-plugin-midi"
+					logo={<IconSimpleIconsMidi />}
+				/>
+				<ProjectSubsection
+					href="https://github.com/specta-rs/rspc"
+					name="rspc"
+					logo={<RspcLogo />}
+					deprecated
+				/>
+			</ProjectPanel>
+		</div>
 
-    <div class="mt-5 sm:ml-6 pt-4 border-t border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-y-2 sm:gap-x-4">
-      <a
-        href="https://tauri.app"
-        target="_blank"
-        rel="noopener"
-        class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200 mx-auto sm:mx-0"
-      >
-        <IconLogosTauri class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
-        <span>Tauri Working Group Member</span>
-      </a>
-      <div class="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-2">
-        <span class="text-xs font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-wider leading-none">
-          Previously
-        </span>
-        <a
-          href="https://github.com/oscartbeaumont/netlify-dynamic-dns"
-          target="_blank"
-          rel="noopener"
-          class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
-        >
-          <IconLogosNetlifyIcon class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
-          <span>Netlify Dynamic DNS</span>
-        </a>
-        <a
-          href="https://github.com/oscartbeaumont/vite-plugin-relay"
-          target="_blank"
-          rel="noopener"
-          class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
-        >
-          <IconLogosRelay class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
-          <span>vite-plugin-relay</span>
-        </a>
-        <a
-          href="https://github.com/oscartbeaumont/ElectronPlayer"
-          target="_blank"
-          rel="noopener"
-          class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
-        >
-          <IconLogosElectron class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
-          <span>ElectronPlayer</span>
-        </a>
-      </div>
-    </div>
-  </section>
+		<div class="mt-5 sm:ml-6 pt-4 border-t border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-y-2 sm:gap-x-4">
+			<a
+				href="https://tauri.app"
+				target="_blank"
+				rel="noopener"
+				class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200 mx-auto sm:mx-0"
+			>
+				<IconLogosTauri class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
+				<span>Tauri Working Group Member</span>
+			</a>
+			<div class="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-2">
+				<span class="text-xs font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-wider leading-none">
+					Previously
+				</span>
+				<a
+					href="https://github.com/oscartbeaumont/netlify-dynamic-dns"
+					target="_blank"
+					rel="noopener"
+					class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
+				>
+					<IconLogosNetlifyIcon class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
+					<span>Netlify Dynamic DNS</span>
+				</a>
+				<a
+					href="https://github.com/oscartbeaumont/vite-plugin-relay"
+					target="_blank"
+					rel="noopener"
+					class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
+				>
+					<IconLogosRelay class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
+					<span>vite-plugin-relay</span>
+				</a>
+				<a
+					href="https://github.com/oscartbeaumont/ElectronPlayer"
+					target="_blank"
+					rel="noopener"
+					class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
+				>
+					<IconLogosElectron class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
+					<span>ElectronPlayer</span>
+				</a>
+			</div>
+		</div>
+	</section>
 );
 
 const ProjectPanel = (
-  props: ParentProps<{
-    name: string;
-    description: string;
-    href: string;
-    logo: string;
-    logoProps?: string;
-    right?: JSX.Element;
-  }>,
+	props: ParentProps<{
+		name: string;
+		description: string;
+		href: string;
+		logo: string;
+		logoProps?: string;
+		right?: JSX.Element;
+	}>,
 ) => {
-  const subsections = children(() => props.children);
+	const subsections = children(() => props.children);
 
-  return (
-    <div class="py-2">
-      <div class="flex items-center justify-between gap-4">
-        <a
-          href={props.href}
-          target="_blank"
-          rel="noopener"
-          class="flex items-center gap-3 flex-1 min-w-0 transition-transform duration-300 ease-in-out motion-safe:hover:translate-x-2"
-        >
-          <img
-            src={props.logo}
-            alt={`${props.name} logo`}
-            class={clsx("w-12 object-contain", props.logoProps)}
-          />
-          <div class="min-w-0 flex-1">
-            <div class="font-semibold text-gray-900 dark:text-gray-100">{props.name}</div>
-            <div class="text-sm text-gray-600 dark:text-gray-400">{props.description}</div>
-          </div>
-        </a>
-        <div class="flex items-center gap-3 shrink-0">
-          <div class="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-            {props.right}
-          </div>
-        </div>
-      </div>
-      <Show when={subsections()}>
-        {(content) => <div class="ml-[3.75rem] mt-2 flex flex-wrap gap-2">{content()}</div>}
-      </Show>
-    </div>
-  );
+	return (
+		<div class="py-2">
+			<div class="flex items-center justify-between gap-4">
+				<a
+					href={props.href}
+					target="_blank"
+					rel="noopener"
+					class="flex items-center gap-3 flex-1 min-w-0 transition-transform duration-300 ease-in-out motion-safe:hover:translate-x-2"
+				>
+					<img
+						src={props.logo}
+						alt={`${props.name} logo`}
+						class={clsx("w-12 object-contain", props.logoProps)}
+					/>
+					<div class="min-w-0 flex-1">
+						<div class="font-semibold text-gray-900 dark:text-gray-100">
+							{props.name}
+						</div>
+						<div class="text-sm text-gray-600 dark:text-gray-400">
+							{props.description}
+						</div>
+					</div>
+				</a>
+				<div class="flex items-center gap-3 shrink-0">
+					<div class="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+						{props.right}
+					</div>
+				</div>
+			</div>
+			<Show when={subsections()}>
+				{(content) => (
+					<div class="ml-[3.75rem] mt-2 flex flex-wrap gap-2">{content()}</div>
+				)}
+			</Show>
+		</div>
+	);
 };
 
 const ProjectSubsection = (props: {
-  href: string;
-  name: string;
-  logo?: JSX.Element;
-  deprecated?: boolean;
+	href: string;
+	name: string;
+	logo?: JSX.Element;
+	deprecated?: boolean;
 }) => {
-  const logo = children(() => props.logo);
-  return (
-    <a
-      href={props.href}
-      target="_blank"
-      rel="noopener"
-      class={clsx(
-        "inline-flex items-center gap-1.5 font-mono text-xs px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200",
-        props.deprecated
-          ? "text-gray-400 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-500"
-          : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100",
-      )}
-      title={props.deprecated ? `${props.name} (deprecated)` : undefined}
-    >
-      <Show when={logo()}>
-        <span
-          class={clsx("w-3 h-3 shrink-0 [&>svg]:w-3 [&>svg]:h-3", props.deprecated && "opacity-50")}
-        >
-          {logo()}
-        </span>
-      </Show>
-      <span class={clsx(props.deprecated && "line-through decoration-dotted")}>{props.name}</span>
-    </a>
-  );
+	const logo = children(() => props.logo);
+	return (
+		<a
+			href={props.href}
+			target="_blank"
+			rel="noopener"
+			class={clsx(
+				"inline-flex items-center gap-1.5 font-mono text-xs px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200",
+				props.deprecated
+					? "text-gray-400 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-500"
+					: "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100",
+			)}
+			title={props.deprecated ? `${props.name} (deprecated)` : undefined}
+		>
+			<Show when={logo()}>
+				<span
+					class={clsx(
+						"w-3 h-3 shrink-0 [&>svg]:w-3 [&>svg]:h-3",
+						props.deprecated && "opacity-50",
+					)}
+				>
+					{logo()}
+				</span>
+			</Show>
+			<span class={clsx(props.deprecated && "line-through decoration-dotted")}>
+				{props.name}
+			</span>
+		</a>
+	);
 };
 
 const SectionTitle = (props: ParentProps) => (
-  <h2 class="text-sm font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider mb-8">
-    {props.children}
-  </h2>
+	<h2 class="text-sm font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider mb-8">
+		{props.children}
+	</h2>
 );
 
 const skills = [
-  { name: "Vite", href: "https://vitejs.dev", logo: IconLogosVitejs },
-  {
-    name: "Tanstack Query",
-    href: "https://tanstack.com/query",
-    logo: IconSimpleIconsTanstack,
-  },
-  {
-    name: "Rust",
-    href: "https://www.rust-lang.org",
-    logo: IconVscodeIconsFileTypeRust,
-  },
-  {
-    name: "SolidJS",
-    href: "https://www.solidjs.com",
-    logo: IconLogosSolidjsIcon,
-  },
-  {
-    name: "EffectTS",
-    href: "https://effect.website",
-    logo: IconLogosEffectIcon,
-  },
-  { name: "Tauri", href: "https://tauri.app", logo: IconLogosTauri },
-  { name: "tRPC", href: "https://trpc.io", logo: IconLogosTrpc },
-  {
-    name: "Drizzle ORM",
-    href: "https://orm.drizzle.team",
-    logo: IconCatppuccinDrizzleOrm,
-  },
-  {
-    name: "Tailwind",
-    href: "https://tailwindcss.com",
-    logo: IconLogosTailwindcssIcon,
-  },
-  { name: "PostHog", href: "https://posthog.com", logo: IconLogosPosthogIcon },
-  {
-    name: "PlanetScale",
-    href: "https://planetscale.com",
-    logo: IconSimpleIconsPlanetscale,
-  },
-  {
-    name: "TypeScript",
-    href: "https://www.typescriptlang.org",
-    logo: IconLogosTypescriptIcon,
-  },
+	{ name: "Vite", href: "https://vitejs.dev", logo: IconLogosVitejs },
+	{
+		name: "Tanstack Query",
+		href: "https://tanstack.com/query",
+		logo: IconSimpleIconsTanstack,
+	},
+	{
+		name: "Rust",
+		href: "https://www.rust-lang.org",
+		logo: IconVscodeIconsFileTypeRust,
+	},
+	{
+		name: "SolidJS",
+		href: "https://www.solidjs.com",
+		logo: IconLogosSolidjsIcon,
+	},
+	{
+		name: "EffectTS",
+		href: "https://effect.website",
+		logo: IconLogosEffectIcon,
+	},
+	{ name: "Tauri", href: "https://tauri.app", logo: IconLogosTauri },
+	{ name: "tRPC", href: "https://trpc.io", logo: IconLogosTrpc },
+	{
+		name: "Drizzle ORM",
+		href: "https://orm.drizzle.team",
+		logo: IconCatppuccinDrizzleOrm,
+	},
+	{
+		name: "Tailwind",
+		href: "https://tailwindcss.com",
+		logo: IconLogosTailwindcssIcon,
+	},
+	{ name: "PostHog", href: "https://posthog.com", logo: IconLogosPosthogIcon },
+	{
+		name: "PlanetScale",
+		href: "https://planetscale.com",
+		logo: IconSimpleIconsPlanetscale,
+	},
+	{
+		name: "TypeScript",
+		href: "https://www.typescriptlang.org",
+		logo: IconLogosTypescriptIcon,
+	},
 ];
 
 const Skills = () => {
-  let containerRef: HTMLDivElement | undefined;
-  let wrapperRef: HTMLDivElement | undefined;
+	let containerRef: HTMLDivElement | undefined;
+	let wrapperRef: HTMLDivElement | undefined;
 
-  onMount(() => {
-    let animationFrame: number | undefined;
-    let clone: HTMLDivElement | undefined;
-    let previousTime: number | undefined;
+	onSettled(() => {
+		let animationFrame: number | undefined;
+		let clone: HTMLDivElement | undefined;
+		let previousTime: number | undefined;
 
-    animationFrame = requestAnimationFrame(() => {
-      if (!containerRef || !wrapperRef) return;
+		animationFrame = requestAnimationFrame(() => {
+			if (!containerRef || !wrapperRef) return;
 
-      // Clone the skills container for seamless scrolling
-      clone = containerRef.cloneNode(true) as HTMLDivElement;
-      wrapperRef.appendChild(clone);
+			// Clone the skills container for seamless scrolling
+			clone = containerRef.cloneNode(true) as HTMLDivElement;
+			wrapperRef.appendChild(clone);
 
-      const totalWidth = containerRef.scrollWidth;
-      let translateX = 0;
-      const pixelsPerSecond = 33;
+			const totalWidth = containerRef.scrollWidth;
+			let translateX = 0;
+			const pixelsPerSecond = 33;
 
-      const step = (time: number) => {
-        if (!wrapperRef) return;
-        if (previousTime === undefined) previousTime = time;
+			const step = (time: number) => {
+				if (!wrapperRef) return;
+				if (previousTime === undefined) previousTime = time;
 
-        const delta = time - previousTime;
-        previousTime = time;
+				const delta = time - previousTime;
+				previousTime = time;
 
-        translateX -= (pixelsPerSecond * delta) / 1000;
+				translateX -= (pixelsPerSecond * delta) / 1000;
 
-        // Reset when we've scrolled one full width
-        if (Math.abs(translateX) >= totalWidth) {
-          translateX += totalWidth;
-        }
+				// Reset when we've scrolled one full width
+				if (Math.abs(translateX) >= totalWidth) {
+					translateX += totalWidth;
+				}
 
-        wrapperRef.style.transform = `translateX(${translateX}px)`;
-        animationFrame = requestAnimationFrame(step);
-      };
+				wrapperRef.style.transform = `translateX(${translateX}px)`;
+				animationFrame = requestAnimationFrame(step);
+			};
 
-      animationFrame = requestAnimationFrame(step);
-    });
+			animationFrame = requestAnimationFrame(step);
+		});
 
-    onCleanup(() => {
-      if (animationFrame !== undefined) cancelAnimationFrame(animationFrame);
-      if (wrapperRef) wrapperRef.style.transform = "";
-      clone?.remove();
-    });
-  });
+		return () => {
+			if (animationFrame !== undefined) cancelAnimationFrame(animationFrame);
+			if (wrapperRef) wrapperRef.style.transform = "";
+			clone?.remove();
+		};
+	});
 
-  return (
-    <section class="pb-8">
-      <SectionTitle>What I use?</SectionTitle>
+	return (
+		<section class="pb-8">
+			<SectionTitle>What I use?</SectionTitle>
 
-      <div class="relative overflow-hidden mask-[linear-gradient(to_right,transparent,black_20%,black_80%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]">
-        <div ref={wrapperRef} class="flex" style={{ "will-change": "transform" }}>
-          <div ref={containerRef} class="flex gap-6 shrink-0">
-            <For each={skills}>
-              {(skill) => (
-                <div class="shrink-0">
-                  <SkillItem name={skill.name} href={skill.href} logo={skill.logo} />
-                </div>
-              )}
-            </For>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+			<div class="relative overflow-hidden mask-[linear-gradient(to_right,transparent,black_20%,black_80%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]">
+				<div
+					ref={wrapperRef}
+					class="flex"
+					style={{ "will-change": "transform" }}
+				>
+					<div ref={containerRef} class="flex gap-6 shrink-0">
+						<For each={skills}>
+							{(skill) => (
+								<div class="shrink-0">
+									<SkillItem
+										name={skill.name}
+										href={skill.href}
+										logo={skill.logo}
+									/>
+								</div>
+							)}
+						</For>
+					</div>
+				</div>
+			</div>
+		</section>
+	);
 };
 
 const SkillItem = (props: {
-  href: string;
-  name: string;
-  logo: (_: { class: string }) => JSX.Element;
+	href: string;
+	name: string;
+	logo: (_: { class: string }) => JSX.Element;
 }) => (
-  <a
-    href={props.href}
-    target="_blank"
-    rel="noopener"
-    class="w-24 flex flex-col items-center gap-2 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-300 ease-in-out group"
-    title={props.name}
-  >
-    {props.logo({
-      class:
-        "w-12 h-12 object-contain grayscale group-hover:grayscale-0 transition-colors duration-300 ease-in-out",
-    })}
-    <span class="min-h-[2rem] text-center text-xs leading-tight font-medium text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors duration-300 ease-in-out">
-      {props.name}
-    </span>
-  </a>
+	<a
+		href={props.href}
+		target="_blank"
+		rel="noopener"
+		class="w-24 flex flex-col items-center gap-2 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-300 ease-in-out group"
+		title={props.name}
+	>
+		{props.logo({
+			class:
+				"w-12 h-12 object-contain grayscale group-hover:grayscale-0 transition-colors duration-300 ease-in-out",
+		})}
+		<span class="min-h-[2rem] text-center text-xs leading-tight font-medium text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors duration-300 ease-in-out">
+			{props.name}
+		</span>
+	</a>
 );
 
 const Experience = () => (
-  <section class="pb-8">
-    <SectionTitle>Work Experience</SectionTitle>
+	<section class="pb-8">
+		<SectionTitle>Work Experience</SectionTitle>
 
-    <div class="relative border-l border-neutral-200 dark:border-neutral-700 ml-3 space-y-12">
-      <WorkExperienceItem
-        title={
-          <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-black dark:group-hover:text-white">
-            Zephyr Cloud
-          </h3>
-        }
-        link="https://zephyr-cloud.io"
-        position="Platform Engineer"
-        period="Jun 2026 — Present"
-        description={
-          <>
-            Zephyr Cloud builds infrastructure to deploy Module Federation and micro frontends,
-            taking applications from code to globally available in under a second. We are also
-            working on{" "}
-            <a
-              href="https://theaiplatform.app"
-              target="_blank"
-              rel="noopener"
-              class="font-medium text-neutral-800 dark:text-neutral-200 hover:underline"
-            >
-              The AI Platform
-            </a>{" "}
-            a superapp for multi-agent, multi-human communication for maximizing human potential
-            across the entire organization.
-          </>
-        }
-      />
+		<div class="relative border-l border-neutral-200 dark:border-neutral-700 ml-3 space-y-12">
+			<WorkExperienceItem
+				title={
+					<h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-black dark:group-hover:text-white">
+						Zephyr Cloud
+					</h3>
+				}
+				link="https://zephyr-cloud.io"
+				position="Platform Engineer"
+				period="Jun 2026 — Present"
+				description={
+					<>
+						Zephyr Cloud builds infrastructure to deploy Module Federation and
+						micro frontends, taking applications from code to globally available
+						in under a second. We are also working on{" "}
+						<a
+							href="https://theaiplatform.app"
+							target="_blank"
+							rel="noopener"
+							class="font-medium text-neutral-800 dark:text-neutral-200 hover:underline"
+						>
+							The AI Platform
+						</a>{" "}
+						a superapp for multi-agent, multi-human communication for maximizing
+						human potential across the entire organization.
+					</>
+				}
+			/>
 
-      <WorkExperienceItem
-        title={
-          <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-[#2663EB]">
-            Cap.so
-          </h3>
-        }
-        link="https://cap.so"
-        position="Contractor - Full Stack"
-        period="Jul 2025 — Nov 2025"
-        description="Cap is an open source screen recording and sharing tool. I worked on the desktop application and web backend including working with GPU shaders to render higher quality cursors, building a tracking system for the progress of uploading files, overhauling the recording flow GUI, and moving the camera preview to native GPU rendering."
-        technologies={() => (
-          <>
-            <WorkExperienceItemTechnology name="Tauri" logo={IconLogosTauri} />
-            <WorkExperienceItemTechnology name="wgpu" logo={IconSimpleIconsWgpu} />
-            <WorkExperienceItemTechnology name="Solid" logo={IconLogosSolidjsIcon} />
-            <WorkExperienceItemTechnology name="Tailwind" logo={IconLogosTailwindcssIcon} />
-            <WorkExperienceItemTechnology name="Next" logo={IconLogosNextjsIcon} />
-            <WorkExperienceItemTechnology name="PostHog" logo={IconLogosPosthogIcon} />
-          </>
-        )}
-      />
+			<WorkExperienceItem
+				title={
+					<h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-[#2663EB]">
+						Cap.so
+					</h3>
+				}
+				link="https://cap.so"
+				position="Contractor - Full Stack"
+				period="Jul 2025 — Nov 2025"
+				description="Cap is an open source screen recording and sharing tool. I worked on the desktop application and web backend including working with GPU shaders to render higher quality cursors, building a tracking system for the progress of uploading files, overhauling the recording flow GUI, and moving the camera preview to native GPU rendering."
+				technologies={() => (
+					<>
+						<WorkExperienceItemTechnology name="Tauri" logo={IconLogosTauri} />
+						<WorkExperienceItemTechnology
+							name="wgpu"
+							logo={IconSimpleIconsWgpu}
+						/>
+						<WorkExperienceItemTechnology
+							name="Solid"
+							logo={IconLogosSolidjsIcon}
+						/>
+						<WorkExperienceItemTechnology
+							name="Tailwind"
+							logo={IconLogosTailwindcssIcon}
+						/>
+						<WorkExperienceItemTechnology
+							name="Next"
+							logo={IconLogosNextjsIcon}
+						/>
+						<WorkExperienceItemTechnology
+							name="PostHog"
+							logo={IconLogosPosthogIcon}
+						/>
+					</>
+				)}
+			/>
 
-      <WorkExperienceItem
-        title={
-          <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-[#C790FF]">
-            CrabNebula
-          </h3>
-        }
-        link="https://crabnebula.dev"
-        position="Contractor - Full Stack"
-        period="Apr 2025 — Jun 2025"
-        description="I worked on client projects, conducted Rust training sessions and contributed to open-source. I contributed to an AI chat-based computer automation application built in Tauri and also conducted training sessions for a 8-15 person development team on using Tauri and Rust effectively."
-      />
+			<WorkExperienceItem
+				title={
+					<h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-[#C790FF]">
+						CrabNebula
+					</h3>
+				}
+				link="https://crabnebula.dev"
+				position="Contractor - Full Stack"
+				period="Apr 2025 — Jun 2025"
+				description="I worked on client projects, conducted Rust training sessions and contributed to open-source. I contributed to an AI chat-based computer automation application built in Tauri and also conducted training sessions for a 8-15 person development team on using Tauri and Rust effectively."
+			/>
 
-      <WorkExperienceItem
-        title={
-          <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:bg-linear-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-400 hover:from-violet-500 hover:to-fuchsia-500 bg-clip-text group-hover:text-transparent">
-            Spacedrive
-          </h3>
-        }
-        link="https://spacedrive.com"
-        position="Founding Engineer - Full Stack"
-        period="May 2022 — May 2024"
-        description="Building the file manager for the future. I worked on building the desktop application, Rust core for filesystem operations and peer to peer networking system. I also developed the system for us to ship our Rust core inside a React Native app."
-        technologies={() => (
-          <>
-            <WorkExperienceItemTechnology name="Tauri" logo={IconLogosTauri} />
-            <WorkExperienceItemTechnology name="React" logo={IconLogosReact} />
-            <WorkExperienceItemTechnology name="Tailwind" logo={IconLogosTailwindcssIcon} />
-            <WorkExperienceItemTechnology name="React Native" logo={IconLogosReact} />
-          </>
-        )}
-      />
+			<WorkExperienceItem
+				title={
+					<h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:bg-linear-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-400 hover:from-violet-500 hover:to-fuchsia-500 bg-clip-text group-hover:text-transparent">
+						Spacedrive
+					</h3>
+				}
+				link="https://spacedrive.com"
+				position="Founding Engineer - Full Stack"
+				period="May 2022 — May 2024"
+				description="Building the file manager for the future. I worked on building the desktop application, Rust core for filesystem operations and peer to peer networking system. I also developed the system for us to ship our Rust core inside a React Native app."
+				technologies={() => (
+					<>
+						<WorkExperienceItemTechnology name="Tauri" logo={IconLogosTauri} />
+						<WorkExperienceItemTechnology name="React" logo={IconLogosReact} />
+						<WorkExperienceItemTechnology
+							name="Tailwind"
+							logo={IconLogosTailwindcssIcon}
+						/>
+						<WorkExperienceItemTechnology
+							name="React Native"
+							logo={IconLogosReact}
+						/>
+					</>
+				)}
+			/>
 
-      <WorkExperienceItem
-        title={
-          <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-neutral-700 dark:group-hover:text-neutral-300">
-            Freelancer
-          </h3>
-        }
-        period="Aug 2020 — May 2022"
-        description="I worked with multiple clients to bring their vision to life. I built multiple Windows Device Management servers, a car dash camera manager application in Electron and worked on a modern web interface for managing a telephony system."
-        technologies={() => (
-          <>
-            <WorkExperienceItemTechnology name="Windows" logo={IconLogosMicrosoftWindowsIcon} />
-            <WorkExperienceItemTechnology name="Go" logo={IconLogosGo} />
-            <WorkExperienceItemTechnologySplit />
+			<WorkExperienceItem
+				title={
+					<h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-neutral-700 dark:group-hover:text-neutral-300">
+						Freelancer
+					</h3>
+				}
+				period="Aug 2020 — May 2022"
+				description="I worked with multiple clients to bring their vision to life. I built multiple Windows Device Management servers, a car dash camera manager application in Electron and worked on a modern web interface for managing a telephony system."
+				technologies={() => (
+					<>
+						<WorkExperienceItemTechnology
+							name="Windows"
+							logo={IconLogosMicrosoftWindowsIcon}
+						/>
+						<WorkExperienceItemTechnology name="Go" logo={IconLogosGo} />
+						<WorkExperienceItemTechnologySplit />
 
-            <WorkExperienceItemTechnology name="Electron" logo={IconLogosElectron} />
-            <WorkExperienceItemTechnology name="Svelte" logo={IconLogosSvelteIcon} />
-            <WorkExperienceItemTechnologySplit />
+						<WorkExperienceItemTechnology
+							name="Electron"
+							logo={IconLogosElectron}
+						/>
+						<WorkExperienceItemTechnology
+							name="Svelte"
+							logo={IconLogosSvelteIcon}
+						/>
+						<WorkExperienceItemTechnologySplit />
 
-            <WorkExperienceItemTechnology name="Next" logo={IconLogosNextjsIcon} />
-            <WorkExperienceItemTechnology name="Tailwind" logo={IconLogosTailwindcssIcon} />
-            <WorkExperienceItemTechnology name="Python" logo={IconLogosPython} />
-          </>
-        )}
-      />
-    </div>
-  </section>
+						<WorkExperienceItemTechnology
+							name="Next"
+							logo={IconLogosNextjsIcon}
+						/>
+						<WorkExperienceItemTechnology
+							name="Tailwind"
+							logo={IconLogosTailwindcssIcon}
+						/>
+						<WorkExperienceItemTechnology
+							name="Python"
+							logo={IconLogosPython}
+						/>
+					</>
+				)}
+			/>
+		</div>
+	</section>
 );
 
 const WorkExperienceItem = (props: {
-  title: JSX.Element;
-  position?: string;
-  period?: string;
-  description: JSX.Element;
-  link?: string;
-  // TODO: Change this to just `JSX.Element`. Seems to break hydration right now???
-  technologies?: () => JSX.Element;
+	title: JSX.Element;
+	position?: string;
+	period?: string;
+	description: JSX.Element;
+	link?: string;
+	// TODO: Change this to just `JSX.Element`. Seems to break hydration right now???
+	technologies?: () => JSX.Element;
 }) => (
-  <div class="relative pl-8 md:pl-12 group">
-    {/* Timeline dot */}
-    <div class="absolute -left-1.25 top-2 h-2.5 w-2.5 rounded-full bg-neutral-300 dark:bg-neutral-600 ring-4 ring-white dark:ring-gray-900 group-hover:bg-neutral-900 dark:group-hover:bg-neutral-300 transition-colors duration-200"></div>
+	<div class="relative pl-8 md:pl-12 group">
+		{/* Timeline dot */}
+		<div class="absolute -left-1.25 top-2 h-2.5 w-2.5 rounded-full bg-neutral-300 dark:bg-neutral-600 ring-4 ring-white dark:ring-gray-900 group-hover:bg-neutral-900 dark:group-hover:bg-neutral-300 transition-colors duration-200"></div>
 
-    <div class="group transition-transform duration-200 motion-safe:hover:translate-x-1">
-      <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-2">
-        <Show when={props.link} fallback={props.title}>
-          <a href={props.link} target="_blank" rel="noopener">
-            {props.title}
-          </a>
-        </Show>
+		<div class="group transition-transform duration-200 motion-safe:hover:translate-x-1">
+			<div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-2">
+				<Show when={props.link} fallback={props.title}>
+					<a href={props.link} target="_blank" rel="noopener">
+						{props.title}
+					</a>
+				</Show>
 
-        <Show when={props.period}>
-          <span class="text-sm font-mono text-gray-500 dark:text-gray-400 tabular-nums">
-            {props.period}
-          </span>
-        </Show>
-      </div>
-      <Show when={props.position}>
-        <div class="text-md font-medium text-neutral-700 dark:text-neutral-300 mb-3">
-          {props.position}
-        </div>
-      </Show>
-      <p class="text-neutral-600 dark:text-neutral-400 leading-relaxed text-sm mb-4">
-        {props.description}
-      </p>
-      <Show when={props.technologies}>
-        <div class="flex flex-wrap gap-3 mt-3 items-center">{props.technologies?.()}</div>
-      </Show>
-    </div>
-  </div>
+				<Show when={props.period}>
+					<span class="text-sm font-mono text-gray-500 dark:text-gray-400 tabular-nums">
+						{props.period}
+					</span>
+				</Show>
+			</div>
+			<Show when={props.position}>
+				<div class="text-md font-medium text-neutral-700 dark:text-neutral-300 mb-3">
+					{props.position}
+				</div>
+			</Show>
+			<p class="text-neutral-600 dark:text-neutral-400 leading-relaxed text-sm mb-4">
+				{props.description}
+			</p>
+			<Show when={props.technologies}>
+				<div class="flex flex-wrap gap-3 mt-3 items-center">
+					{props.technologies?.()}
+				</div>
+			</Show>
+		</div>
+	</div>
 );
 
 const WorkExperienceItemTechnology = (props: {
-  name: string;
-  logo: (_: { class: string }) => JSX.Element;
+	name: string;
+	logo: (_: { class: string }) => JSX.Element;
 }) => (
-  <div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-    {props.logo({ class: "w-4 h-4" })}
-    <span class="text-xs font-medium text-gray-700 dark:text-gray-300 text-nowrap">
-      {props.name}
-    </span>
-  </div>
+	<div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+		{props.logo({ class: "w-4 h-4" })}
+		<span class="text-xs font-medium text-gray-700 dark:text-gray-300 text-nowrap">
+			{props.name}
+		</span>
+	</div>
 );
 
 const WorkExperienceItemTechnologySplit = () => (
-  <div class="w-px h-4 bg-gray-300 dark:bg-gray-600"></div>
+	<div class="w-px h-4 bg-gray-300 dark:bg-gray-600"></div>
 );
 
 const Contact = () => (
-  <section class="pb-8 mt-4">
-    <div class="prose prose-gray max-w-none text-gray-600 dark:text-gray-400 leading-relaxed text-md">
-      <p>
-        If you'd like to collaborate or chat, feel free to email me at{" "}
-        <button
-          type="button"
-          class="cursor-pointer hover:underline"
-          onClick={(e) => {
-            window.location.href = `mailto:${e.currentTarget.textContent.replace(" at ", "@")}`;
-          }}
-        >
-          oscar at otbeaumont.me
-        </button>
-      </p>
-    </div>
-  </section>
+	<section class="pb-8 mt-4">
+		<div class="prose prose-gray max-w-none text-gray-600 dark:text-gray-400 leading-relaxed text-md">
+			<p>
+				If you'd like to collaborate or chat, feel free to email me at{" "}
+				<button
+					type="button"
+					class="cursor-pointer hover:underline"
+					onClick={(e) => {
+						window.location.href = `mailto:${e.currentTarget.textContent.replace(" at ", "@")}`;
+					}}
+				>
+					oscar at otbeaumont.me
+				</button>
+			</p>
+		</div>
+	</section>
 );
 
 function Footer() {
-  const [date] = createDateNow();
-  const currentYear = createMemo(() => date().getFullYear());
+	const [date] = createDateNow();
+	const currentYear = createMemo(() => date().getFullYear());
 
-  return (
-    <footer class="pt-8 border-t border-gray-200 dark:border-gray-700">
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p class="text-gray-500 dark:text-gray-400">© {currentYear()} Oscar Beaumont</p>
+	return (
+		<footer class="pt-8 border-t border-gray-200 dark:border-gray-700">
+			<div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+				<p class="text-gray-500 dark:text-gray-400">
+					© {currentYear()} Oscar Beaumont
+				</p>
 
-        <ThemeSwitcher />
-      </div>
-    </footer>
-  );
+				<ThemeSwitcher />
+			</div>
+		</footer>
+	);
 }
 
 export function ThemeSwitcher() {
-  const { colorMode, setColorMode, toggleColorMode } = useColorMode();
+	const [colorMode, setMode] = createSignal<"light" | "dark" | "system">(
+		isServer
+			? "system"
+			: ((localStorage.getItem("kb-color-mode") as
+					| "light"
+					| "dark"
+					| "system"
+					| null) ?? "system"),
+	);
+	const setColorMode = (mode: "light" | "dark" | "system") => {
+		localStorage.setItem("kb-color-mode", mode);
+		document.documentElement.dataset.kbTheme =
+			mode === "system"
+				? matchMedia("(prefers-color-scheme: dark)").matches
+					? "dark"
+					: "light"
+				: mode;
+		setMode(mode);
+	};
+	const toggleColorMode = () =>
+		setColorMode(
+			colorMode() === "light"
+				? "dark"
+				: colorMode() === "dark"
+					? "system"
+					: "light",
+		);
 
-  return (
-    <div class="flex space-x-2">
-      <button
-        type="button"
-        onClick={toggleColorMode}
-        class="p-2.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 border border-gray-200 dark:border-gray-700"
-        title={`Theme: ${colorMode() === "light" ? "Light" : colorMode() === "dark" ? "Dark" : "System"} (click to cycle)`}
-        aria-label={`Current theme: ${colorMode() === "light" ? "Light" : colorMode() === "dark" ? "Dark" : "System"}. Click to cycle themes.`}
-      >
-        {colorMode() === "light" ? (
-          <IconHeroiconsSun20Solid class="w-4 h-4 text-gray-700 dark:text-gray-300" />
-        ) : (
-          <IconHeroiconsMoon20Solid class="w-4 h-4 text-gray-700 dark:text-gray-300" />
-        )}
-      </button>
-      <button
-        type="button"
-        onClick={() => setColorMode("system")}
-        class="p-2.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 border border-gray-200 dark:border-gray-700"
-        aria-label="Use system theme"
-      >
-        <IconHeroiconsComputerDesktop20Solid class="w-4 h-4 text-gray-700 dark:text-gray-300" />
-      </button>
-    </div>
-  );
+	return (
+		<div class="flex space-x-2">
+			<button
+				type="button"
+				onClick={toggleColorMode}
+				class="p-2.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 border border-gray-200 dark:border-gray-700"
+				title={`Theme: ${colorMode() === "light" ? "Light" : colorMode() === "dark" ? "Dark" : "System"} (click to cycle)`}
+				aria-label={`Current theme: ${colorMode() === "light" ? "Light" : colorMode() === "dark" ? "Dark" : "System"}. Click to cycle themes.`}
+			>
+				{colorMode() === "light" ? (
+					<IconHeroiconsSun20Solid class="w-4 h-4 text-gray-700 dark:text-gray-300" />
+				) : (
+					<IconHeroiconsMoon20Solid class="w-4 h-4 text-gray-700 dark:text-gray-300" />
+				)}
+			</button>
+			<button
+				type="button"
+				onClick={() => setColorMode("system")}
+				class="p-2.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 border border-gray-200 dark:border-gray-700"
+				aria-label="Use system theme"
+			>
+				<IconHeroiconsComputerDesktop20Solid class="w-4 h-4 text-gray-700 dark:text-gray-300" />
+			</button>
+		</div>
+	);
 }

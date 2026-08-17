@@ -1,62 +1,71 @@
 // https://gist.github.com/intrnl/fc797aeaebafc12911e50debca13b0a2
 
-import { createEffect, createRoot } from "solid-js";
-import {
-	createMutable,
-	modifyMutable,
-	reconcile,
-	type StoreNode,
-} from "solid-js/store";
+import { createEffect, createRoot, createStore, type Store } from "solid-js";
 
-const parse = (raw: string | null, initialValue: any) => {
-	if (raw === null) {
-		return initialValue;
-	}
-
+function parse<T>(raw: string | null, initialValue: T): T {
+	if (raw === null) return initialValue;
 	try {
-		const persisted = JSON.parse(raw);
-
-		return persisted == null ? initialValue : persisted;
+		return JSON.parse(raw) ?? initialValue;
 	} catch {
 		return initialValue;
 	}
-};
+}
 
-export const createMutableLocalStorage = <T extends StoreNode = object>(
+export const createMutableLocalStorage = <T extends object>(
 	name: string,
-	initialValue?: T,
+	initialValue: T,
 ): T => {
-	if (import.meta.env.SSR) return createMutable(initialValue ?? ({} as T));
-
-	const mutable = createMutable<T>(
-		parse(localStorage.getItem(name), initialValue ?? {}),
+	const [store, setStore] = createStore<any>(
+		import.meta.env.SSR
+			? initialValue
+			: parse(localStorage.getItem(name), initialValue),
 	);
+	const proxies = new WeakMap<object, object>();
+	const mutable = wrap(store as object, []) as T;
 
-	let writable = true;
+	function wrap(value: object, path: PropertyKey[]): object {
+		const cached = proxies.get(value);
+		if (cached) return cached;
+		const proxy = new Proxy(value, {
+			get(target, key) {
+				const child = Reflect.get(target, key);
+				if (Array.isArray(target) && key === "push")
+					return (...items: unknown[]) =>
+						setStore((draft) => getAtPath(draft, path).push(...items));
+				if (Array.isArray(target) && key === "splice")
+					return (...args: [number, number, ...unknown[]]) =>
+						setStore((draft) => getAtPath(draft, path).splice(...args));
+				return child && typeof child === "object"
+					? wrap(child, [...path, key])
+					: child;
+			},
+			set(_target, key, value) {
+				setStore((draft) => {
+					getAtPath(draft, path)[key] = value;
+				});
+				return true;
+			},
+		});
+		proxies.set(value, proxy);
+		return proxy;
+	}
 
-	createRoot(() => {
-		createEffect((changed: boolean) => {
-			const json = JSON.stringify(mutable);
-
-			if (writable && changed) localStorage.setItem(name, json);
-
-			return true;
-		}, false);
-	});
-
-	window.addEventListener("storage", (ev) => {
-		if (ev.key === name) {
-			// Prevent our own effects from running, since this is already persisted.
-			writable = false;
-
-			modifyMutable(
-				mutable,
-				reconcile(parse(ev.newValue, initialValue ?? {}), { merge: true }),
+	if (!import.meta.env.SSR) {
+		createRoot(() => {
+			createEffect(
+				() => JSON.stringify(store),
+				(json) => localStorage.setItem(name, json),
 			);
-
-			writable = true;
-		}
-	});
+		});
+		window.addEventListener("storage", (event) => {
+			if (event.key === name)
+				setStore(() => parse(event.newValue, initialValue));
+		});
+	}
 
 	return mutable;
 };
+
+function getAtPath(root: Store<object>, path: PropertyKey[]): any {
+	return path.reduce<any>((value, key) => value[key], root);
+}

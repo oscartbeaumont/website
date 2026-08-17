@@ -1,11 +1,7 @@
-import {
-	createDate,
-	createTimeAgo,
-	getCountdown,
-} from "@solid-primitives/date";
 import { Meta, Title } from "@solidjs/meta";
 import { createMemo, For } from "solid-js";
 import "@fontsource/lora";
+import { createDateNow } from "../../date";
 
 const files = [
 	"IMG_5752.png",
@@ -20,11 +16,13 @@ const files = [
 ];
 
 export default function Page() {
-	const [startDate] = createDate("Jun 20, 2025");
-	const [, { now: nowTime, difference }] = createTimeAgo(startDate);
-	const diff = createMemo(() => getCountdown(difference() * -1));
+	const startDate = new Date("2025-06-20T00:00:00+08:00");
+	const [nowTime] = createDateNow(60_000);
+	const daysTogether = createMemo(() =>
+		Math.floor((nowTime().getTime() - startDate.getTime()) / 86_400_000),
+	);
 	const anniversaryBanner = createMemo(() => {
-		const start = startDate();
+		const start = startDate;
 		const now = nowTime();
 
 		if (now.getTime() < start.getTime()) return null;
@@ -60,7 +58,7 @@ export default function Page() {
 					</h1>
 
 					<p class="text-xl md:text-2xl text-primary font-semibold mb-3 animate-[fadeIn_0.3s_0s_both]">
-						Together {diff().days} days since 20 June 2025 ❤️
+						Together {daysTogether()} days since 20 June 2025 ❤️
 					</p>
 
 					<div class="animate-[fadeIn_0.3s_0.3s_both]">

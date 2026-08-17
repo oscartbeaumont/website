@@ -1,6 +1,7 @@
 import { cloudflare } from "@cloudflare/vite-plugin";
-import { solidStart } from "@solidjs/start/config";
+import solid from "@solidjs/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
+import { fileRoutes } from "filesystem-routing/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 import AutoImport from "unplugin-auto-import/vite";
 import IconsResolver from "unplugin-icons/resolver";
@@ -10,7 +11,11 @@ import { headersPlugin } from "./src/vite-plugin-headers";
 
 export default defineConfig({
 	plugins: [
-		solidStart(),
+		solid({
+			start: { middleware: "./src/middleware.ts" },
+			ssr: true,
+		}),
+		fileRoutes(),
 		tailwindcss(),
 		FixedAutoImport({
 			dts: "src/auto-imports.d.ts",

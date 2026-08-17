@@ -1,7 +1,7 @@
+import { isServer } from "@solidjs/web";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
-import { onCleanup, onMount } from "solid-js";
-import { isServer } from "solid-js/web";
+import { onSettled } from "solid-js";
 
 const initPdf = () => new jsPDF("p", "px", "a4");
 
@@ -15,12 +15,12 @@ export const defaultDocumentStyles = (() => {
 })();
 
 export function CaptureAsPdf() {
-	onMount(() => {
+	onSettled(() => {
 		if (isServer) return;
 
 		// Keyboard handler
 		window.addEventListener("keydown", handler);
-		onCleanup(() => window.removeEventListener("keydown", handler));
+		return () => window.removeEventListener("keydown", handler);
 	});
 
 	const generatePdf = (callback: (pdf: any) => void) => {
@@ -73,7 +73,6 @@ export function CaptureAsPdf() {
 			>
 				Preview
 			</button>
-			t
 		</div>
 	);
 }

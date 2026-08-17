@@ -1,4 +1,4 @@
-import type { ParentProps } from "solid-js";
+import { For, type ParentProps } from "solid-js";
 import { Layout } from "./index";
 
 export default function Brand() {
@@ -85,9 +85,7 @@ const Assets = () => (
 		<SectionTitle>Available Assets</SectionTitle>
 
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-			{assets.map((asset) => (
-				<AssetCard asset={asset} />
-			))}
+			<For each={assets}>{(asset) => <AssetCard asset={asset} />}</For>
 		</div>
 	</section>
 );

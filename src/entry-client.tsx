@@ -1,8 +1,8 @@
-// @refresh reload
-import { mount, StartClient } from "@solidjs/start/client";
+import { hydrate, isServer } from "@solidjs/web";
 import "posthog-js/dist/exception-autocapture";
 import posthog from "posthog-js/dist/module.no-external";
-import { isServer } from "solid-js/web";
+import App from "./app";
+import Document from "./Document";
 
 if (!isServer && !import.meta.env.DEV)
 	posthog.init("phc_p4ybAvaYqJojhuZD0dVGExGoCCqbWViGzlxQc0AuWUv", {
@@ -13,4 +13,11 @@ if (!isServer && !import.meta.env.DEV)
 		capture_exceptions: true,
 	});
 
-mount(() => <StartClient />, document.getElementById("app")!);
+hydrate(
+	() => (
+		<Document>
+			<App />
+		</Document>
+	),
+	document,
+);

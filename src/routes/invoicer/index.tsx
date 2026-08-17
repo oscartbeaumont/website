@@ -1,8 +1,15 @@
-import { createDateNow } from "@solid-primitives/date";
 import { Meta, Title } from "@solidjs/meta";
+import { clientOnly } from "@solidjs/web";
 import parse from "parse-duration";
-import { For, Match, onMount, type ParentProps, Show, Switch } from "solid-js";
-import { ClientOnly } from "../../components/ClientOnly";
+import {
+	For,
+	Match,
+	onSettled,
+	type ParentProps,
+	Show,
+	Switch,
+} from "solid-js";
+import { createDateNow } from "../../date";
 import { CaptureAsPdf, defaultDocumentStyles } from "./CaptureAsPdf";
 import { createMutableLocalStorage } from "./util";
 
@@ -37,11 +44,25 @@ function initState() {
 	});
 }
 
+const ClientInvoicer = clientOnly(() =>
+	import("./index").then((module) => ({ default: module.Invoicer })),
+);
+
 export default function Page() {
+	return (
+		<>
+			<Title>Invoicer</Title>
+			<Meta name="robots" content="noindex" />
+			<ClientInvoicer />
+		</>
+	);
+}
+
+export function Invoicer() {
 	const state = initState();
 
 	// This will break the theme until the page is reloaded but that's fineeeee
-	onMount(() => {
+	onSettled(() => {
 		// This overrides the Kobalte script
 		document.documentElement.setAttribute("data-kb-theme", "light");
 		document.documentElement.style.colorScheme = "light";
@@ -49,16 +70,11 @@ export default function Page() {
 
 	return (
 		<div class="flex justify-between">
-			<Title>Invoicer</Title>
-			<Meta name="robots" content="noindex" />
+			<div id="document" class="flex flex-col" style={defaultDocumentStyles}>
+				<InvoiceTemplate state={state} />
+			</div>
 
-			<ClientOnly>
-				<div id="document" class="flex flex-col" style={defaultDocumentStyles}>
-					<InvoiceTemplate state={state} />
-				</div>
-
-				<Sidebar state={state} />
-			</ClientOnly>
+			<Sidebar state={state} />
 		</div>
 	);
 }
@@ -194,11 +210,11 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
 										</td>
 										<td class="w-32 text-end">
 											<p
-												contentEditable
+												contenteditable
 												// We do this so if the user doesn't enter a valid number, it doesn't break
-												onFocusOut={(e) =>
-													(task.hours = e.currentTarget.textContent || "0")
-												}
+												onFocusOut={(e) => {
+													task.hours = e.currentTarget.textContent || "0";
+												}}
 											>
 												{(task.hours ?? 0).toString()}
 											</p>
@@ -234,20 +250,20 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
 								300 Murray St, Perth WA 6000
 								<br /> BIC:{" "}
 								<span
-									contentEditable
-									onFocusOut={(e) =>
-										(props.state.swiftCode = e.currentTarget.textContent || "")
-									}
+									contenteditable
+									onFocusOut={(e) => {
+										props.state.swiftCode = e.currentTarget.textContent || "";
+									}}
 								>
 									{props.state.swiftCode}
 								</span>
 								<br /> Account:{" "}
 								<span
-									contentEditable
-									onFocusOut={(e) =>
-										(props.state.accountNumber =
-											e.currentTarget.textContent || "")
-									}
+									contenteditable
+									onFocusOut={(e) => {
+										props.state.accountNumber =
+											e.currentTarget.textContent || "";
+									}}
 								>
 									{props.state.accountNumber}
 								</span>
