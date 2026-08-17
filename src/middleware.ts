@@ -10,10 +10,14 @@ export default async function middleware(
 ) {
 	const url = new URL(request.url);
 	if (url.pathname.startsWith("/ph_4DkU/"))
-		return handlePostHog(request, url.pathname.slice("/ph_4DkU/".length));
+		return preventCaching(
+			await handlePostHog(request, url.pathname.slice("/ph_4DkU/".length)),
+		);
 	if (request.method === "GET" && url.pathname.startsWith("/addy/imgs/"))
-		return getAddyImage(
-			decodeURIComponent(url.pathname.slice("/addy/imgs/".length)),
+		return preventCaching(
+			await getAddyImage(
+				decodeURIComponent(url.pathname.slice("/addy/imgs/".length)),
+			),
 		);
 
 	const nonce = randomBytes(16).toString("base64");
@@ -32,7 +36,19 @@ export default async function middleware(
 			`connect-src 'self'`,
 		].join(";"),
 	);
-	response.headers.set("Cache-Control", "no-store, no-transform");
+	const cacheablePage =
+		request.method === "GET" &&
+		response.status === 200 &&
+		["/", "/brand", "/addy", "/invoicer"].includes(url.pathname);
+	response.headers.set(
+		"Cache-Control",
+		cacheablePage ? "no-cache, no-transform" : "no-store, no-transform",
+	);
+	if (cacheablePage)
+		response.headers.set(
+			"Cloudflare-CDN-Cache-Control",
+			"public, max-age=31536000",
+		);
 	for (const [header, value] of Object.entries(_headers["/*"]))
 		response.headers.set(header, value);
 	const pageExists = ["/", "/brand", "/addy", "/invoicer"].includes(url.pathname);
@@ -42,5 +58,10 @@ export default async function middleware(
 			statusText: "Not Found",
 			headers: response.headers,
 		});
+	return response;
+}
+
+function preventCaching(response: Response) {
+	response.headers.set("Cache-Control", "no-store");
 	return response;
 }
