@@ -304,8 +304,6 @@ const ProjectPanel = (
 		right?: JSX.Element;
 	}>,
 ) => {
-	const subsections = children(() => props.children);
-
 	return (
 		<div class="py-2">
 			<div class="flex items-center justify-between gap-4">
@@ -335,10 +333,10 @@ const ProjectPanel = (
 					</div>
 				</div>
 			</div>
-			<Show when={subsections()}>
-				{(content) => (
-					<div class="ml-[3.75rem] mt-2 flex flex-wrap gap-2">{content()}</div>
-				)}
+			<Show when={props.children}>
+				<div class="ml-[3.75rem] mt-2 flex flex-wrap gap-2">
+					{props.children}
+				</div>
 			</Show>
 		</div>
 	);
