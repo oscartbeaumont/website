@@ -266,7 +266,7 @@ const WorkingOn = () => (
 					href="https://github.com/oscartbeaumont/netlify-dynamic-dns"
 					target="_blank"
 					rel="noopener"
-					class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
+					class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200 motion-safe:animate-[spawnIn_0.4s_0s_both]"
 				>
 					<IconLogosNetlifyIcon class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
 					<span>Netlify Dynamic DNS</span>
@@ -275,7 +275,7 @@ const WorkingOn = () => (
 					href="https://github.com/oscartbeaumont/vite-plugin-relay"
 					target="_blank"
 					rel="noopener"
-					class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
+					class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200 motion-safe:animate-[spawnIn_0.4s_0.1s_both]"
 				>
 					<IconLogosRelay class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
 					<span>vite-plugin-relay</span>
@@ -284,7 +284,7 @@ const WorkingOn = () => (
 					href="https://github.com/oscartbeaumont/ElectronPlayer"
 					target="_blank"
 					rel="noopener"
-					class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
+					class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200 motion-safe:animate-[spawnIn_0.4s_0.2s_both]"
 				>
 					<IconLogosElectron class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
 					<span>ElectronPlayer</span>
