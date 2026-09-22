@@ -1,7 +1,5 @@
-import { Head } from "@solidjs/meta";
 import { createRouter } from "@solidjs/router";
 import { fileRoutes } from "@solidjs/router/fs";
-import { Loading } from "solid-js";
 import { pageRoutes } from "virtual:file-routes";
 import "./app.css";
 
@@ -10,13 +8,5 @@ const Router = createRouter({
 });
 
 export default function App() {
-	return (
-		<Router>
-			{(props) => (
-				<Head>
-					<Loading>{props.children}</Loading>
-				</Head>
-			)}
-		</Router>
-	);
+	return <Router>{(props) => props.children}</Router>;
 }
