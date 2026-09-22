@@ -16,4 +16,16 @@
 			opacity: 1;
 		}
 	}
+
+	@keyframes spawnIn {
+		from {
+			transform: translateX(-0.5rem);
+			opacity: 0;
+		}
+
+		to {
+			transform: translateX(0);
+			opacity: 1;
+		}
+	}
 }
