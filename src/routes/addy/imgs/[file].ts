@@ -12,10 +12,15 @@ export type AddyImage = {
 /** Lists the Addy images together with their content hashes. */
 export async function listAddyImages(): Promise<AddyImage[]> {
 	const listed = await env.DATA.list({ prefix: PREFIX });
-	return listed.objects.map((object) => ({
-		hash: object.etag,
-		name: object.key.slice(PREFIX.length),
-	}));
+	return listed.objects
+		// Ignore folder placeholders such as the `addy/` object itself.
+		.filter(
+			(object) => object.key.length > PREFIX.length && !object.key.endsWith("/"),
+		)
+		.map((object) => ({
+			hash: object.etag,
+			name: object.key.slice(PREFIX.length),
+		}));
 }
 
 export async function getAddyImage(hash: string) {

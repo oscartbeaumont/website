@@ -6,6 +6,19 @@ import "@fontsource/lora";
 import { createDateNow } from "../../date";
 import type { AddyImage } from "./imgs/[file]";
 
+// The display order of the photos.
+const files = [
+	"IMG_5752.png",
+	"IMG_6406.png",
+	"IMG_6849.png",
+	"IMG_7050.png",
+	"IMG_7295.png",
+	"IMG_7579.png",
+	"IMG_6367.png",
+	"IMG_7309.png",
+	"IMG_5946.png",
+];
+
 const getAddyImages = query(async (): Promise<AddyImage[]> => {
 	if (import.meta.env.SSR) {
 		// Read R2 directly on the server (a self-fetch would deadlock the Worker).
@@ -22,7 +35,13 @@ export const route = defineFileRoute("/addy", {
 });
 
 export default function Page() {
-	const images = createMemo(() => getAddyImages() ?? []);
+	const imageHashes = createMemo(async () => {
+		const images = await getAddyImages();
+		const hashes = new Map(images.map((image) => [image.name, image.hash]));
+		return files
+			.map((name) => hashes.get(name))
+			.filter((hash): hash is string => hash !== undefined);
+	});
 	const startDate = new Date("2025-06-20T00:00:00+08:00");
 	const [nowTime] = createDateNow(60_000);
 	const daysTogether = createMemo(() =>
@@ -79,10 +98,10 @@ export default function Page() {
 					</div>
 
 					<div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  animate-[fadeIn_0.3s_0.5s_both]">
-						<For each={images() ?? []}>
-							{(image) => (
+						<For each={imageHashes()}>
+							{(hash) => (
 								<img
-									src={`/addy/imgs/${image.hash}`}
+									src={`/addy/imgs/${hash}`}
 									alt="Memory"
 									class="rounded-lg shadow-lg w-full h-auto object-cover"
 								/>
