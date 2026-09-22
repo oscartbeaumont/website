@@ -9,15 +9,19 @@ export default async function middleware(
 	next: () => Response | Promise<Response>,
 ) {
 	const url = new URL(request.url);
+	// The standalone Addy site serves the Addy page at its root.
+	if (url.pathname === "/" && isAddyHost(request, url))
+		return new Response(null, {
+			status: 302,
+			headers: { Location: "/addy", "Cache-Control": "no-store" },
+		});
 	if (url.pathname.startsWith("/ph_4DkU/"))
 		return preventCaching(
 			await handlePostHog(request, url.pathname.slice("/ph_4DkU/".length)),
 		);
 	if (request.method === "GET" && url.pathname.startsWith("/addy/imgs/"))
-		return preventCaching(
-			await getAddyImage(
-				decodeURIComponent(url.pathname.slice("/addy/imgs/".length)),
-			),
+		return getAddyImage(
+			decodeURIComponent(url.pathname.slice("/addy/imgs/".length)),
 		);
 
 	const nonce = randomBytes(16).toString("base64");
@@ -36,6 +40,9 @@ export default async function middleware(
 			`connect-src 'self'`,
 		].join(";"),
 	);
+	// `/` is host-specific: the Addy domain redirects it to `/addy` while
+	// `otbeaumont.me` serves the homepage. Workers Caching keys by path, not
+	// host, so `Vary: Host` partitions the cache per domain.
 	const cacheablePage =
 		request.method === "GET" &&
 		response.status === 200 &&
@@ -44,11 +51,13 @@ export default async function middleware(
 		"Cache-Control",
 		cacheablePage ? "no-cache, no-transform" : "no-store, no-transform",
 	);
-	if (cacheablePage)
+	if (cacheablePage) {
 		response.headers.set(
 			"Cloudflare-CDN-Cache-Control",
 			"public, max-age=31536000",
 		);
+		response.headers.append("Vary", "Host");
+	}
 	for (const [header, value] of Object.entries(_headers["/*"]))
 		response.headers.set(header, value);
 	const pageExists = ["/", "/brand", "/addy", "/invoicer"].includes(url.pathname);
@@ -64,4 +73,18 @@ export default async function middleware(
 function preventCaching(response: Response) {
 	response.headers.set("Cache-Control", "no-store");
 	return response;
+}
+
+const ADDY_HOST = "hireareallycutemodel.com";
+
+/** Whether the request is for the standalone Addy domain. */
+function isAddyHost(request: Request, url: URL) {
+	const hosts = [
+		url.hostname,
+		(request.headers.get("host") ?? "").split(":")[0],
+	];
+	return hosts.some((host) => {
+		const name = host.toLowerCase();
+		return name === ADDY_HOST || name === `www.${ADDY_HOST}`;
+	});
 }

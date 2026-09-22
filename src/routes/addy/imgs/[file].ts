@@ -8,7 +8,11 @@ export async function getAddyImage(fileName: string) {
 
 		const headers = new Headers();
 		object.writeHttpMetadata(headers);
-		headers.set("Cache-Control", "public, max-age=31536000");
+		// These objects are immutable and keyed by filename, so let the edge CDN
+		// hold onto them instead of re-reading R2 on every request.
+		headers.set("Cache-Control", "public, max-age=31536000, immutable");
+		headers.set("Cloudflare-CDN-Cache-Control", "public, max-age=31536000");
+		headers.set("ETag", object.httpEtag);
 		headers.set("X-Robots-Tag", "noindex, nofollow");
 
 		return new Response(object.body, { headers });

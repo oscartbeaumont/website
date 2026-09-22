@@ -7,10 +7,16 @@
 	"cache": {
 		"enabled": true
 	},
-	"route": {
-		"pattern": "otbeaumont.me",
-		"custom_domain": true
-	},
+	"routes": [
+		{
+			"pattern": "otbeaumont.me",
+			"custom_domain": true
+		},
+		{
+			"pattern": "hireareallycutemodel.com",
+			"custom_domain": true
+		}
+	],
 	"observability": {
 		"enabled": true
 	},
