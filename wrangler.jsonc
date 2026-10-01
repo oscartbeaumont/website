@@ -18,7 +18,10 @@
 		}
 	],
 	"observability": {
-		"enabled": true
+		"enabled": true,
+		"issues": {
+			"enabled": true
+		}
 	},
 	"kv_namespaces": [
 		{
