@@ -544,7 +544,7 @@ const Experience = () => (
 				}
 				link="https://zephyr-cloud.io"
 				position="Platform Engineer"
-				period="Jun 2026 — Present"
+				period="Jun 2026 — Nov 2026"
 				description={
 					<>
 						Zephyr Cloud builds infrastructure to deploy Module Federation and
