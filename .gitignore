@@ -21,3 +21,6 @@ yarn-error.log*
 
 # Rollup Plugin Visualizer
 stats.html
+
+# Wrangler local secrets
+.dev.vars
