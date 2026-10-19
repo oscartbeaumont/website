@@ -110,6 +110,9 @@ export function Places(props: {
 		return grouped;
 	});
 
+	const toggle = (key: string) =>
+		setSelectedKey(selectedKey() === key ? null : key);
+
 	const route = createMemo(() =>
 		[...pins()]
 			.sort((a, b) =>
@@ -209,13 +212,7 @@ export function Places(props: {
 											{ active: selectedKey() === pin.primary.key },
 										]}
 										style={`left:${(pin.x / MAP_WIDTH) * 100}%;top:${(pin.y / MAP_HEIGHT) * 100}%`}
-										onClick={() =>
-											setSelectedKey(
-												selectedKey() === pin.primary.key
-													? null
-													: pin.primary.key,
-											)
-										}
+										onClick={() => toggle(pin.primary.key)}
 										aria-label={`Show photos from ${pin.primary.name}`}
 										title={pin.primary.name}
 									/>
@@ -224,8 +221,8 @@ export function Places(props: {
 						</div>
 						<p class="trail-note">
 							Not to scale. Drawn from the coordinates that came with the
-							photos, with the names rounded to the nearest town. Pins less than
-							a short drive apart share a dot.
+							photos, with the names rounded to the nearest town. Pins that land
+							on top of each other share a dot.
 						</p>
 					</div>
 
@@ -238,11 +235,8 @@ export function Places(props: {
 										"place-card",
 										{ active: selectedKey() === place.key },
 									]}
-									onClick={() =>
-										setSelectedKey(
-											selectedKey() === place.key ? null : place.key,
-										)
-									}
+									aria-pressed={selectedKey() === place.key ? "true" : "false"}
+									onClick={() => toggle(place.key)}
 								>
 									<div class="place-cover">
 										<img

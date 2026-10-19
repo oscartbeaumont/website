@@ -1,6 +1,7 @@
-import { createMemo, For, onCleanup, onSettled, Show } from "solid-js";
+import { createMemo, For, onSettled, Show } from "solid-js";
 import { formatDay, formatTime } from "../album";
 import { downloadPhoto } from "../client";
+import { trapFocus } from "../focus";
 import { lockBodyScroll } from "../scroll-lock";
 import type { AddyPhoto } from "../store";
 import { Icon } from "./Icons";
@@ -21,6 +22,7 @@ export function Lightbox(props: {
 		Math.max(0, Math.min(props.index - 4, props.photos.length - 9));
 	const strip = () => props.photos.slice(stripStart(), stripStart() + 9);
 	let closeButton: HTMLButtonElement | undefined;
+	let dialog: HTMLDivElement | undefined;
 
 	const move = (delta: number) => {
 		const next = props.index + delta;
@@ -28,24 +30,30 @@ export function Lightbox(props: {
 	};
 
 	onSettled(() => {
-		closeButton?.focus();
+		const releaseFocus = trapFocus(dialog, closeButton);
 		const onKey = (event: KeyboardEvent) => {
+			// A sheet can sit on top of the viewer; it gets the keys first.
+			const target = event.target;
+			if (target instanceof Element && target.closest(".sheet-backdrop"))
+				return;
 			if (event.key === "Escape") props.onClose();
 			if (event.key === "ArrowLeft") move(-1);
 			if (event.key === "ArrowRight") move(1);
 		};
 		document.addEventListener("keydown", onKey);
 		const unlock = lockBodyScroll();
-		onCleanup(() => {
+		return () => {
 			document.removeEventListener("keydown", onKey);
+			releaseFocus();
 			unlock();
-		});
+		};
 	});
 
 	return (
 		<Show when={photo()}>
 			{(current) => (
 				<div
+					ref={dialog}
 					class="lightbox"
 					role="dialog"
 					aria-modal="true"

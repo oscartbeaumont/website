@@ -15,6 +15,7 @@ import {
 	removePhoto,
 	uploadPhoto,
 } from "../client";
+import { trapFocus } from "../focus";
 import { lockBodyScroll } from "../scroll-lock";
 import type { AddyPhoto } from "../store";
 import { Icon } from "./Icons";
@@ -39,16 +40,20 @@ function Sheet(
 		wide?: boolean;
 	}>,
 ) {
+	let sheet: HTMLDivElement | undefined;
+
 	onSettled(() => {
+		const releaseFocus = trapFocus(sheet);
 		const onKey = (event: KeyboardEvent) => {
 			if (event.key === "Escape") props.onClose();
 		};
 		document.addEventListener("keydown", onKey);
 		const unlock = lockBodyScroll();
-		onCleanup(() => {
+		return () => {
 			document.removeEventListener("keydown", onKey);
+			releaseFocus();
 			unlock();
-		});
+		};
 	});
 
 	return (
@@ -56,10 +61,12 @@ function Sheet(
 			<button
 				type="button"
 				class="sheet-scrim"
+				tabindex={-1}
 				onClick={props.onClose}
 				aria-label="Close dialog"
 			/>
 			<div
+				ref={sheet}
 				class={["sheet", { wide: props.wide === true }]}
 				role="dialog"
 				aria-modal="true"
@@ -266,7 +273,10 @@ export function UploadSheet(props: {
 					event.preventDefault();
 					setDragging(true);
 				}}
-				onDragLeave={() => setDragging(false)}
+				onDragLeave={(event) => {
+					if (!event.currentTarget.contains(event.relatedTarget as Node | null))
+						setDragging(false);
+				}}
 				onDrop={(event) => {
 					event.preventDefault();
 					setDragging(false);
@@ -412,7 +422,7 @@ export function UploadSheet(props: {
 					onClick={() => fileInput?.click()}
 				>
 					<Icon name="camera" size={16} />
-					Choose more
+					{items().length > 0 ? "Choose more" : "Choose photos"}
 				</button>
 				<button
 					class="button solid"
@@ -423,7 +433,9 @@ export function UploadSheet(props: {
 					<Icon name="upload" size={16} />
 					{busy()
 						? "Uploading…"
-						: `Upload ${readyCount() || ""} ${readyCount() === 1 ? "photo" : "photos"}`}
+						: readyCount() === 0
+							? "Upload photos"
+							: `Upload ${readyCount()} ${readyCount() === 1 ? "photo" : "photos"}`}
 				</button>
 			</div>
 		</Sheet>

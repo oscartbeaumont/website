@@ -121,7 +121,9 @@ export default function Page() {
 		setDarkroom(readDarkroom());
 		setView(viewFromHash());
 		const onHash = () => setView(viewFromHash());
+		const onPop = () => closeViewer(true);
 		window.addEventListener("hashchange", onHash);
+		window.addEventListener("popstate", onPop);
 		void refresh();
 		void fetchSession()
 			.then(setSession)
@@ -130,6 +132,7 @@ export default function Page() {
 			});
 		return () => {
 			window.removeEventListener("hashchange", onHash);
+			window.removeEventListener("popstate", onPop);
 			if (toastTimer) window.clearTimeout(toastTimer);
 		};
 	});
@@ -166,7 +169,25 @@ export default function Page() {
 
 	const openPhoto = (photo: AddyPhoto, list: AddyPhoto[]) => {
 		const index = list.findIndex((entry) => entry.id === photo.id);
+		const opening = viewer() === null;
 		setViewer({ list, index: Math.max(0, index) });
+		// Give the phone's back gesture something to close. The URL stays put,
+		// so this entry is just a second copy of the page underneath the viewer.
+		if (opening && typeof window !== "undefined")
+			window.history.pushState(
+				{ ...(window.history.state ?? {}), addyPhoto: true },
+				"",
+			);
+	};
+
+	const closeViewer = (viaHistory = false) => {
+		if (!viewer()) return;
+		const pop =
+			!viaHistory &&
+			typeof window !== "undefined" &&
+			window.history.state?.addyPhoto === true;
+		setViewer(null);
+		if (pop) window.history.back();
 	};
 
 	const openRandom = () => {
@@ -210,7 +231,7 @@ export default function Page() {
 
 	const dropPhoto = (id: string) => {
 		setPhotos((current) => current?.filter((entry) => entry.id !== id) ?? null);
-		setViewer(null);
+		closeViewer();
 	};
 
 	const deleteFromViewer = async (photo: AddyPhoto) => {
@@ -257,7 +278,7 @@ export default function Page() {
 		<div class="addy" data-darkroom={darkroom() ? "true" : undefined}>
 			<Title>A really cute model</Title>
 			<Meta name="robots" content="noindex" />
-			<Meta name="theme-color" content="#f7f1e5" />
+			<Meta name="theme-color" content={darkroom() ? "#15110d" : "#f7f1e5"} />
 			<Meta
 				name="description"
 				content="A small photo album for Addy and Oscar. The good bits, in the order they happened."
@@ -437,7 +458,7 @@ export default function Page() {
 						onIndex={(index) =>
 							setViewer((value) => (value ? { ...value, index } : null))
 						}
-						onClose={() => setViewer(null)}
+						onClose={() => closeViewer()}
 						onEdit={(photo) => setEditing(photo)}
 						onDelete={deleteFromViewer}
 						authenticated={session().authenticated}

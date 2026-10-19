@@ -5,18 +5,19 @@
 	--print: #fffdf8;
 	--ink: #2b2320;
 	--ink-soft: #5f5147;
-	--soft: #7c6c5d;
+	--soft: #756556;
 	--rule: #2b23201f;
 	--rule-strong: #2b23203d;
-	--accent: #b4553f;
-	--accent-wash: #b4553f14;
-	--sage: #6f8061;
+	--accent: #a84c36;
+	--accent-wash: #a84c3614;
+	--sage: #5c6b4f;
 	--shadow: #2b23201a;
 	position: relative;
 	min-height: 100dvh;
 	overflow-x: clip;
 	background: var(--paper);
 	color: var(--ink);
+	color-scheme: light;
 	font-family: "Lora", Georgia, serif;
 	font-size: 16px;
 	line-height: 1.6;
@@ -37,6 +38,7 @@
 	--accent-wash: #e08a6f1a;
 	--sage: #a8b78f;
 	--shadow: #00000066;
+	color-scheme: dark;
 }
 
 .addy h1,
@@ -99,6 +101,7 @@
 }
 
 .wordmark {
+	position: relative;
 	background: none;
 	border: 0;
 	padding: 0;
@@ -108,6 +111,12 @@
 	letter-spacing: 0.01em;
 	cursor: pointer;
 	white-space: nowrap;
+}
+
+.wordmark::before {
+	content: "";
+	position: absolute;
+	inset: -8px -6px;
 }
 
 .wordmark span {
@@ -122,6 +131,7 @@
 }
 
 .tab {
+	position: relative;
 	background: none;
 	border: 0;
 	border-bottom: 1px solid transparent;
@@ -135,6 +145,13 @@
 	transition:
 		color 0.2s,
 		border-color 0.2s;
+}
+
+/* Keep the labels airy but give them a finger-sized hit area. */
+.tab::before {
+	content: "";
+	position: absolute;
+	inset: -11px -4px;
 }
 
 .tab:hover {
@@ -177,6 +194,17 @@
 .icon-button:disabled {
 	opacity: 0.4;
 	cursor: default;
+}
+
+.top-actions .icon-button {
+	position: relative;
+}
+
+.top-actions .icon-button::before {
+	content: "";
+	position: absolute;
+	inset: -4px;
+	border-radius: 50%;
 }
 
 .button {
@@ -255,11 +283,16 @@
 	color: #a33c2a;
 }
 
+.addy[data-darkroom="true"] .button.danger {
+	color: #eda08f;
+}
+
 .button.line.light.danger {
 	color: #f0a08e;
 }
 
 .link-button {
+	position: relative;
 	background: none;
 	border: 0;
 	padding: 0;
@@ -268,6 +301,12 @@
 	text-decoration: underline;
 	text-underline-offset: 3px;
 	cursor: pointer;
+}
+
+.link-button::before {
+	content: "";
+	position: absolute;
+	inset: -7px -4px;
 }
 
 .link-button:hover {
@@ -687,11 +726,10 @@
 
 .caption-meta {
 	flex: 0 0 auto;
-	font-size: 8px;
-	letter-spacing: 0.1em;
+	font-size: 9px;
+	letter-spacing: 0.08em;
 	text-transform: uppercase;
 	color: var(--soft);
-	opacity: 0.75;
 	white-space: nowrap;
 }
 
@@ -963,7 +1001,7 @@
 }
 
 .trail-pin {
-	cursor: pointer;
+	cursor: default;
 }
 
 .trail-halo {
@@ -1072,7 +1110,7 @@
 }
 
 .place-meta {
-	font-size: 8.5px;
+	font-size: 9px;
 	letter-spacing: 0.1em;
 	text-transform: uppercase;
 	color: var(--soft);
@@ -1168,11 +1206,13 @@
 }
 
 .lb-image {
+	width: 100%;
+	height: 100%;
 	max-width: 100%;
-	max-height: calc(100dvh - 76px);
+	max-height: 100%;
 	object-fit: contain;
-	background: #0d0b09;
-	box-shadow: 0 30px 80px #00000088;
+	background: transparent;
+	filter: drop-shadow(0 24px 60px #00000088);
 }
 
 .lb-nav {
@@ -1262,6 +1302,10 @@
 	margin-top: 4px;
 }
 
+.lb-actions .button {
+	flex: 1 1 calc(50% - 4px);
+}
+
 .lb-note {
 	padding-top: 12px;
 	border-top: 1px solid #ffffff1f;
@@ -1306,10 +1350,14 @@
 }
 
 .lb-hint {
-	font-size: 8.5px;
+	font-size: 9px;
 	letter-spacing: 0.14em;
 	text-transform: uppercase;
 	color: #8e7d6a;
+}
+
+.lightbox :focus-visible {
+	outline-color: #f0a08e;
 }
 
 /* ---------- sheets ---------- */
@@ -1423,7 +1471,7 @@
 
 .field input::placeholder {
 	color: var(--soft);
-	opacity: 0.75;
+	opacity: 0.9;
 }
 
 .field input:disabled {
@@ -1450,6 +1498,7 @@
 }
 
 .dropzone {
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -1471,6 +1520,11 @@
 	background: var(--accent-wash);
 }
 
+.dropzone:has(input:focus-visible) {
+	outline: 2px solid var(--accent);
+	outline-offset: 3px;
+}
+
 .dropzone svg {
 	color: var(--accent);
 	margin-bottom: 2px;
@@ -1488,7 +1542,15 @@
 }
 
 .dropzone input {
-	display: none;
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+	border: 0;
 }
 
 .upload-list {
@@ -1684,7 +1746,7 @@
 	.hero-stack {
 		width: min(100%, 540px);
 		margin: 0 auto;
-		aspect-ratio: 1.05;
+		aspect-ratio: 1.32;
 	}
 
 	.lightbox {
@@ -1694,22 +1756,26 @@
 
 	.lb-stage {
 		padding: 14px;
-		max-height: 62dvh;
-	}
-
-	.lb-image {
-		max-height: 58dvh;
 	}
 
 	.lb-panel {
-		max-height: 40dvh;
+		max-height: 42dvh;
 		border-top: 1px solid #ffffff1f;
 		border-left: 0;
 		padding: 20px;
 	}
 
 	.lb-strip {
+		display: flex;
+		gap: 7px;
 		margin-top: 8px;
+		padding-top: 12px;
+		overflow-x: auto;
+		scrollbar-width: thin;
+	}
+
+	.lb-thumb {
+		flex: 0 0 62px;
 	}
 
 	.lb-caption {
@@ -1722,6 +1788,21 @@
 
 	.lb-nav.next {
 		right: 6px;
+	}
+}
+
+@media (max-width: 900px) and (max-height: 520px) {
+	/* A phone on its side wants the photo and the details next to each other. */
+	.lightbox {
+		grid-template-columns: minmax(0, 1fr) 320px;
+		grid-template-rows: 1fr;
+	}
+
+	.lb-panel {
+		max-height: none;
+		border-top: 0;
+		border-left: 1px solid #ffffff1f;
+		padding: 16px;
 	}
 }
 
