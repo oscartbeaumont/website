@@ -313,6 +313,15 @@
 	color: var(--ink);
 }
 
+.link-button:disabled {
+	opacity: 0.5;
+	cursor: default;
+}
+
+.link-button:disabled:hover {
+	color: var(--soft);
+}
+
 /* ---------- hero ---------- */
 
 .hero {
@@ -633,13 +642,23 @@
 /* ---------- pile ---------- */
 
 .pile {
-	columns: 4;
+	--pile-cols: 4;
+	display: grid;
+	grid-template-columns: repeat(var(--pile-cols), minmax(0, 1fr));
 	column-gap: clamp(14px, 2vw, 26px);
+	row-gap: clamp(20px, 3vw, 38px);
+	align-items: start;
+}
+
+.pile-col {
+	display: flex;
+	flex-direction: column;
+	gap: clamp(20px, 3vw, 38px);
+	min-width: 0;
 }
 
 .pile-item {
-	break-inside: avoid;
-	margin: 0 0 clamp(20px, 3vw, 38px);
+	margin: 0;
 }
 
 .photo-button {
@@ -734,8 +753,7 @@
 }
 
 .pile-skeleton {
-	break-inside: avoid;
-	margin-bottom: clamp(20px, 3vw, 38px);
+	width: 100%;
 	background: linear-gradient(
 		100deg,
 		var(--paper-2) 20%,
@@ -1259,6 +1277,9 @@
 	align-items: center;
 	justify-content: space-between;
 	gap: 10px;
+	/* Keep the first-roll badge clear of the close button that floats above
+	   the panel on wide screens. */
+	padding-right: 46px;
 	font-size: 9.5px;
 	letter-spacing: 0.18em;
 	text-transform: uppercase;
@@ -1389,6 +1410,7 @@
 	width: min(620px, 100%);
 	max-height: min(90dvh, 900px);
 	padding: clamp(24px, 4vw, 40px);
+	padding-bottom: 0;
 	overflow: auto;
 	background: var(--paper);
 	color: var(--ink);
@@ -1553,6 +1575,11 @@
 	border: 0;
 }
 
+.dropzone:focus-within {
+	outline: 2px solid var(--accent);
+	outline-offset: 3px;
+}
+
 .upload-list {
 	display: flex;
 	flex-direction: column;
@@ -1629,12 +1656,19 @@
 }
 
 .sheet-actions {
+	position: sticky;
+	bottom: 0;
+	z-index: 2;
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
 	justify-content: flex-end;
 	gap: 10px;
 	margin-top: 22px;
+	padding-top: 12px;
+	padding-bottom: clamp(24px, 4vw, 40px);
+	border-top: 1px solid var(--rule);
+	background: var(--paper);
 }
 
 .spinner {
@@ -1724,7 +1758,7 @@
 
 @media (max-width: 1100px) {
 	.pile {
-		columns: 3;
+		--pile-cols: 3;
 	}
 
 	.places-layout {
@@ -1765,6 +1799,10 @@
 		padding: 20px;
 	}
 
+	.lb-topline {
+		padding-right: 0;
+	}
+
 	.lb-strip {
 		display: flex;
 		gap: 7px;
@@ -1803,6 +1841,10 @@
 		border-top: 0;
 		border-left: 1px solid #ffffff1f;
 		padding: 16px;
+	}
+
+	.lb-topline {
+		padding-right: 46px;
 	}
 }
 
@@ -1857,12 +1899,12 @@
 
 @media (max-width: 780px) {
 	.pile {
-		columns: 2;
+		--pile-cols: 2;
 		column-gap: 14px;
 	}
 
-	.pile-item {
-		margin-bottom: 22px;
+	.pile-col {
+		gap: 22px;
 	}
 
 	.caption {
@@ -1897,6 +1939,13 @@
 
 	.sheet {
 		max-height: 92dvh;
+	}
+
+	.upload-list {
+		/* One scroll container on a phone: the sheet itself. */
+		max-height: none;
+		overflow: visible;
+		padding-right: 0;
 	}
 
 	.field-row {

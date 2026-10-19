@@ -1,4 +1,4 @@
-import { strToU8, zipSync } from "fflate";
+import { strToU8, Zip, ZipPassThrough } from "fflate";
 import { downloadNameFor } from "./album";
 import { type PhotoExif, readExif } from "./exif";
 import type { AddyPhoto } from "./store";
@@ -193,47 +193,94 @@ export function downloadPhoto(photo: AddyPhoto) {
 	const link = document.createElement("a");
 	link.href = photo.downloadUrl;
 	link.download = "";
+	document.body.appendChild(link);
 	link.click();
+	link.remove();
 }
 
 /** Download a web-sized copy of everything, with a captions file, as a zip. */
 export async function downloadAlbum(
 	photos: AddyPhoto[],
 	onProgress: (done: number, total: number) => void,
-): Promise<void> {
-	const files: Record<string, Uint8Array> = {};
-	const captions = [
-		"Addy & me",
-		`${photos.length} photos downloaded ${new Date().toISOString().slice(0, 10)}`,
-		"",
-	];
+): Promise<{ skipped: number }> {
+	// The zip is streamed together as the photos arrive instead of holding a
+	// second full copy of every file until the end. That matters once the album
+	// runs into the hundreds.
+	const chunks: Uint8Array<ArrayBuffer>[] = [];
+	let zipError: Error | null = null;
+	const zip = new Zip((error, data) => {
+		if (error) {
+			zipError = error;
+			return;
+		}
+		if (data.length > 0) chunks.push(data as Uint8Array<ArrayBuffer>);
+	});
+
+	const today = new Date();
+	const stamp = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+	const photoNotes: string[] = [];
 	const used = new Set<string>();
+	let skipped = 0;
 
 	for (let index = 0; index < photos.length; index++) {
 		const photo = photos[index];
 		onProgress(index, photos.length);
-		const response = await fetch(photo.displayUrl, { cache: "force-cache" });
-		if (!response.ok) continue;
-		let name = downloadNameFor(photo);
-		let suffix = 2;
-		while (used.has(name)) {
-			name = name.replace(/(\.[a-z0-9]+)$/i, `-${suffix}$1`);
-			suffix++;
+		try {
+			const response = await fetch(photo.displayUrl, { cache: "force-cache" });
+			if (!response.ok) {
+				skipped++;
+				continue;
+			}
+			const bytes = new Uint8Array(await response.arrayBuffer());
+			let name = downloadNameFor(photo, "display");
+			let suffix = 2;
+			while (used.has(name)) {
+				name = name.replace(/(\.[a-z0-9]+)$/i, `-${suffix}$1`);
+				suffix++;
+			}
+			used.add(name);
+			const entry = new ZipPassThrough(name);
+			zip.add(entry);
+			entry.push(bytes, true);
+			const where = [photo.place, photo.takenAt?.slice(0, 10) ?? "undated"]
+				.filter(Boolean)
+				.join(" · ");
+			photoNotes.push(
+				`${name}\n  ${photo.caption || "(no caption)"}\n${where ? `  ${where}` : ""}`,
+			);
+		} catch {
+			skipped++;
 		}
-		used.add(name);
-		files[name] = new Uint8Array(await response.arrayBuffer());
-		captions.push(
-			`${name}\n  ${photo.caption || "(no caption)"}\n  ${[photo.place, photo.takenAt?.slice(0, 10)].filter(Boolean).join(" · ")}`,
+	}
+
+	if (skipped === photos.length)
+		throw new Error("Couldn't fetch any of the photos. Try again in a moment.");
+
+	onProgress(photos.length, photos.length);
+	const captionText = [
+		"Addy & me",
+		`${photos.length - skipped} photos, packed ${stamp}`,
+		"These are web-sized copies. The originals are still on the site.",
+		...photoNotes,
+	].join("\n\n");
+	const captionEntry = new ZipPassThrough("captions.txt");
+	zip.add(captionEntry);
+	captionEntry.push(strToU8(captionText), true);
+	zip.end();
+	if (zipError) {
+		throw new Error(
+			"Couldn't pack the album. Try downloading a few photos at a time.",
 		);
 	}
-	onProgress(photos.length, photos.length);
-	files["captions.txt"] = strToU8(captions.join("\n\n"));
-	const zipped = zipSync(files, { level: 0 });
-	const blob = new Blob([zipped], { type: "application/zip" });
+
+	const blob = new Blob(chunks, { type: "application/zip" });
 	const url = URL.createObjectURL(blob);
 	const link = document.createElement("a");
 	link.href = url;
 	link.download = "addy-and-me-photos.zip";
+	document.body.appendChild(link);
 	link.click();
+	link.remove();
 	setTimeout(() => URL.revokeObjectURL(url), 60_000);
+	return { skipped };
 }

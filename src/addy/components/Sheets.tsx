@@ -5,6 +5,7 @@ import {
 	onSettled,
 	type ParentProps,
 	Show,
+	untrack,
 } from "solid-js";
 import {
 	login,
@@ -179,6 +180,7 @@ export function UploadSheet(props: {
 	const [error, setError] = createSignal<string | null>(null);
 	let fileInput: HTMLInputElement | undefined;
 	let disposed = false;
+	let queue: Promise<void> = Promise.resolve();
 
 	const update = (key: string, patch: Partial<UploadItem>) => {
 		setItems((current) =>
@@ -186,6 +188,10 @@ export function UploadSheet(props: {
 		);
 	};
 
+	/**
+	 * Prepare one file at a time. Decoding a dozen phone photos at once can
+	 * exhaust a phone's memory before anything is uploaded.
+	 */
 	const addFiles = (files: FileList | File[]) => {
 		for (const file of Array.from(files)) {
 			const key = crypto.randomUUID();
@@ -200,9 +206,11 @@ export function UploadSheet(props: {
 					place: "",
 				},
 			]);
-			void preparePhoto(file)
-				.then((prepared) => {
-					if (disposed) {
+			queue = queue.then(async () => {
+				if (disposed) return;
+				try {
+					const prepared = await preparePhoto(file);
+					if (disposed || !items().some((entry) => entry.key === key)) {
 						URL.revokeObjectURL(prepared.previewUrl);
 						return;
 					}
@@ -214,11 +222,11 @@ export function UploadSheet(props: {
 						takenAt:
 							prepared.exif.takenAt?.slice(0, 16) ?? localInputValue(fallback),
 					});
-				})
-				.catch((problem) => {
-					if (disposed) return;
-					update(key, { status: "error", error: message(problem) });
-				});
+				} catch (problem) {
+					if (!disposed)
+						update(key, { status: "error", error: message(problem) });
+				}
+			});
 		}
 	};
 
@@ -230,9 +238,10 @@ export function UploadSheet(props: {
 
 	const readyCount = () =>
 		items().filter((item) => item.status === "ready").length;
+	const preparing = () => items().some((item) => item.status === "preparing");
 
 	const submit = async () => {
-		if (busy()) return;
+		if (busy() || preparing()) return;
 		setBusy(true);
 		setError(null);
 		const added: AddyPhoto[] = [];
@@ -253,8 +262,13 @@ export function UploadSheet(props: {
 		}
 		setBusy(false);
 		if (added.length > 0) props.onUploaded(added);
-		if (added.length > 0 && !items().some((item) => item.status === "error"))
-			props.onClose();
+		const stillPending = items().some(
+			(item) =>
+				item.status === "ready" ||
+				item.status === "preparing" ||
+				item.status === "error",
+		);
+		if (added.length > 0 && !stillPending) props.onClose();
 		else if (added.length === 0)
 			setError("None of those made it. Have a look below.");
 	};
@@ -361,7 +375,7 @@ export function UploadSheet(props: {
 													value={item.place}
 													maxlength={80}
 													disabled={item.status !== "ready"}
-													placeholder="We'll guess it"
+													placeholder="Where was this?"
 													onInput={(event) =>
 														update(item.key, {
 															place: event.currentTarget.value,
@@ -389,6 +403,20 @@ export function UploadSheet(props: {
 									</Show>
 									<Show when={item.status === "error"}>
 										<p class="field-error">{item.error}</p>
+										<Show when={item.prepared}>
+											<button
+												type="button"
+												class="link-button"
+												onClick={() =>
+													update(item.key, {
+														status: "ready",
+														error: undefined,
+													})
+												}
+											>
+												Try again
+											</button>
+										</Show>
 									</Show>
 								</div>
 								<button
@@ -427,15 +455,17 @@ export function UploadSheet(props: {
 				<button
 					class="button solid"
 					type="button"
-					disabled={busy() || readyCount() === 0}
+					disabled={busy() || preparing() || readyCount() === 0}
 					onClick={submit}
 				>
 					<Icon name="upload" size={16} />
 					{busy()
 						? "Uploading…"
-						: readyCount() === 0
-							? "Upload photos"
-							: `Upload ${readyCount()} ${readyCount() === 1 ? "photo" : "photos"}`}
+						: preparing()
+							? "Getting them ready…"
+							: readyCount() === 0
+								? "Upload photos"
+								: `Upload ${readyCount()} ${readyCount() === 1 ? "photo" : "photos"}`}
 				</button>
 			</div>
 		</Sheet>
@@ -448,11 +478,14 @@ export function EditSheet(props: {
 	onSaved: (photo: AddyPhoto) => void;
 	onDeleted: (id: string) => void;
 }) {
-	const [caption, setCaption] = createSignal(props.photo.caption);
-	const [takenAt, setTakenAt] = createSignal(
-		props.photo.takenAt?.slice(0, 16) ?? "",
-	);
-	const [place, setPlace] = createSignal(props.photo.place ?? "");
+	const initial = untrack(() => ({
+		caption: props.photo.caption,
+		takenAt: props.photo.takenAt?.slice(0, 16) ?? "",
+		place: props.photo.place ?? "",
+	}));
+	const [caption, setCaption] = createSignal(initial.caption);
+	const [takenAt, setTakenAt] = createSignal(initial.takenAt);
+	const [place, setPlace] = createSignal(initial.place);
 	const [removeLocation, setRemoveLocation] = createSignal(false);
 	const [busy, setBusy] = createSignal(false);
 	const [error, setError] = createSignal<string | null>(null);

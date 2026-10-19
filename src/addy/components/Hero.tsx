@@ -33,22 +33,23 @@ export function Hero(props: {
 					A home for the photos that deserve more than a camera roll.
 				</p>
 				<p class="hero-note-copy">
-					Aquariums, garlic bread, and the long way home. Started 20 June 2025,
-					still going.
+					Aquariums, garlic bread, and the long way home. Still going.
 				</p>
 
 				<div class="stats">
 					<div class="stat">
 						<b>{props.days.toLocaleString("en-AU")}</b>
-						<span>days together</span>
+						<span>{props.days === 1 ? "day together" : "days together"}</span>
 					</div>
 					<div class="stat">
 						<b>{props.photos.length || "—"}</b>
-						<span>photos kept</span>
+						<span>
+							{props.photos.length === 1 ? "photo kept" : "photos kept"}
+						</span>
 					</div>
 					<div class="stat">
 						<b>{props.places ?? "—"}</b>
-						<span>places</span>
+						<span>{props.places === 1 ? "place" : "places"}</span>
 					</div>
 				</div>
 

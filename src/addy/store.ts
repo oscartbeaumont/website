@@ -5,6 +5,16 @@ const LEGACY_PREFIX = "addy/";
 const MEDIA_PREFIX = "addy/media/";
 const META_PREFIX = "addy/meta/";
 
+const LEGACY_TYPES: Record<string, string> = {
+	png: "image/png",
+	jpg: "image/jpeg",
+	jpeg: "image/jpeg",
+	webp: "image/webp",
+	gif: "image/gif",
+	heic: "image/heic",
+	avif: "image/avif",
+};
+
 /**
  * The original nine photos, in the order they were hand-picked for the old
  * page. They live directly under `addy/` and have no metadata sidecar unless
@@ -37,6 +47,8 @@ export type AddyPhoto = {
 	createdAt: string;
 	originalName: string | null;
 	legacy: boolean;
+	/** Position in the hand-picked first roll, if this is a legacy photo. */
+	legacyRank: number | null;
 	thumbUrl: string;
 	displayUrl: string;
 	downloadUrl: string;
@@ -185,6 +197,7 @@ function toPhoto(meta: PhotoMeta, legacy?: LegacyImage): AddyPhoto {
 				displayUrl: `/addy/photos/${meta.id}/display`,
 				downloadUrl: `/addy/photos/${meta.id}/original?download=1`,
 			};
+	const rank = legacy ? LEGACY_ORDER.indexOf(legacy.name) : -1;
 	return {
 		id: meta.id,
 		caption: meta.caption ?? "",
@@ -198,6 +211,7 @@ function toPhoto(meta: PhotoMeta, legacy?: LegacyImage): AddyPhoto {
 		createdAt: meta.createdAt,
 		originalName: meta.originalName ?? legacy?.name ?? null,
 		legacy: Boolean(legacy),
+		legacyRank: legacy ? (rank >= 0 ? rank : LEGACY_ORDER.length) : null,
 		...urls,
 	};
 }
@@ -424,6 +438,14 @@ export async function getLegacyImage(hash: string, download = false) {
 
 	const headers = new Headers();
 	object.writeHttpMetadata(headers);
+	if (!headers.has("Content-Type")) {
+		// Some of the first roll was uploaded without content metadata. The
+		// old endpoint relied on R2 too, but an explicit type keeps old links
+		// rendering and downloading correctly everywhere.
+		const extension = image.name.split(".").pop()?.toLowerCase() ?? "";
+		const type = LEGACY_TYPES[extension];
+		if (type) headers.set("Content-Type", type);
+	}
 	if (image.hash === hash) {
 		headers.set("Cache-Control", "public, max-age=31536000, immutable");
 		headers.set("Cloudflare-CDN-Cache-Control", "public, max-age=31536000");

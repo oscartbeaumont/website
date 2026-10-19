@@ -4,7 +4,6 @@ import {
 	createMemo,
 	createSignal,
 	Match,
-	onCleanup,
 	onSettled,
 	Show,
 	Switch,
@@ -247,14 +246,21 @@ export default function Page() {
 
 	const downloadAll = async () => {
 		const list = allPhotos();
+		if (progress() !== null) return;
 		if (list.length === 0) {
 			say("Nothing to download yet.");
 			return;
 		}
 		setProgress({ done: 0, total: list.length });
 		try {
-			await downloadAlbum(list, (done, total) => setProgress({ done, total }));
-			say("Album downloaded.");
+			const { skipped } = await downloadAlbum(list, (done, total) =>
+				setProgress({ done, total }),
+			);
+			say(
+				skipped > 0
+					? `Album downloaded, but ${skipped} ${skipped === 1 ? "photo" : "photos"} wouldn't open.`
+					: "Album downloaded.",
+			);
 		} catch (error) {
 			say(errorText(error));
 		} finally {
@@ -338,8 +344,8 @@ export default function Page() {
 							type="button"
 							class="icon-button"
 							onClick={downloadAll}
-							aria-label="Download every photo"
-							title="Download every photo"
+							aria-label="Download the whole album"
+							title="Download the whole album"
 							disabled={progress() !== null}
 						>
 							<Icon name="download" size={18} />
@@ -446,6 +452,14 @@ export default function Page() {
 							Sign out
 						</button>
 					</Show>
+					<button
+						type="button"
+						class="link-button"
+						onClick={downloadAll}
+						disabled={progress() !== null}
+					>
+						Download the whole album
+					</button>
 					<span>Made by Oscar, mostly at night.</span>
 				</div>
 			</footer>
@@ -482,7 +496,9 @@ export default function Page() {
 				<UploadSheet
 					onClose={() => setUploadOpen(false)}
 					onUploaded={(added) => {
-						void refresh();
+						// The upload response is the complete record, so merge it in
+						// instead of refetching (and rebuilding) the whole album.
+						setPhotos((current) => (current ? [...added, ...current] : added));
 						say(
 							`${added.length} ${added.length === 1 ? "photo" : "photos"} added.`,
 						);

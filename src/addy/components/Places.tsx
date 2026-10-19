@@ -35,6 +35,7 @@ export function Places(props: {
 		y: number;
 		primary: ProjectedPlace;
 		members: ProjectedPlace[];
+		label: string;
 		labelX: number;
 		labelY: number;
 		anchor: "middle" | "start" | "end";
@@ -64,6 +65,7 @@ export function Places(props: {
 				y: place.y,
 				primary: place,
 				members: [place],
+				label: place.name,
 				labelX: place.x,
 				labelY: place.y - 32,
 				anchor: "middle",
@@ -72,10 +74,12 @@ export function Places(props: {
 
 		const used: Array<{ x: number; y: number; w: number; h: number }> = [];
 		for (const pin of grouped) {
-			const label =
+			const full =
 				pin.members.length > 1
 					? `${pin.primary.name} +${pin.members.length - 1}`
 					: pin.primary.name;
+			const label = full.length > 26 ? `${full.slice(0, 25).trimEnd()}…` : full;
+			pin.label = label;
 			const w = Math.max(52, label.length * 7.2);
 			const options = [
 				{ x: pin.x, y: pin.y - 32, anchor: "middle" as const },
@@ -131,7 +135,8 @@ export function Places(props: {
 				</div>
 				<p class="section-meta">
 					<Show when={!props.loading} fallback="Finding the pins…">
-						{places().length} places · not to scale
+						{places().length} {places().length === 1 ? "place" : "places"} · not
+						to scale
 					</Show>
 				</p>
 			</div>
@@ -173,7 +178,7 @@ export function Places(props: {
 							<svg
 								viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
 								role="img"
-								aria-label="An approximate drawing of the places our photos were taken"
+								aria-label="An approximate drawing of where our photos were taken"
 							>
 								<Show when={pins().length > 1}>
 									<path class="trail-route" d={route()} />
@@ -194,10 +199,7 @@ export function Places(props: {
 												y={pin.labelY}
 												text-anchor={pin.anchor}
 											>
-												{pin.primary.name}
-												{pin.members.length > 1
-													? ` +${pin.members.length - 1}`
-													: ""}
+												{pin.label}
 											</text>
 										</g>
 									)}
@@ -221,7 +223,7 @@ export function Places(props: {
 						</div>
 						<p class="trail-note">
 							Not to scale. Drawn from the coordinates that came with the
-							photos, with the names rounded to the nearest town. Pins that land
+							photos, with places named after the nearest town. Pins that land
 							on top of each other share a dot.
 						</p>
 					</div>

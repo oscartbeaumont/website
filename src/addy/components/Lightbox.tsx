@@ -110,7 +110,7 @@ export function Lightbox(props: {
 						</div>
 
 						<h2 class="lb-caption">
-							{current().caption || "A good day, no notes."}
+							{current().caption || "We never wrote this one down."}
 						</h2>
 
 						<div class="lb-meta">

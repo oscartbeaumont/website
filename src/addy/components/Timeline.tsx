@@ -29,18 +29,18 @@ export function Timeline(props: {
 				</div>
 				<p class="section-meta">
 					<Show when={!props.loading} fallback="Lining up the dates…">
-						{dated()} dated · oldest first
+						{dated()} dated{dated() > 0 ? " · oldest first" : ""}
 					</Show>
 				</p>
 			</div>
 
 			<Show
-				when={!props.loading && dated() > 0}
+				when={!props.loading && props.photos.length > 0}
 				fallback={
 					<Show when={!props.loading}>
 						<div class="empty-card">
 							<Icon name="compass" size={30} />
-							<h3>No dates yet</h3>
+							<h3>Nothing on the timeline yet</h3>
 							<p>
 								Photos keep the date they were taken. Add one, or give an old
 								photo a date, and the timeline starts itself.
@@ -144,7 +144,10 @@ export function Timeline(props: {
 												loading="lazy"
 												decoding="async"
 											/>
-											<span>{photo.caption || "First roll"}</span>
+											<span>
+												{photo.caption ||
+													(photo.legacy ? "First roll" : "Undated")}
+											</span>
 										</button>
 									)}
 								</For>

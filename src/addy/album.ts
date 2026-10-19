@@ -70,24 +70,46 @@ export function daysTogether(now: Date): number {
 	);
 }
 
+/** Perth is UTC+8 all year, so a fixed offset is enough for a wall-clock date. */
+const PERTH_OFFSET_MS = 8 * 60 * 60 * 1000;
+
+function perthDay(date: Date): { year: number; month: number; day: number } {
+	const shifted = new Date(date.getTime() + PERTH_OFFSET_MS);
+	return {
+		year: shifted.getUTCFullYear(),
+		month: shifted.getUTCMonth(),
+		day: shifted.getUTCDate(),
+	};
+}
+
 /** Keep the old site's anniversary rules: only on the same day of the month. */
 export function anniversaryLabel(now: Date): string | null {
 	if (now.getTime() < START.getTime()) return null;
-	if (now.getDate() !== START.getDate()) return null;
-	const months =
-		(now.getFullYear() - START.getFullYear()) * 12 +
-		(now.getMonth() - START.getMonth());
-	const years = now.getFullYear() - START.getFullYear();
-	if (now.getMonth() === START.getMonth() && years >= 1)
+	const start = perthDay(START);
+	const today = perthDay(now);
+	if (today.day !== start.day) return null;
+	const months = (today.year - start.year) * 12 + (today.month - start.month);
+	const years = today.year - start.year;
+	if (today.month === start.month && years >= 1)
 		return `Happy ${years}-year anniversary`;
 	if (months >= 1) return `Happy ${months}-month anniversary`;
 	return null;
 }
 
 export function sortedNewest(photos: AddyPhoto[]): AddyPhoto[] {
-	return [...photos].sort((a, b) =>
-		(b.takenAt ?? b.createdAt).localeCompare(a.takenAt ?? a.createdAt),
-	);
+	return [...photos].sort((a, b) => {
+		// Dated photos are chronological; undated ones fall to the end with the
+		// first roll, regardless of when their files happened to be uploaded.
+		if (a.takenAt && b.takenAt) return b.takenAt.localeCompare(a.takenAt);
+		if (a.takenAt) return -1;
+		if (b.takenAt) return 1;
+		if (a.legacy !== b.legacy) return a.legacy ? 1 : -1;
+		// The first roll was hand-picked, so keep its order rather than the
+		// order the files happened to reach R2.
+		if (a.legacy && b.legacy)
+			return (a.legacyRank ?? 999) - (b.legacyRank ?? 999);
+		return b.createdAt.localeCompare(a.createdAt);
+	});
 }
 
 export type MonthGroup = {
@@ -117,9 +139,12 @@ export function groupByMonth(photos: AddyPhoto[]): {
 			label: formatMonth(key),
 			photos: group,
 		})),
-		undated: undated.sort((a, b) =>
-			(a.takenAt ?? a.createdAt).localeCompare(b.takenAt ?? b.createdAt),
-		),
+		undated: undated.sort((a, b) => {
+			if (a.legacy && b.legacy)
+				return (a.legacyRank ?? 999) - (b.legacyRank ?? 999);
+			if (a.legacy !== b.legacy) return a.legacy ? -1 : 1;
+			return (a.takenAt ?? a.createdAt).localeCompare(b.takenAt ?? b.createdAt);
+		}),
 	};
 }
 
@@ -262,11 +287,28 @@ export function photoTilt(id: string): number {
 
 /** The tail of an id, safe to use in a file name (legacy ids contain dots). */
 function idSuffix(id: string): string {
-	return id.replace(/[^a-z0-9]/gi, "").slice(-6);
+	if (id.startsWith("legacy-"))
+		return id
+			.slice("legacy-".length)
+			.replace(/\.[^.]+$/, "")
+			.toLowerCase()
+			.replace(/[^a-z0-9]/g, "");
+	return id
+		.replace(/[^a-z0-9]/gi, "")
+		.slice(-6)
+		.toLowerCase();
 }
 
-export function downloadNameFor(photo: AddyPhoto): string {
-	const date = (photo.takenAt ?? photo.createdAt).slice(0, 10);
+/**
+ * A friendly file name for a photo. `variant` matters: the album zip contains
+ * web-sized JPEG copies, while a single-photo download is the original file,
+ * so the extension has to match the bytes it is attached to.
+ */
+export function downloadNameFor(
+	photo: AddyPhoto,
+	variant: "original" | "display" = "original",
+): string {
+	const date = (photo.takenAt ?? "").slice(0, 10) || "undated";
 	const place = (photo.place ?? "memory")
 		.toLowerCase()
 		.replace(/[^a-z0-9]+/g, "-")
@@ -276,10 +318,17 @@ export function downloadNameFor(photo: AddyPhoto): string {
 	const rawExtension = original.includes(".")
 		? (original.split(".").pop()?.toLowerCase() ?? "")
 		: "";
-	const extension = /^[a-z0-9]{2,5}$/.test(rawExtension)
-		? rawExtension
-		: photo.legacy
-			? "png"
-			: "jpg";
+	const extension =
+		variant === "display"
+			? photo.legacy
+				? /^[a-z0-9]{2,5}$/.test(rawExtension)
+					? rawExtension
+					: "png"
+				: "jpg"
+			: /^[a-z0-9]{2,5}$/.test(rawExtension)
+				? rawExtension
+				: photo.legacy
+					? "png"
+					: "jpg";
 	return `${date}-${place || "memory"}-${idSuffix(photo.id)}.${extension}`;
 }
