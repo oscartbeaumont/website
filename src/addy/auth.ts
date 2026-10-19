@@ -83,7 +83,13 @@ export function readCookie(request: Request, name: string): string | undefined {
 	if (!header) return undefined;
 	for (const part of header.split(";")) {
 		const [key, ...rest] = part.trim().split("=");
-		if (key === name) return decodeURIComponent(rest.join("="));
+		if (key !== name) continue;
+		try {
+			return decodeURIComponent(rest.join("="));
+		} catch {
+			// A malformed cookie is just an anonymous visitor, not an error.
+			return undefined;
+		}
 	}
 	return undefined;
 }

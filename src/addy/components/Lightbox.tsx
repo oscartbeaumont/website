@@ -1,6 +1,7 @@
 import { createMemo, For, onCleanup, onSettled, Show } from "solid-js";
 import { formatDay, formatTime } from "../album";
 import { downloadPhoto } from "../client";
+import { lockBodyScroll } from "../scroll-lock";
 import type { AddyPhoto } from "../store";
 import { Icon } from "./Icons";
 
@@ -34,11 +35,10 @@ export function Lightbox(props: {
 			if (event.key === "ArrowRight") move(1);
 		};
 		document.addEventListener("keydown", onKey);
-		const previous = document.body.style.overflow;
-		document.body.style.overflow = "hidden";
+		const unlock = lockBodyScroll();
 		onCleanup(() => {
 			document.removeEventListener("keydown", onKey);
-			document.body.style.overflow = previous;
+			unlock();
 		});
 	});
 

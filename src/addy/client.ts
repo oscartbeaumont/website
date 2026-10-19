@@ -128,7 +128,9 @@ export async function preparePhoto(file: File): Promise<PreparedPhoto> {
 
 	let bitmap: ImageBitmap;
 	try {
-		bitmap = await createImageBitmap(file);
+		// `from-image` is the spec default, but naming it keeps portrait iPhone
+		// photos upright on browsers that don't apply EXIF orientation on their own.
+		bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
 	} catch {
 		throw new Error(
 			`We couldn't open ${file.name}. JPEG, PNG and WebP work best.`,

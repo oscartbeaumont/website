@@ -260,6 +260,11 @@ export function photoTilt(id: string): number {
 	return ((hash % 28) - 14) / 10;
 }
 
+/** The tail of an id, safe to use in a file name (legacy ids contain dots). */
+function idSuffix(id: string): string {
+	return id.replace(/[^a-z0-9]/gi, "").slice(-6);
+}
+
 export function downloadNameFor(photo: AddyPhoto): string {
 	const date = (photo.takenAt ?? photo.createdAt).slice(0, 10);
 	const place = (photo.place ?? "memory")
@@ -267,6 +272,14 @@ export function downloadNameFor(photo: AddyPhoto): string {
 		.replace(/[^a-z0-9]+/g, "-")
 		.replace(/^-|-$/g, "")
 		.slice(0, 40);
-	const extension = photo.legacy ? "png" : "jpg";
-	return `${date}-${place || "memory"}-${photo.id.slice(-6)}.${extension}`;
+	const original = photo.originalName ?? "";
+	const rawExtension = original.includes(".")
+		? (original.split(".").pop()?.toLowerCase() ?? "")
+		: "";
+	const extension = /^[a-z0-9]{2,5}$/.test(rawExtension)
+		? rawExtension
+		: photo.legacy
+			? "png"
+			: "jpg";
+	return `${date}-${place || "memory"}-${idSuffix(photo.id)}.${extension}`;
 }

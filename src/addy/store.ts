@@ -111,26 +111,65 @@ async function listLegacyImages(): Promise<LegacyImage[]> {
 	);
 }
 
+/**
+ * Sidecars carry a base64 copy of themselves in R2 custom metadata, which the
+ * list API returns for free. That keeps listing the album at two R2 requests
+ * instead of one per photo (important on the Workers free plan).
+ */
+function encodeMetaHeader(meta: PhotoMeta): string | null {
+	try {
+		const bytes = new TextEncoder().encode(JSON.stringify(meta));
+		if (bytes.byteLength > 1400) return null;
+		let binary = "";
+		for (const byte of bytes) binary += String.fromCharCode(byte);
+		return btoa(binary);
+	} catch {
+		return null;
+	}
+}
+
+function decodeMetaHeader(value: string): PhotoMeta | null {
+	try {
+		const binary = atob(value);
+		const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+		const meta = JSON.parse(new TextDecoder().decode(bytes)) as PhotoMeta;
+		return meta?.id && isPhotoId(meta.id) ? meta : null;
+	} catch {
+		return null;
+	}
+}
+
 async function listMeta(): Promise<PhotoMeta[]> {
 	const metas: PhotoMeta[] = [];
+	const missing: string[] = [];
 	let cursor: string | undefined;
 	do {
-		const listed = await env.DATA.list({ prefix: META_PREFIX, cursor });
-		const keys = listed.objects
-			.map((object) => object.key)
-			.filter((key) => key.endsWith(".json"));
-		const objects = await Promise.all(keys.map((key) => env.DATA.get(key)));
-		for (const object of objects) {
-			if (!object) continue;
-			try {
-				const meta = (await object.json()) as PhotoMeta;
-				if (meta?.id && isPhotoId(meta.id)) metas.push(meta);
-			} catch {
-				// A corrupt sidecar shouldn't take down the whole album.
-			}
+		const listed = await env.DATA.list({
+			prefix: META_PREFIX,
+			cursor,
+			include: ["customMetadata"],
+		});
+		for (const object of listed.objects) {
+			if (!object.key.endsWith(".json")) continue;
+			const header = object.customMetadata?.meta;
+			const meta = header ? decodeMetaHeader(header) : null;
+			if (meta) metas.push(meta);
+			else missing.push(object.key);
 		}
 		cursor = listed.truncated ? listed.cursor : undefined;
 	} while (cursor);
+
+	// Older sidecars (and unusually long captions) need one read each.
+	const objects = await Promise.all(missing.map((key) => env.DATA.get(key)));
+	for (const object of objects) {
+		if (!object) continue;
+		try {
+			const meta = (await object.json()) as PhotoMeta;
+			if (meta?.id && isPhotoId(meta.id)) metas.push(meta);
+		} catch {
+			// A corrupt sidecar shouldn't take down the whole album.
+		}
+	}
 	return metas;
 }
 
@@ -223,18 +262,18 @@ export async function listPhotos(force = false): Promise<AddyPhoto[]> {
 
 export async function getPhoto(id: string): Promise<AddyPhoto | null> {
 	if (!isPhotoId(id)) return null;
-	const photos = await listPhotos();
-	const found = photos.find((photo) => photo.id === id);
-	if (found) return found;
-
-	// A legacy photo without a sidecar isn't in the cached list yet.
 	const name = legacyName(id);
-	if (!name) return null;
-	const legacy = await listLegacyImages();
-	const image = legacy.find((entry) => entry.name === name);
-	if (!image) return null;
+	if (name) {
+		const legacy = await listLegacyImages();
+		const image = legacy.find((entry) => entry.name === name);
+		if (!image) return null;
+		const meta = await readMeta(id);
+		return legacyPhoto(image, meta ?? undefined);
+	}
+	// Read the sidecar directly: edits and deletes must never be judged
+	// against the short-lived listing cache.
 	const meta = await readMeta(id);
-	return legacyPhoto(image, meta ?? undefined);
+	return meta ? toPhoto(meta) : null;
 }
 
 export async function readMeta(id: string): Promise<PhotoMeta | null> {
@@ -248,8 +287,10 @@ export async function readMeta(id: string): Promise<PhotoMeta | null> {
 }
 
 export async function writeMeta(meta: PhotoMeta): Promise<void> {
+	const header = encodeMetaHeader(meta);
 	await env.DATA.put(`${META_PREFIX}${meta.id}.json`, JSON.stringify(meta), {
 		httpMetadata: { contentType: "application/json" },
+		...(header ? { customMetadata: { meta: header } } : {}),
 	});
 	invalidatePhotoCache();
 }
@@ -313,13 +354,16 @@ export async function createPhoto(input: {
 export async function deletePhoto(id: string): Promise<boolean> {
 	if (legacyName(id)) return false;
 	const base = `${MEDIA_PREFIX}${id}`;
+	// The sidecar is the source of truth for the listing, so remove it first.
+	// If an image delete then fails we leave a few unreferenced bytes behind
+	// instead of a tile whose photos have vanished.
+	await env.DATA.delete(`${META_PREFIX}${id}.json`);
+	invalidatePhotoCache();
 	await Promise.all([
 		env.DATA.delete(`${base}/original`),
 		env.DATA.delete(`${base}/display.jpg`),
 		env.DATA.delete(`${base}/thumb.jpg`),
-		env.DATA.delete(`${META_PREFIX}${id}.json`),
 	]);
-	invalidatePhotoCache();
 	return true;
 }
 
@@ -388,6 +432,7 @@ export async function getLegacyImage(hash: string, download = false) {
 	}
 	headers.set("ETag", object.httpEtag);
 	headers.set("X-Robots-Tag", "noindex, nofollow");
+	headers.set("X-Content-Type-Options", "nosniff");
 	if (download)
 		headers.set(
 			"Content-Disposition",
@@ -398,18 +443,4 @@ export async function getLegacyImage(hash: string, download = false) {
 
 export async function listLegacyForApi(): Promise<LegacyImage[]> {
 	return listLegacyImages();
-}
-
-/** A tidy, human file name for downloads. */
-export function downloadName(photo: AddyPhoto): string {
-	const date = (photo.takenAt ?? photo.createdAt).slice(0, 10);
-	const place = (photo.place ?? "memory")
-		.toLowerCase()
-		.replace(/[^a-z0-9]+/g, "-")
-		.replace(/^-|-$/g, "")
-		.slice(0, 40);
-	const rawExtension =
-		photo.originalName?.split(".").pop()?.toLowerCase() ?? "jpg";
-	const extension = /^[a-z0-9]{2,5}$/.test(rawExtension) ? rawExtension : "jpg";
-	return `${date}-${place || "memory"}-${photo.id.slice(-6)}.${extension}`;
 }

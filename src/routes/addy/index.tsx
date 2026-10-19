@@ -78,6 +78,22 @@ export default function Page() {
 	} | null>(null);
 	const [now] = createDateNow(60_000);
 
+	const readDarkroom = () => {
+		try {
+			return window.localStorage.getItem("addy-darkroom") === "1";
+		} catch {
+			// Storage can be blocked (private mode, partitioned third parties).
+			return false;
+		}
+	};
+	const writeDarkroom = (value: boolean) => {
+		try {
+			window.localStorage.setItem("addy-darkroom", value ? "1" : "0");
+		} catch {
+			// The theme just won't stick between visits.
+		}
+	};
+
 	let toastTimer: number | undefined;
 	const say = (message: string) => {
 		setToast(message);
@@ -102,7 +118,7 @@ export default function Page() {
 	onSettled(() => {
 		if (typeof window === "undefined") return;
 		setMounted(true);
-		setDarkroom(window.localStorage.getItem("addy-darkroom") === "1");
+		setDarkroom(readDarkroom());
 		setView(viewFromHash());
 		const onHash = () => setView(viewFromHash());
 		window.addEventListener("hashchange", onHash);
@@ -120,7 +136,7 @@ export default function Page() {
 
 	const setDark = (value: boolean) => {
 		setDarkroom(value);
-		window.localStorage.setItem("addy-darkroom", value ? "1" : "0");
+		writeDarkroom(value);
 	};
 
 	const allPhotos = () => sortedNewest(photos() ?? []);

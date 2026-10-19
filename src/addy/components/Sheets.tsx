@@ -15,6 +15,7 @@ import {
 	removePhoto,
 	uploadPhoto,
 } from "../client";
+import { lockBodyScroll } from "../scroll-lock";
 import type { AddyPhoto } from "../store";
 import { Icon } from "./Icons";
 
@@ -43,11 +44,10 @@ function Sheet(
 			if (event.key === "Escape") props.onClose();
 		};
 		document.addEventListener("keydown", onKey);
-		const previous = document.body.style.overflow;
-		document.body.style.overflow = "hidden";
+		const unlock = lockBodyScroll();
 		onCleanup(() => {
 			document.removeEventListener("keydown", onKey);
-			document.body.style.overflow = previous;
+			unlock();
 		});
 	});
 
@@ -171,6 +171,7 @@ export function UploadSheet(props: {
 	const [busy, setBusy] = createSignal(false);
 	const [error, setError] = createSignal<string | null>(null);
 	let fileInput: HTMLInputElement | undefined;
+	let disposed = false;
 
 	const update = (key: string, patch: Partial<UploadItem>) => {
 		setItems((current) =>
@@ -194,6 +195,10 @@ export function UploadSheet(props: {
 			]);
 			void preparePhoto(file)
 				.then((prepared) => {
+					if (disposed) {
+						URL.revokeObjectURL(prepared.previewUrl);
+						return;
+					}
 					const fallback = new Date(file.lastModified || Date.now());
 					update(key, {
 						status: "ready",
@@ -204,12 +209,14 @@ export function UploadSheet(props: {
 					});
 				})
 				.catch((problem) => {
+					if (disposed) return;
 					update(key, { status: "error", error: message(problem) });
 				});
 		}
 	};
 
 	onCleanup(() => {
+		disposed = true;
 		for (const item of items())
 			if (item.preview) URL.revokeObjectURL(item.preview);
 	});

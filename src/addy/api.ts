@@ -64,6 +64,15 @@ function cleanText(value: unknown, max: number): string {
 	return value.trim().slice(0, max);
 }
 
+/** A path segment is only useful to us if it decodes to something sane. */
+function decodeSegment(value: string): string | null {
+	try {
+		return decodeURIComponent(value);
+	} catch {
+		return null;
+	}
+}
+
 function cleanDate(value: unknown): string | null {
 	if (typeof value !== "string" || value.trim() === "") return null;
 	const text = value.trim();
@@ -164,7 +173,9 @@ export async function handleAddyApi(
 			});
 
 		if (path === "photos" && method === "GET") {
-			const photos = await listPhotos();
+			// Signed-in visitors get an authoritative list so a photo that was
+			// just uploaded (on another isolate) is never missing after a refresh.
+			const photos = await listPhotos(authenticated);
 			return json({ photos, configured: uploadsConfigured() });
 		}
 
@@ -221,9 +232,17 @@ export async function handleAddyApi(
 			if (!place && lat !== null && lng !== null)
 				place = await reverseGeocode(lat, lng);
 
+			const takenAt = cleanDate(meta.takenAt);
+			if (
+				takenAt === null &&
+				typeof meta.takenAt === "string" &&
+				meta.takenAt.trim() !== ""
+			)
+				return fail("That date doesn't look right.");
+
 			const photo = await createPhoto({
 				caption: cleanText(meta.caption, MAX_CAPTION),
-				takenAt: cleanDate(meta.takenAt),
+				takenAt,
 				lat,
 				lng,
 				place,
@@ -240,8 +259,8 @@ export async function handleAddyApi(
 
 		if (path.startsWith("photos/") && method === "PATCH") {
 			if (!authenticated) return fail("Log in first.", 401);
-			const id = decodeURIComponent(path.slice("photos/".length));
-			if (!isPhotoId(id)) return fail("Unknown photo.", 404);
+			const id = decodeSegment(path.slice("photos/".length));
+			if (id === null || !isPhotoId(id)) return fail("Unknown photo.", 404);
 			const existing = await getPhoto(id);
 			if (!existing) return fail("Unknown photo.", 404);
 			const data = await body(request);
@@ -297,7 +316,10 @@ export async function handleAddyApi(
 				meta.lat !== null &&
 				meta.lng !== null
 			) {
-				meta.place = await reverseGeocode(meta.lat, meta.lng);
+				// Keep the name we already had if the lookup can't answer, rather
+				// than wiping it on a Nominatim hiccup.
+				const name = await reverseGeocode(meta.lat, meta.lng);
+				if (name) meta.place = name;
 			}
 
 			await writeMeta(meta);
@@ -307,8 +329,8 @@ export async function handleAddyApi(
 
 		if (path.startsWith("photos/") && method === "DELETE") {
 			if (!authenticated) return fail("Log in first.", 401);
-			const id = decodeURIComponent(path.slice("photos/".length));
-			if (!isPhotoId(id)) return fail("Unknown photo.", 404);
+			const id = decodeSegment(path.slice("photos/".length));
+			if (id === null || !isPhotoId(id)) return fail("Unknown photo.", 404);
 			if (legacyName(id))
 				return fail("The first-roll photos are kept safe.", 409);
 			const removed = await deletePhoto(id);

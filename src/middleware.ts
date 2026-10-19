@@ -24,7 +24,7 @@ export default async function middleware(
 			},
 		});
 	if (
-		request.method === "GET" &&
+		(request.method === "GET" || request.method === "HEAD") &&
 		(url.pathname.startsWith("/addy/imgs/") ||
 			url.pathname.startsWith("/addy/photos/"))
 	)
