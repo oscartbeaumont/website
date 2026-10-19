@@ -3,6 +3,7 @@
 	"version": "5.0.0",
 	"private": true,
 	"type": "module",
+	"packageManager": "pnpm@10.11.1",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "wrangler types --cwd src && node node_modules/typescript/bin/tsc -b && tsx src/generate-og.tsx && vite build",
