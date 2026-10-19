@@ -13,7 +13,13 @@ export function Hero(props: {
 	onOpen: (photo: AddyPhoto) => void;
 	canUpload: boolean;
 }) {
-	const featured = () => props.photos.slice(0, 3);
+	const featured = () => {
+		// The original first roll is still full-size PNGs. Until there are proper
+		// uploads, show one large print instead of loading three of them at once.
+		if (props.photos.length > 0 && props.photos.every((photo) => photo.legacy))
+			return props.photos.slice(0, 1);
+		return props.photos.slice(0, 3);
+	};
 	const positions = [2, 1, 3];
 
 	return (

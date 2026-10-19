@@ -32,7 +32,7 @@ function PhotoCard(props: {
 					alt={photo().caption || "A memory of us"}
 					width={photo().width ?? undefined}
 					height={photo().height ?? undefined}
-					loading={props.item.order < 6 ? "eager" : "lazy"}
+					loading={!photo().legacy && props.item.order < 6 ? "eager" : "lazy"}
 					decoding="async"
 					style={{
 						"aspect-ratio":
