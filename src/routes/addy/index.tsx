@@ -11,6 +11,7 @@ import {
 import "@fontsource-variable/fraunces";
 import "@fontsource/lora/400.css";
 import "@fontsource/lora/500.css";
+import "@fontsource/caveat/400.css";
 import "@fontsource/caveat/500.css";
 import "./addy.css";
 import {
@@ -181,6 +182,8 @@ export default function Page() {
 
 	const closeViewer = (viaHistory = false) => {
 		if (!viewer()) return;
+		// The edit sheet can be sitting on top of the viewer; close both.
+		setEditing(null);
 		const pop =
 			!viaHistory &&
 			typeof window !== "undefined" &&
