@@ -7,9 +7,32 @@ import AutoImport from "unplugin-auto-import/vite";
 import IconsResolver from "unplugin-icons/resolver";
 import Icons from "unplugin-icons/vite";
 import { defineConfig } from "vite";
-import { headersPlugin } from "./src/vite-plugin-headers";
+import { headersPlugin } from "./src/vite-plugin-headers.ts";
+
+// Route modules are only reachable through the `virtual:file-routes` module,
+// so Vite's dependency scanner never sees their imports. When a dependency is
+// first discovered while a request is rendering, Vite re-optimizes and reloads
+// mid-render, leaving that request with two copies of `solid-js` (and therefore
+// no reactive owner, which breaks every `useContext` call). Pre-bundle
+// everything the route modules import so the optimizer never runs late.
+const routeDependencies = [
+	"@solidjs/meta",
+	"@solidjs/router",
+	"@solidjs/router/fs",
+	"clsx",
+	"html2canvas",
+	"jspdf",
+	"parse-duration",
+	"solid-js",
+];
 
 export default defineConfig({
+	optimizeDeps: { include: routeDependencies },
+	environments: {
+		ssr: {
+			optimizeDeps: { include: routeDependencies },
+		},
+	},
 	plugins: [
 		solid({
 			start: { middleware: "./src/middleware.ts" },
