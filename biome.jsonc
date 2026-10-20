@@ -6,7 +6,7 @@
 		"useIgnoreFile": true
 	},
 	"files": {
-		"includes": ["**", "!src/worker-configuration.d.ts"],
+		"includes": ["**", "!.cloudflare/**"],
 		"ignoreUnknown": false
 	},
 	"formatter": {
