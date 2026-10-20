@@ -14,6 +14,7 @@ import IconLogosEffectIcon from "~icons/logos/effect-icon";
 
 import imageUrl from "../../assets/logo.jpeg";
 import mattraxLogoUrl from "../../assets/matrax-logo.png";
+import osdriveLogoUrl from "../../assets/osdrive-logo.png";
 import shellBuildLogoUrl from "../../assets/shellbuild-logo.png";
 import spectaLogoUrl from "../../assets/specta-logo.png";
 import spotistatsLogoUrl from "../../assets/spotistats-logo.png";
@@ -259,6 +260,24 @@ const WorkingOn = () => (
           </div>
         }
       />
+      {/*<ProjectPanel
+				name="OSDrive"
+				description="Cloud storage that mounts natively in Finder and Explorer"
+				href="https://osdrive.app"
+				logo={osdriveLogoUrl}
+				logoProps="dark:invert"
+				right={
+					<div class="flex space-x-4">
+						<a
+							href="https://github.com/osdrive"
+							target="_blank"
+							rel="noopener"
+						>
+							<IconLogosGithubIcon class="brightness-0 dark:invert hover:brightness-100 dark:hover:invert-0 w-5 h-5 transition-colors duration-300 ease-in-out" />
+						</a>
+					</div>
+				}
+			/>*/}
     </div>
 
     <div class="mt-5 sm:ml-6 pt-4 border-t border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-y-2 sm:gap-x-4">
