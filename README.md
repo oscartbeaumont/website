@@ -10,3 +10,11 @@ cd website
 pnpm i
 pnpm dev
 ```
+
+## Deploying
+
+The site is deployed to Cloudflare Workers with the [Cloudflare CLI](https://developers.cloudflare.com/cf/). Worker configuration lives in `cloudflare.config.ts`.
+
+```bash
+pnpm deploy
+```
