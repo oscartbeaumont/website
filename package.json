@@ -26,6 +26,7 @@
 		"fflate": "^0.8.3",
 		"html2canvas": "npm:html2canvas-pro@^2.4.4",
 		"jspdf": "^4.2.1",
+		"maplibre-gl": "^6.15.0",
 		"parse-duration": "^2.1.9",
 		"posthog-js": "^1.434.15",
 		"solid-js": "2.0.0-rc.10"
@@ -43,6 +44,7 @@
 		"@solidjs/vite-plugin": "3.0.0-next.46",
 		"@tailwindcss/vite": "^4.3.3",
 		"@takumi-rs/image-response": "^2.14.0",
+		"@types/geojson": "^7946.0.16",
 		"@types/node": "^26.6.3",
 		"@types/react": "^19.3.0",
 		"cf": "1.0.0-beta.18",

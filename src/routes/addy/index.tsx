@@ -46,6 +46,9 @@ export const route = defineFileRoute("/addy", {});
 
 type View = "gallery" | "timeline" | "places";
 type Viewer = { list: AddyPhoto[]; index: number };
+type LoginIntent = "view" | "upload";
+
+const COVER_URL = "/assets/addy-cover-portrait.jpg";
 
 function viewFromHash(): View {
 	if (typeof window === "undefined") return "gallery";
@@ -61,38 +64,24 @@ export default function Page() {
 	const [photos, setPhotos] = createSignal<AddyPhoto[] | null>(null);
 	const [session, setSession] = createSignal<SessionState>({
 		authenticated: false,
-		configured: false,
+		// The album is private in production, so the server-rendered page starts
+		// locked. The session check below opens it up for a signed-in visitor.
+		configured: true,
 	});
 	const [view, setView] = createSignal<View>("gallery");
 	const [viewer, setViewer] = createSignal<Viewer | null>(null);
 	const [loginOpen, setLoginOpen] = createSignal(false);
+	const [loginIntent, setLoginIntent] = createSignal<LoginIntent>("view");
 	const [uploadOpen, setUploadOpen] = createSignal(false);
 	const [editing, setEditing] = createSignal<AddyPhoto | null>(null);
 	const [toast, setToast] = createSignal<string | null>(null);
 	const [loadError, setLoadError] = createSignal<string | null>(null);
 	const [mounted, setMounted] = createSignal(false);
-	const [darkroom, setDarkroom] = createSignal(false);
 	const [progress, setProgress] = createSignal<{
 		done: number;
 		total: number;
 	} | null>(null);
 	const [now] = createDateNow(60_000);
-
-	const readDarkroom = () => {
-		try {
-			return window.localStorage.getItem("addy-darkroom") === "1";
-		} catch {
-			// Storage can be blocked (private mode, partitioned third parties).
-			return false;
-		}
-	};
-	const writeDarkroom = (value: boolean) => {
-		try {
-			window.localStorage.setItem("addy-darkroom", value ? "1" : "0");
-		} catch {
-			// The theme just won't stick between visits.
-		}
-	};
 
 	let toastTimer: number | undefined;
 	const say = (message: string) => {
@@ -100,6 +89,9 @@ export default function Page() {
 		if (toastTimer) window.clearTimeout(toastTimer);
 		toastTimer = window.setTimeout(() => setToast(null), 4200);
 	};
+
+	const authenticated = () => session().authenticated;
+	const locked = () => session().configured && !session().authenticated;
 
 	const refresh = async () => {
 		try {
@@ -118,29 +110,27 @@ export default function Page() {
 	onSettled(() => {
 		if (typeof window === "undefined") return;
 		setMounted(true);
-		setDarkroom(readDarkroom());
 		setView(viewFromHash());
 		const onHash = () => setView(viewFromHash());
 		const onPop = () => closeViewer(true);
 		window.addEventListener("hashchange", onHash);
 		window.addEventListener("popstate", onPop);
-		void refresh();
+		// Ask who we are first: the photos endpoint only returns the album to a
+		// signed-in visitor, and logged-out visitors only get the cover.
 		void fetchSession()
-			.then(setSession)
+			.then((state) => {
+				setSession(state);
+			})
 			.catch(() => {
-				// The page works without a session; uploads just stay locked.
-			});
+				// Without a session the cover still renders; the album stays shut.
+			})
+			.finally(() => void refresh());
 		return () => {
 			window.removeEventListener("hashchange", onHash);
 			window.removeEventListener("popstate", onPop);
 			if (toastTimer) window.clearTimeout(toastTimer);
 		};
 	});
-
-	const setDark = (value: boolean) => {
-		setDarkroom(value);
-		writeDarkroom(value);
-	};
 
 	const allPhotos = () => sortedNewest(photos() ?? []);
 	const loading = () => photos() === null;
@@ -201,13 +191,22 @@ export default function Page() {
 		openPhoto(list[Math.floor(Math.random() * list.length)], list);
 	};
 
+	const requestLogin = (intent: LoginIntent = "view") => {
+		if (!session().configured) {
+			say("The album isn't switched on yet. It needs ADDY_PASSWORD.");
+			return;
+		}
+		setLoginIntent(intent);
+		setLoginOpen(true);
+	};
+
 	const requestUpload = () => {
 		if (!session().configured) {
 			say("Uploads aren't switched on yet. They need ADDY_PASSWORD.");
 			return;
 		}
 		if (!session().authenticated) {
-			setLoginOpen(true);
+			requestLogin("upload");
 			return;
 		}
 		setUploadOpen(true);
@@ -275,19 +274,19 @@ export default function Page() {
 		try {
 			await logout();
 			setSession((current) => ({ ...current, authenticated: false }));
+			setPhotos([]);
+			setViewer(null);
 			say("Signed out.");
 		} catch (error) {
 			say(errorText(error));
 		}
 	};
 
-	const toggleDarkroom = () => setDark(!darkroom());
-
 	return (
-		<div class="addy" data-darkroom={darkroom() ? "true" : undefined}>
+		<div class={["addy", { "addy-locked": locked() }]}>
 			<Title>A really cute model</Title>
 			<Meta name="robots" content="noindex" />
-			<Meta name="theme-color" content={darkroom() ? "#15110d" : "#f7f1e5"} />
+			<Meta name="theme-color" content="#f7f1e5" />
 			<Meta
 				name="description"
 				content="A small photo album for Addy and Oscar. The good bits, in the order they happened."
@@ -295,7 +294,7 @@ export default function Page() {
 
 			<div class="grain" aria-hidden="true" />
 
-			<header class="topbar">
+			<header class={["topbar", { "topbar-locked": locked() }]}>
 				<div class="topbar-inner">
 					<button
 						type="button"
@@ -306,61 +305,53 @@ export default function Page() {
 						A<span>&amp;</span>O
 					</button>
 
-					<nav class="tabs" aria-label="Ways to see the photos">
-						<button
-							type="button"
-							class={["tab", { active: view() === "gallery" }]}
-							aria-current={view() === "gallery" ? "page" : undefined}
-							onClick={() => selectView("gallery")}
-						>
-							Gallery
-						</button>
-						<button
-							type="button"
-							class={["tab", { active: view() === "timeline" }]}
-							aria-current={view() === "timeline" ? "page" : undefined}
-							onClick={() => selectView("timeline")}
-						>
-							Timeline
-						</button>
-						<button
-							type="button"
-							class={["tab", { active: view() === "places" }]}
-							aria-current={view() === "places" ? "page" : undefined}
-							onClick={() => selectView("places")}
-						>
-							Places
-						</button>
-					</nav>
+					<Show when={authenticated()}>
+						<nav class="tabs" aria-label="Ways to see the photos">
+							<button
+								type="button"
+								class={["tab", { active: view() === "gallery" }]}
+								aria-current={view() === "gallery" ? "page" : undefined}
+								onClick={() => selectView("gallery")}
+							>
+								Gallery
+							</button>
+							<button
+								type="button"
+								class={["tab", { active: view() === "timeline" }]}
+								aria-current={view() === "timeline" ? "page" : undefined}
+								onClick={() => selectView("timeline")}
+							>
+								Timeline
+							</button>
+							<button
+								type="button"
+								class={["tab", { active: view() === "places" }]}
+								aria-current={view() === "places" ? "page" : undefined}
+								onClick={() => selectView("places")}
+							>
+								Places
+							</button>
+						</nav>
+					</Show>
 
 					<div class="top-actions">
-						<button
-							type="button"
-							class="icon-button"
-							onClick={toggleDarkroom}
-							aria-label={darkroom() ? "Turn the lights on" : "Dim the lights"}
-							title={darkroom() ? "Turn the lights on" : "Dim the lights"}
-						>
-							<Icon name={darkroom() ? "sun" : "moon"} size={18} />
-						</button>
-						<button
-							type="button"
-							class="icon-button"
-							onClick={downloadAll}
-							aria-label="Download the whole album"
-							title="Download the whole album"
-							disabled={progress() !== null}
-						>
-							<Icon name="download" size={18} />
-						</button>
-						<Show when={session().configured}>
+						<Show when={authenticated()}>
 							<button
 								type="button"
 								class="button solid small"
 								onClick={requestUpload}
 							>
 								<Icon name="upload" size={15} />
-								<span>{session().authenticated ? "Upload" : "Log in"}</span>
+								<span>Upload</span>
+							</button>
+						</Show>
+						<Show when={!authenticated() && session().configured}>
+							<button
+								type="button"
+								class="login-link"
+								onClick={() => requestLogin()}
+							>
+								Log in
 							</button>
 						</Show>
 					</div>
@@ -376,8 +367,11 @@ export default function Page() {
 					onShuffle={openRandom}
 					onTimeline={() => selectView("timeline")}
 					onUpload={requestUpload}
+					onLogin={() => requestLogin()}
 					onOpen={(photo) => openPhoto(photo, allPhotos())}
 					canUpload={session().configured}
+					locked={locked()}
+					coverUrl={COVER_URL}
 				/>
 
 				<Show when={loadError()}>
@@ -398,74 +392,107 @@ export default function Page() {
 					)}
 				</Show>
 
-				<section class="photos" id="photos">
-					<Switch>
-						<Match when={view() === "gallery"}>
-							<Gallery
-								photos={allPhotos()}
-								loading={loading()}
-								onOpen={openPhoto}
-								onUpload={requestUpload}
-								canUpload={session().configured}
-							/>
-						</Match>
-						<Match when={view() === "timeline"}>
-							<Timeline
-								photos={allPhotos()}
-								loading={loading()}
-								onOpen={openPhoto}
-								onUpload={requestUpload}
-								canUpload={session().configured}
-							/>
-						</Match>
-						<Match when={view() === "places"}>
-							<Places
-								photos={allPhotos()}
-								loading={loading()}
-								onOpen={openPhoto}
-								onUpload={requestUpload}
-								canUpload={session().configured}
-							/>
-						</Match>
-					</Switch>
-				</section>
-			</main>
-
-			<footer class="footer">
-				<div>
-					<p class="footer-mark">A &amp; O</p>
-					<p>A small internet place for two people. Since 20 June 2025.</p>
-				</div>
-				<div class="footer-links">
-					<Show
-						when={session().authenticated}
-						fallback={
-							<Show when={session().configured}>
+				<Show when={authenticated()}>
+					<section class="photos" id="photos">
+						<div class="album-bar">
+							<div>
+								<p class="kicker">The private part</p>
+								<p class="album-bar-copy">
+									Everything the two of us have kept so far.
+								</p>
+							</div>
+							<div class="album-bar-actions">
 								<button
 									type="button"
-									class="link-button"
-									onClick={() => setLoginOpen(true)}
+									class="button line small"
+									onClick={requestUpload}
 								>
-									Oscar or Addy? Sign in
+									<Icon name="upload" size={15} />
+									Add photos
+								</button>
+								<button
+									type="button"
+									class="button line small"
+									onClick={downloadAll}
+									disabled={progress() !== null}
+								>
+									<Icon name="download" size={15} />
+									{progress()
+										? `Packing ${progress()?.done}/${progress()?.total}`
+										: "Download album"}
+								</button>
+							</div>
+						</div>
+
+						<Switch>
+							<Match when={view() === "gallery"}>
+								<Gallery
+									photos={allPhotos()}
+									loading={loading()}
+									onOpen={openPhoto}
+									onUpload={requestUpload}
+									canUpload={session().configured}
+								/>
+							</Match>
+							<Match when={view() === "timeline"}>
+								<Timeline
+									photos={allPhotos()}
+									loading={loading()}
+									onOpen={openPhoto}
+									onUpload={requestUpload}
+									canUpload={session().configured}
+								/>
+							</Match>
+							<Match when={view() === "places"}>
+								<Places
+									photos={allPhotos()}
+									loading={loading()}
+									onOpen={openPhoto}
+									onUpload={requestUpload}
+									canUpload={session().configured}
+								/>
+							</Match>
+						</Switch>
+					</section>
+				</Show>
+			</main>
+
+			<Show
+				when={locked()}
+				fallback={
+					<footer class="footer">
+						<div>
+							<p class="footer-mark">A &amp; O</p>
+							<p>A small internet place for two people. Since 20 June 2025.</p>
+						</div>
+						<div class="footer-links">
+							<Show
+								when={authenticated()}
+								fallback={
+									<Show when={session().configured}>
+										<button
+											type="button"
+											class="link-button"
+											onClick={() => requestLogin()}
+										>
+											Oscar or Addy? Sign in
+										</button>
+									</Show>
+								}
+							>
+								<button type="button" class="link-button" onClick={signOut}>
+									Sign out
 								</button>
 							</Show>
-						}
-					>
-						<button type="button" class="link-button" onClick={signOut}>
-							Sign out
-						</button>
-					</Show>
-					<button
-						type="button"
-						class="link-button"
-						onClick={downloadAll}
-						disabled={progress() !== null}
-					>
-						Download the whole album
-					</button>
-					<span>Made by Oscar, mostly at night.</span>
-				</div>
-			</footer>
+							<span>Made by Oscar, mostly on crack.</span>
+						</div>
+					</footer>
+				}
+			>
+				<footer class="footer footer-locked">
+					<span>Made by Oscar, mostly on crack.</span>
+				</footer>
+			</Show>
 
 			<Show when={viewer()}>
 				{(current) => (
@@ -487,9 +514,11 @@ export default function Page() {
 				<LoginSheet
 					onClose={() => setLoginOpen(false)}
 					onSuccess={() => {
+						const intent = loginIntent();
 						setSession((current) => ({ ...current, authenticated: true }));
 						setLoginOpen(false);
-						setUploadOpen(true);
+						void refresh();
+						if (intent === "upload") setUploadOpen(true);
 						say("Welcome in.");
 					}}
 				/>

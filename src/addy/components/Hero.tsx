@@ -1,8 +1,9 @@
 import { For, Show } from "solid-js";
+import { START_LABEL } from "../album";
 import type { AddyPhoto } from "../store";
 import { Icon } from "./Icons";
 
-export function Hero(props: {
+type HeroProps = {
 	photos: AddyPhoto[];
 	days: number;
 	places: number | null;
@@ -11,8 +12,58 @@ export function Hero(props: {
 	onTimeline: () => void;
 	onUpload: () => void;
 	onOpen: (photo: AddyPhoto) => void;
+	onLogin: () => void;
 	canUpload: boolean;
-}) {
+	locked: boolean;
+	coverUrl: string;
+};
+
+export function Hero(props: HeroProps) {
+	return (
+		<Show when={props.locked} fallback={<UnlockedHero {...props} />}>
+			<DateStampHero {...props} />
+		</Show>
+	);
+}
+
+/**
+ * The signed-out page. One photo, the date it started, the days since, and
+ * one way in. Everything else is hidden until the password is entered.
+ */
+function DateStampHero(props: HeroProps) {
+	return (
+		<section class="date-stamp" id="top">
+			<p class="ds-kicker">The day it started</p>
+			<h1 class="ds-date">{START_LABEL}</h1>
+			<div class="ds-rule" aria-hidden="true" />
+			<div class="ds-body">
+				<figure class="ds-photo">
+					<img
+						src={props.coverUrl}
+						alt="Addy and Oscar"
+						loading="eager"
+						decoding="async"
+					/>
+				</figure>
+				<div class="ds-copy">
+					<p class="ds-number">{props.days.toLocaleString("en-AU")}</p>
+					<p class="ds-days">
+						{props.days === 1 ? "day together" : "days together"}
+					</p>
+					<p class="ds-line">A private album. Just for us.</p>
+					<div class="ds-actions">
+						<button class="button solid" type="button" onClick={props.onLogin}>
+							<Icon name="lock" size={14} />
+							Sign in
+						</button>
+					</div>
+				</div>
+			</div>
+		</section>
+	);
+}
+
+function UnlockedHero(props: HeroProps) {
 	const featured = () => {
 		// The original first roll is still full-size PNGs. Until there are proper
 		// uploads, show one large print instead of loading three of them at once.

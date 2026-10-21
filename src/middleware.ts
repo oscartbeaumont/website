@@ -2,6 +2,7 @@ import { randomBytes } from "node:crypto";
 import _headers from "virtual:_headers";
 import { getRequestEvent } from "@solidjs/web";
 import { handleAddyApi } from "./addy/api";
+import { isAuthenticated, uploadsConfigured } from "./addy/auth";
 import { handleAddyImage } from "./addy/images";
 import { listLegacyForApi } from "./addy/store";
 import { handlePostHog } from "./routes/ph_4DkU/[...rest]";
@@ -16,13 +17,16 @@ export default async function middleware(
 			await handlePostHog(request, url.pathname.slice("/ph_4DkU/".length)),
 		);
 	if (url.pathname.startsWith("/addy/api/")) return handleAddyApi(request, url);
-	if (request.method === "GET" && url.pathname === "/addy/imgs.json")
+	if (request.method === "GET" && url.pathname === "/addy/imgs.json") {
+		if (uploadsConfigured() && !(await isAuthenticated(request)))
+			return new Response("Sign in first.", { status: 401 });
 		return Response.json(await listLegacyForApi(), {
 			headers: {
 				"Cache-Control": "no-store",
 				"X-Robots-Tag": "noindex, nofollow",
 			},
 		});
+	}
 	if (
 		(request.method === "GET" || request.method === "HEAD") &&
 		(url.pathname.startsWith("/addy/imgs/") ||
@@ -42,13 +46,15 @@ export default async function middleware(
 				? `script-src 'self' 'unsafe-inline'`
 				: `script-src 'strict-dynamic' 'nonce-${nonce}'`,
 			addyPage
-				? `img-src 'self' blob: data:`
+				? `img-src 'self' blob: data: https://tiles.openfreemap.org`
 				: url.pathname === "/invoicer"
 					? `img-src 'self' data:`
 					: `img-src 'self'`,
 			`style-src 'self' 'unsafe-inline'`,
 			`font-src 'self'`,
-			`connect-src 'self'`,
+			addyPage
+				? `connect-src 'self' https://tiles.openfreemap.org; worker-src 'self' blob:; child-src blob:`
+				: `connect-src 'self'`,
 		].join(";"),
 	);
 	// `/` is host-specific: the Addy domain serves the Addy page while

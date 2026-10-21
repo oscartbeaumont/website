@@ -35,6 +35,7 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
 export async function fetchPhotos(): Promise<{
 	photos: AddyPhoto[];
 	configured: boolean;
+	locked: boolean;
 }> {
 	return request("/addy/api/photos");
 }

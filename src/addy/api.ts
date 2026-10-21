@@ -173,10 +173,15 @@ export async function handleAddyApi(
 			});
 
 		if (path === "photos" && method === "GET") {
+			// The album is private. Logged-out visitors get nothing but the
+			// public cover photo, which is a static asset rather than one of
+			// these records.
+			if (uploadsConfigured() && !authenticated)
+				return json({ photos: [], configured: true, locked: true });
 			// Signed-in visitors get an authoritative list so a photo that was
 			// just uploaded (on another isolate) is never missing after a refresh.
 			const photos = await listPhotos(authenticated);
-			return json({ photos, configured: uploadsConfigured() });
+			return json({ photos, configured: uploadsConfigured(), locked: false });
 		}
 
 		if (path === "photos" && method === "POST") {

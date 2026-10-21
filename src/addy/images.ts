@@ -1,4 +1,5 @@
 import { downloadNameFor } from "./album";
+import { isAuthenticated, uploadsConfigured } from "./auth";
 import { getLegacyImage, getPhoto, getPhotoVariant } from "./store";
 
 function decodeSegment(value: string): string | null {
@@ -33,6 +34,17 @@ export async function handleAddyImage(
 	url: URL,
 ): Promise<Response> {
 	try {
+		// Every photo in the album is private. The one public picture is the
+		// cover, which is a static asset served from the built site.
+		if (uploadsConfigured() && !(await isAuthenticated(request)))
+			return new Response("Sign in to see this photo.", {
+				status: 401,
+				headers: {
+					"Cache-Control": "no-store",
+					"X-Robots-Tag": "noindex, nofollow",
+				},
+			});
+
 		if (url.pathname.startsWith("/addy/imgs/")) {
 			const hash = decodeSegment(url.pathname.slice("/addy/imgs/".length));
 			if (hash === null) return notFound();
