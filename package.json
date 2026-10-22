@@ -15,13 +15,16 @@
 	},
 	"dependencies": {
 		"@fontsource-variable/fraunces": "^5.3.0",
+		"@fontsource-variable/inter": "^5.3.0",
+		"@fontsource-variable/manrope": "^5.3.0",
 		"@fontsource-variable/raleway": "^5.3.0",
 		"@fontsource/caveat": "^5.3.0",
+		"@fontsource/ibm-plex-mono": "^5.3.0",
 		"@fontsource/lora": "^5.3.0",
 		"@iconify-json/vscode-icons": "^1.2.82",
 		"@solidjs/meta": "1.0.0-next.2",
-		"@solidjs/router": "2.0.0-next.30",
-		"@solidjs/web": "2.0.0-rc.10",
+		"@solidjs/router": "2.0.0-next.41",
+		"@solidjs/web": "2.0.0-rc.17",
 		"clsx": "^2.1.1",
 		"fflate": "^0.8.3",
 		"html2canvas": "npm:html2canvas-pro@^2.4.4",
@@ -29,7 +32,7 @@
 		"maplibre-gl": "^6.15.0",
 		"parse-duration": "^2.1.9",
 		"posthog-js": "^1.434.15",
-		"solid-js": "2.0.0-rc.10"
+		"solid-js": "2.0.0-rc.17"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.14",

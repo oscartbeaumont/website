@@ -63,7 +63,7 @@ export default async function middleware(
 	const cacheablePage =
 		request.method === "GET" &&
 		response.status === 200 &&
-		["/", "/brand", "/addy", "/invoicer"].includes(url.pathname);
+		["/", "/brand", "/addy", "/invoicer", "/resume"].includes(url.pathname);
 	response.headers.set(
 		"Cache-Control",
 		cacheablePage ? "no-cache, no-transform" : "no-store, no-transform",
@@ -77,7 +77,7 @@ export default async function middleware(
 	}
 	for (const [header, value] of Object.entries(_headers["/*"]))
 		response.headers.set(header, value);
-	const pageExists = ["/", "/brand", "/addy", "/invoicer"].includes(
+	const pageExists = ["/", "/brand", "/addy", "/invoicer", "/resume"].includes(
 		url.pathname,
 	);
 	if (!pageExists && response.status === 200)
