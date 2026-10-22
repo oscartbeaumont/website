@@ -7,17 +7,124 @@ export type PhotoExif = {
 const EMPTY: PhotoExif = { takenAt: null, lat: null, lng: null };
 
 /**
- * A small JPEG EXIF reader. We only need the date it was taken and where, so
- * this avoids shipping a full metadata library to the browser.
+ * Read the date it was taken and where, in the browser.
+ *
+ * JPEG keeps this in an APP1 EXIF block. iPhone PNG exports keep the same
+ * information in two places instead: a PNG `eXIf` chunk and an XMP packet in
+ * an `iTXt` chunk. Both are common enough that the album has to understand
+ * them, otherwise perfectly ordinary phone photos arrive with no place.
  */
 export async function readExif(file: File): Promise<PhotoExif> {
-	if (!/jpe?g/i.test(file.type) && !/\.jpe?g$/i.test(file.name)) return EMPTY;
+	const isJpeg = /jpe?g/i.test(file.type) || /\.jpe?g$/i.test(file.name);
+	const isPng = /png/i.test(file.type) || /\.png$/i.test(file.name);
+	if (!isJpeg && !isPng) return EMPTY;
 	try {
 		const buffer = await file.slice(0, 512 * 1024).arrayBuffer();
-		return parseJpeg(new DataView(buffer));
+		const view = new DataView(buffer);
+		return isPng ? parsePng(view) : parseJpeg(view);
 	} catch {
 		return EMPTY;
 	}
+}
+
+function chunkType(view: DataView, offset: number): string {
+	return (
+		String.fromCharCode(view.getUint8(offset)) +
+		String.fromCharCode(view.getUint8(offset + 1)) +
+		String.fromCharCode(view.getUint8(offset + 2)) +
+		String.fromCharCode(view.getUint8(offset + 3))
+	);
+}
+
+/** Read the PNG `eXIf` and XMP `iTXt` chunks, merging what each one knows. */
+function parsePng(view: DataView): PhotoExif {
+	if (view.byteLength < 8 || view.getUint32(0) !== 0x89504e47) return EMPTY;
+	let offset = 8;
+	let exif: PhotoExif = EMPTY;
+	let xmp = "";
+	while (offset + 12 <= view.byteLength) {
+		const length = view.getUint32(offset);
+		if (length > view.byteLength || offset + 12 + length > view.byteLength)
+			break;
+		const type = chunkType(view, offset + 4);
+		if (type === "eXIf" && length >= 8) {
+			const bytes = new Uint8Array(
+				view.buffer,
+				view.byteOffset + offset + 8,
+				length,
+			);
+			exif = parseTiff(
+				new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength),
+				0,
+			);
+		} else if (type === "iTXt") {
+			const bytes = new Uint8Array(
+				view.buffer,
+				view.byteOffset + offset + 8,
+				length,
+			);
+			const text = new TextDecoder().decode(bytes);
+			if (text.includes("XML:com.adobe.xmp")) xmp = text;
+		} else if (type === "IEND") {
+			break;
+		}
+		offset += 12 + length;
+	}
+
+	const packet = parseXmp(xmp);
+	const lat = exif.lat ?? packet.lat;
+	const lng = exif.lng ?? packet.lng;
+	return {
+		takenAt: exif.takenAt ?? packet.takenAt,
+		lat: lat !== null && lng !== null ? lat : null,
+		lng: lat !== null && lng !== null ? lng : null,
+	};
+}
+
+function xmpTag(xmp: string, name: string): string | null {
+	const match = new RegExp(`<exif:${name}>([^<]*)</exif:${name}>`).exec(xmp);
+	return match ? match[1].trim() : null;
+}
+
+function xmpCoordinate(value: string | null): number | null {
+	if (!value) return null;
+	const match =
+		/^(\d+),(\d+(?:\.\d+)?)(?:,(\d+(?:\.\d+)?))?\s*([NSEW])?$/i.exec(value);
+	if (!match) return null;
+	const [, degrees, minutes, seconds, ref] = match;
+	let number =
+		Number(degrees) +
+		Number(minutes) / 60 +
+		(seconds ? Number(seconds) / 3600 : 0);
+	if (!Number.isFinite(number)) return null;
+	if (ref && /[SW]/i.test(ref)) number = -number;
+	return number;
+}
+
+/** XMP timestamps are UTC; the album's clock is Perth (UTC+8) all year. */
+function perthTime(value: string | null): string | null {
+	if (!value) return null;
+	const date = new Date(value.endsWith("Z") ? value : `${value}Z`);
+	if (Number.isNaN(date.getTime())) return null;
+	const shifted = new Date(date.getTime() + 8 * 60 * 60 * 1000);
+	return `${shifted.toISOString().slice(0, 19)}+08:00`;
+}
+
+function parseXmp(xmp: string): PhotoExif {
+	if (!xmp) return EMPTY;
+	const lat = xmpCoordinate(xmpTag(xmp, "GPSLatitude"));
+	const lng = xmpCoordinate(xmpTag(xmp, "GPSLongitude"));
+	const date = xmpTag(xmp, "DateTimeOriginal");
+	const takenAt = date
+		? `${date.slice(0, 19).replace(" ", "T")}+08:00`
+		: perthTime(xmpTag(xmp, "GPSTimeStamp"));
+	const validLat = lat !== null && Math.abs(lat) <= 90 ? lat : null;
+	const validLng = lng !== null && Math.abs(lng) <= 180 ? lng : null;
+	return {
+		takenAt,
+		lat: validLat,
+		lng: validLat === null ? null : validLng,
+	};
 }
 
 type Entry = { tag: number; type: number; count: number; value: number };

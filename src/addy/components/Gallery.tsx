@@ -68,7 +68,6 @@ export function Gallery(props: {
 	photos: AddyPhoto[];
 	onOpen: (photo: AddyPhoto, list: AddyPhoto[]) => void;
 	onUpload: () => void;
-	canUpload: boolean;
 	loading: boolean;
 }) {
 	const [columnCount, setColumnCount] = createSignal(4);
@@ -150,16 +149,14 @@ export function Gallery(props: {
 								Add the first photo. It lands here with its date, and we can
 								argue about the caption later.
 							</p>
-							<Show when={props.canUpload}>
-								<button
-									class="button solid"
-									type="button"
-									onClick={props.onUpload}
-								>
-									<Icon name="upload" size={16} />
-									Add the first one
-								</button>
-							</Show>
+							<button
+								class="button solid"
+								type="button"
+								onClick={props.onUpload}
+							>
+								<Icon name="upload" size={16} />
+								Add the first one
+							</button>
 						</div>
 					}
 				>

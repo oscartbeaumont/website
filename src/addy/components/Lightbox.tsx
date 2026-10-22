@@ -14,6 +14,10 @@ export function Lightbox(props: {
 	onEdit: (photo: AddyPhoto) => void;
 	onDelete: (photo: AddyPhoto) => void;
 	authenticated: boolean;
+	/** The photo currently pinned to the logged-out landing page, if any. */
+	coverId: string | null;
+	onSetCover: (photo: AddyPhoto) => void;
+	onClearCover: () => void;
 }) {
 	const photo = createMemo(() => props.photos[props.index]);
 	const canPrev = () => props.index > 0;
@@ -144,6 +148,28 @@ export function Lightbox(props: {
 									<Icon name="pencil" size={15} />
 									Edit
 								</button>
+								<Show
+									when={props.coverId === current().id}
+									fallback={
+										<button
+											type="button"
+											class="button line light"
+											onClick={() => props.onSetCover(current())}
+										>
+											<Icon name="star" size={15} />
+											Front page
+										</button>
+									}
+								>
+									<button
+										type="button"
+										class="button line light"
+										onClick={props.onClearCover}
+									>
+										<Icon name="star" size={15} />
+										On the front page
+									</button>
+								</Show>
 								<Show when={!current().legacy}>
 									<button
 										type="button"
@@ -156,6 +182,13 @@ export function Lightbox(props: {
 								</Show>
 							</Show>
 						</div>
+
+						<Show when={props.authenticated && props.coverId === null}>
+							<p class="lb-note">
+								The front page is the one photo anyone can see without signing
+								in. Tap “Front page” to put this one on it.
+							</p>
+						</Show>
 
 						<Show when={current().legacy}>
 							<p class="lb-note">

@@ -4,12 +4,14 @@ import {
 	isAuthenticated,
 	isSameOrigin,
 	loginAllowed,
+	passwordConfigured,
 	passwordMatches,
 	sessionCookie,
-	uploadsConfigured,
 } from "./auth";
-import { reverseGeocode } from "./geocode";
+import { readExif } from "./exif";
+import { forwardGeocode, reverseGeocode } from "./geocode";
 import {
+	clearCover,
 	createPhoto,
 	deletePhoto,
 	getPhoto,
@@ -17,7 +19,9 @@ import {
 	legacyName,
 	listPhotos,
 	type PhotoMeta,
+	pinnedCoverSource,
 	readMeta,
+	setCoverFromPhoto,
 	writeMeta,
 } from "./store";
 
@@ -138,16 +142,12 @@ export async function handleAddyApi(
 		return fail("Cross-site request blocked.", 403);
 
 	try {
-		if (path === "session" && method === "GET")
-			return json({
-				authenticated,
-				configured: uploadsConfigured(),
-			});
+		if (path === "session" && method === "GET") return json({ authenticated });
 
 		if (path === "session" && method === "POST") {
-			if (!uploadsConfigured())
+			if (!passwordConfigured())
 				return fail(
-					"Uploads aren't configured yet. Set ADDY_PASSWORD to turn them on.",
+					"The album isn't switched on. Set ADDY_PASSWORD and try again.",
 					503,
 				);
 			const ip =
@@ -161,8 +161,9 @@ export async function handleAddyApi(
 			if (!(await passwordMatches(password)))
 				return fail("That's not it. Try again?", 401);
 			const token = await createSessionToken();
-			if (!token) return fail("Uploads aren't configured yet.", 503);
-			return json({ authenticated: true, configured: true }, 200, {
+			if (!token)
+				return fail("The album isn't switched on. Set ADDY_PASSWORD.", 503);
+			return json({ authenticated: true }, 200, {
 				"Set-Cookie": sessionCookie(token, url.protocol === "https:"),
 			});
 		}
@@ -173,10 +174,35 @@ export async function handleAddyApi(
 			});
 
 		if (path === "photos" && method === "GET") {
+			// The album is private. A logged-out visitor gets nothing but the
+			// single cover photo, which has its own public endpoint — not even
+			// which photo is on the front page, since that is the id needed to
+			// fetch it.
+			if (!authenticated)
+				return json({ photos: [], locked: true, coverId: null });
 			// Signed-in visitors get an authoritative list so a photo that was
 			// just uploaded (on another isolate) is never missing after a refresh.
-			const photos = await listPhotos(authenticated);
-			return json({ photos, configured: uploadsConfigured() });
+			const photos = await listPhotos(true);
+			return json({
+				photos,
+				locked: false,
+				coverId: await pinnedCoverSource(),
+			});
+		}
+
+		if (path === "cover" && method === "POST") {
+			if (!authenticated) return fail("Log in first.", 401);
+			const data = await body(request);
+			const id = typeof data.id === "string" ? data.id : "";
+			if (!isPhotoId(id)) return fail("Unknown photo.", 404);
+			if (!(await setCoverFromPhoto(id))) return fail("Unknown photo.", 404);
+			return json({ coverId: id });
+		}
+
+		if (path === "cover" && method === "DELETE") {
+			if (!authenticated) return fail("Log in first.", 401);
+			await clearCover();
+			return json({ coverId: null });
 		}
 
 		if (path === "photos" && method === "POST") {
@@ -221,24 +247,46 @@ export async function handleAddyApi(
 			} catch {
 				// Defaults below are fine.
 			}
-			const lat = cleanCoord(meta.lat, 90);
-			const lng = cleanCoord(meta.lng, 180);
+
+			// Read the date and place straight out of the uploaded original. The
+			// browser sends what it found too, but the file is the only thing we
+			// can vouch for, so its coordinates win where the two disagree.
+			const exif = await readExif(original);
+
+			let lat = cleanCoord(exif.lat ?? meta.lat, 90);
+			let lng = cleanCoord(exif.lng ?? meta.lng, 180);
 			if (lat === undefined || lng === undefined)
 				return fail("Those coordinates don't look right.");
-			if ((lat === null) !== (lng === null))
-				return fail("A photo needs both coordinates or neither.");
+			if ((lat === null) !== (lng === null)) {
+				// Half a location is no location. Keep the photo, drop the pin.
+				lat = null;
+				lng = null;
+			}
 
+			// A typed place beats the one we would guess from the coordinates,
+			// but it is also all we have when the file carried no GPS: geocode
+			// it so the photo still lands somewhere on the map.
 			let place = cleanText(meta.place, MAX_PLACE) || null;
-			if (!place && lat !== null && lng !== null)
-				place = await reverseGeocode(lat, lng);
+			if (lat !== null && lng !== null) {
+				if (!place) place = await reverseGeocode(lat, lng);
+			} else if (place) {
+				const found = await forwardGeocode(place);
+				if (found) {
+					lat = found.lat;
+					lng = found.lng;
+				}
+			}
 
-			const takenAt = cleanDate(meta.takenAt);
+			// The upload form is prefilled from EXIF and can be edited, so what
+			// the browser sent wins; EXIF is the fallback when it sent nothing.
+			let takenAt = cleanDate(meta.takenAt);
 			if (
 				takenAt === null &&
 				typeof meta.takenAt === "string" &&
 				meta.takenAt.trim() !== ""
 			)
 				return fail("That date doesn't look right.");
+			if (takenAt === null) takenAt = cleanDate(exif.takenAt);
 
 			const photo = await createPhoto({
 				caption: cleanText(meta.caption, MAX_CAPTION),
@@ -254,7 +302,7 @@ export async function handleAddyApi(
 				display,
 				thumb,
 			});
-			return json({ photo, configured: true }, 201);
+			return json({ photo }, 201);
 		}
 
 		if (path.startsWith("photos/") && method === "PATCH") {
@@ -321,10 +369,21 @@ export async function handleAddyApi(
 				const name = await reverseGeocode(meta.lat, meta.lng);
 				if (name) meta.place = name;
 			}
+			if ("place" in data && !coordinatesChanged && meta.place) {
+				// Renaming a photo that never had a pin is the one case where a
+				// place name is the only location we have. Give it coordinates.
+				if (meta.lat === null || meta.lng === null) {
+					const found = await forwardGeocode(meta.place);
+					if (found) {
+						meta.lat = found.lat;
+						meta.lng = found.lng;
+					}
+				}
+			}
 
 			await writeMeta(meta);
 			const photo = (await getPhoto(id)) ?? existing;
-			return json({ photo, configured: true });
+			return json({ photo });
 		}
 
 		if (path.startsWith("photos/") && method === "DELETE") {
@@ -335,6 +394,9 @@ export async function handleAddyApi(
 				return fail("The first-roll photos are kept safe.", 409);
 			const removed = await deletePhoto(id);
 			if (!removed) return fail("Unknown photo.", 404);
+			// A pinned cover holds a copy of the photo, so it would otherwise
+			// outlive the photo it was copied from.
+			if ((await pinnedCoverSource()) === id) await clearCover();
 			return json({ ok: true });
 		}
 

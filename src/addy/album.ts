@@ -1,6 +1,11 @@
 import type { AddyPhoto } from "./store";
 
 export const START = new Date("2025-06-20T00:00:00+08:00");
+
+/** The start date as the lock screen writes it: day.month.year. */
+export const START_LABEL = "20.06.2025";
+/** The same date as the landing page says it out loud. */
+export const START_LONG = "Since 20 June 2025";
 const MONTHS = [
 	"January",
 	"February",

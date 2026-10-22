@@ -15,7 +15,8 @@ export type IconName =
 	| "pin"
 	| "check"
 	| "camera"
-	| "compass";
+	| "compass"
+	| "star";
 
 const paths: Record<IconName, () => JSX.Element> = {
 	"arrow-left": () => <path d="M15 5l-7 7 7 7" />,
@@ -82,6 +83,9 @@ const paths: Record<IconName, () => JSX.Element> = {
 			<circle cx="12" cy="12" r="9" />
 			<path d="M15.5 8.5l-2 5-5 2 2-5 5-2z" />
 		</>
+	),
+	star: () => (
+		<path d="M12 4l2.4 5.2 5.6.7-4.1 3.9 1 5.6-4.9-2.8-4.9 2.8 1-5.6L4 9.9l5.6-.7L12 4z" />
 	),
 };
 

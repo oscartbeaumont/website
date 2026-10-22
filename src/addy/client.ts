@@ -5,7 +5,6 @@ import type { AddyPhoto } from "./store";
 
 export type SessionState = {
 	authenticated: boolean;
-	configured: boolean;
 };
 
 async function errorMessage(response: Response): Promise<string> {
@@ -34,13 +33,26 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
 
 export async function fetchPhotos(): Promise<{
 	photos: AddyPhoto[];
-	configured: boolean;
+	locked: boolean;
+	coverId: string | null;
 }> {
 	return request("/addy/api/photos");
 }
 
 export async function fetchSession(): Promise<SessionState> {
 	return request("/addy/api/session");
+}
+
+export async function setCover(id: string): Promise<string> {
+	const data = await request<{ coverId: string }>("/addy/api/cover", {
+		method: "POST",
+		body: JSON.stringify({ id }),
+	});
+	return data.coverId;
+}
+
+export async function clearCover(): Promise<void> {
+	await request("/addy/api/cover", { method: "DELETE" });
 }
 
 export async function login(password: string): Promise<void> {

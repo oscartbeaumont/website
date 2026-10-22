@@ -4,12 +4,19 @@ export const SESSION_COOKIE = "addy_session";
 const SESSION_DAYS = 30;
 const encoder = new TextEncoder();
 
+/**
+ * The album's password, from the `ADDY_PASSWORD` secret. There is no fallback
+ * baked in: this file is in a public repository, so a default would be a
+ * password the whole internet can read. Without the secret the album stays
+ * shut, which is the only safe way to be missing one.
+ */
 function secret(): string | null {
 	const value = (env as unknown as { ADDY_PASSWORD?: string }).ADDY_PASSWORD;
 	return value && value.length > 0 ? value : null;
 }
 
-export function uploadsConfigured(): boolean {
+/** Without a password the album stays shut rather than opening itself. */
+export function passwordConfigured(): boolean {
 	return secret() !== null;
 }
 
