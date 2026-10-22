@@ -241,6 +241,12 @@
 	color: var(--ink);
 }
 
+/* A destructive quiet button keeps its colour; the generic quiet hover would
+   otherwise turn it the same ink as everything else. */
+.button.quiet.danger:hover {
+	color: #8f2f1f;
+}
+
 .button.small {
 	padding: 9px 14px;
 	font-size: 11.5px;
@@ -477,6 +483,8 @@
 	font-size: 13px;
 	line-height: 1.6;
 	color: var(--soft);
+	/* Stops the last line becoming a single word ("… Still / going."). */
+	text-wrap: pretty;
 }
 
 .split-signin {
@@ -1197,7 +1205,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: 2px;
-	padding: 0 3px 3px;
+	padding: 0 0 3px;
 }
 
 .place-name {
@@ -1855,7 +1863,13 @@
 	}
 }
 
-@media (max-width: 900px) {
+/*
+ * `960px` rather than the usual tablet breakpoint: the largest phones are
+ * ~956pt wide on their side, and a phone in landscape needs this layout (and
+ * this height-aware type) rather than the desktop one, which is sized by its
+ * content and would push the sign-in button off the screen.
+ */
+@media (max-width: 960px) {
 	.split {
 		grid-template-columns: 1fr;
 	}
@@ -1898,6 +1912,20 @@
 
 	.split-body {
 		padding: clamp(8px, 3.6dvh, 34px) 0;
+	}
+
+	/*
+	 * The landing panel has to centre itself inside a fixed-height row, and its
+	 * body is the only child with auto margins — so the body's own padding
+	 * cancels out of the centring maths. Shrinking it moves the block down by
+	 * exactly the amount the box grew shorter, which leaves the type where it
+	 * was whenever there is room to spare. At 568px there is not: this tighter
+	 * padding is the headroom that keeps the shortest phone from scrolling.
+	 * The signed-in hero is content-height rather than fixed, so it keeps the
+	 * roomier padding above.
+	 */
+	.split-locked .split-body {
+		padding: clamp(6px, 2.4dvh, 34px) 0;
 	}
 
 	.split-number {
@@ -1989,7 +2017,7 @@
 	}
 }
 
-@media (max-width: 900px) and (max-height: 520px) {
+@media (max-width: 960px) and (max-height: 520px) {
 	/*
 	 * A phone on its side wants the photo and the details next to each other,
 	 * with the photo filling the height it has. The panel's type is already
@@ -2047,7 +2075,9 @@
 	.tl-month-label {
 		justify-content: flex-start;
 		padding-left: 34px;
-		top: 64px;
+		/* The bar keeps its single-row height down to 560px, so the pill wants
+		   the same clearance from it that it gets on a desktop. */
+		top: 70px;
 	}
 
 	.tl-item {
