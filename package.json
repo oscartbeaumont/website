@@ -20,15 +20,15 @@
 		"@fontsource/lora": "^5.3.0",
 		"@iconify-json/vscode-icons": "^1.2.82",
 		"@solidjs/meta": "1.0.0-next.2",
-		"@solidjs/router": "2.0.0-next.30",
-		"@solidjs/web": "2.0.0-rc.10",
+		"@solidjs/router": "2.0.0-next.41",
+		"@solidjs/web": "2.0.0-rc.17",
 		"clsx": "^2.1.1",
 		"fflate": "^0.8.3",
 		"html2canvas": "npm:html2canvas-pro@^2.4.4",
 		"jspdf": "^4.2.1",
 		"parse-duration": "^2.1.9",
 		"posthog-js": "^1.434.15",
-		"solid-js": "2.0.0-rc.10"
+		"solid-js": "2.0.0-rc.17"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.14",
