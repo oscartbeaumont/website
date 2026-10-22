@@ -1,5 +1,6 @@
 import { Meta, Title } from "@solidjs/meta";
 import { defineFileRoute } from "@solidjs/router/fs";
+import { getRequestEvent } from "@solidjs/web";
 import {
 	createMemo,
 	createSignal,
@@ -21,12 +22,14 @@ import {
 	sortedNewest,
 } from "../../addy/album";
 import {
+	clearCover,
 	downloadAlbum,
 	fetchPhotos,
 	fetchSession,
 	logout,
 	removePhoto,
 	type SessionState,
+	setCover,
 } from "../../addy/client";
 import { Gallery } from "../../addy/components/Gallery";
 import { Hero } from "../../addy/components/Hero";
@@ -48,7 +51,7 @@ type View = "gallery" | "timeline" | "places";
 type Viewer = { list: AddyPhoto[]; index: number };
 type LoginIntent = "view" | "upload";
 
-const COVER_URL = "/assets/addy-cover-portrait.jpg";
+const COVER_URL = "/addy/cover";
 
 function viewFromHash(): View {
 	if (typeof window === "undefined") return "gallery";
@@ -60,14 +63,31 @@ function errorText(error: unknown): string {
 	return error instanceof Error ? error.message : "Something went wrong.";
 }
 
+/**
+ * The auth state has to be identical on both sides of hydration, or Solid
+ * tears the server-rendered page down and rebuilds it (and the reactive system
+ * halts). The server knows the answer from the request; the client reads the
+ * marker the server wrote into the page, so both start from the same value.
+ * After that the session check in `onSettled` keeps it honest.
+ */
+function initialSession(): SessionState {
+	if (typeof document === "undefined") {
+		try {
+			return {
+				authenticated: getRequestEvent()?.locals.addyAuthenticated === true,
+			};
+		} catch {
+			return { authenticated: false };
+		}
+	}
+	const marker = document.querySelector("[data-addy-session]");
+	return { authenticated: marker?.getAttribute("data-addy-session") === "in" };
+}
+
 export default function Page() {
 	const [photos, setPhotos] = createSignal<AddyPhoto[] | null>(null);
-	const [session, setSession] = createSignal<SessionState>({
-		authenticated: false,
-		// The album is private in production, so the server-rendered page starts
-		// locked. The session check below opens it up for a signed-in visitor.
-		configured: true,
-	});
+	const [session, setSession] = createSignal<SessionState>(initialSession());
+	const [coverId, setCoverId] = createSignal<string | null>(null);
 	const [view, setView] = createSignal<View>("gallery");
 	const [viewer, setViewer] = createSignal<Viewer | null>(null);
 	const [loginOpen, setLoginOpen] = createSignal(false);
@@ -91,17 +111,14 @@ export default function Page() {
 	};
 
 	const authenticated = () => session().authenticated;
-	const locked = () => session().configured && !session().authenticated;
+	const locked = () => !session().authenticated;
 
 	const refresh = async () => {
 		try {
 			const data = await fetchPhotos();
 			setPhotos(data.photos);
+			setCoverId(data.coverId);
 			setLoadError(null);
-			setSession((current) => ({
-				...current,
-				configured: data.configured,
-			}));
 		} catch (error) {
 			setLoadError(errorText(error));
 		}
@@ -116,13 +133,13 @@ export default function Page() {
 		window.addEventListener("hashchange", onHash);
 		window.addEventListener("popstate", onPop);
 		// Ask who we are first: the photos endpoint only returns the album to a
-		// signed-in visitor, and logged-out visitors only get the cover.
+		// signed-in visitor.
 		void fetchSession()
 			.then((state) => {
 				setSession(state);
 			})
 			.catch(() => {
-				// Without a session the cover still renders; the album stays shut.
+				// Stay locked. The landing page renders either way.
 			})
 			.finally(() => void refresh());
 		return () => {
@@ -192,20 +209,12 @@ export default function Page() {
 	};
 
 	const requestLogin = (intent: LoginIntent = "view") => {
-		if (!session().configured) {
-			say("The album isn't switched on yet. It needs ADDY_PASSWORD.");
-			return;
-		}
 		setLoginIntent(intent);
 		setLoginOpen(true);
 	};
 
 	const requestUpload = () => {
-		if (!session().configured) {
-			say("Uploads aren't switched on yet. They need ADDY_PASSWORD.");
-			return;
-		}
-		if (!session().authenticated) {
+		if (!authenticated()) {
 			requestLogin("upload");
 			return;
 		}
@@ -232,6 +241,7 @@ export default function Page() {
 
 	const dropPhoto = (id: string) => {
 		setPhotos((current) => current?.filter((entry) => entry.id !== id) ?? null);
+		if (coverId() === id) setCoverId(null);
 		closeViewer();
 	};
 
@@ -241,6 +251,26 @@ export default function Page() {
 			await removePhoto(photo.id);
 			dropPhoto(photo.id);
 			say("Photo deleted.");
+		} catch (error) {
+			say(errorText(error));
+		}
+	};
+
+	const pinCover = async (photo: AddyPhoto) => {
+		try {
+			const id = await setCover(photo.id);
+			setCoverId(id);
+			say("That one is on the front page now.");
+		} catch (error) {
+			say(errorText(error));
+		}
+	};
+
+	const unpinCover = async () => {
+		try {
+			await clearCover();
+			setCoverId(null);
+			say("Back to showing the newest photo.");
 		} catch (error) {
 			say(errorText(error));
 		}
@@ -273,8 +303,9 @@ export default function Page() {
 	const signOut = async () => {
 		try {
 			await logout();
-			setSession((current) => ({ ...current, authenticated: false }));
+			setSession({ authenticated: false });
 			setPhotos([]);
+			setCoverId(null);
 			setViewer(null);
 			say("Signed out.");
 		} catch (error) {
@@ -283,7 +314,10 @@ export default function Page() {
 	};
 
 	return (
-		<div class={["addy", { "addy-locked": locked() }]}>
+		<div
+			class={["addy", { "addy-locked": locked() }]}
+			data-addy-session={authenticated() ? "in" : "out"}
+		>
 			<Title>A really cute model</Title>
 			<Meta name="robots" content="noindex" />
 			<Meta name="theme-color" content="#f7f1e5" />
@@ -294,18 +328,18 @@ export default function Page() {
 
 			<div class="grain" aria-hidden="true" />
 
-			<header class={["topbar", { "topbar-locked": locked() }]}>
-				<div class="topbar-inner">
-					<button
-						type="button"
-						class="wordmark"
-						onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-						aria-label="Back to the top"
-					>
-						A<span>&amp;</span>O
-					</button>
+			<Show when={authenticated()}>
+				<header class="topbar">
+					<div class="topbar-inner">
+						<button
+							type="button"
+							class="wordmark"
+							onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+							aria-label="Back to the top"
+						>
+							A<span>&amp;</span>O
+						</button>
 
-					<Show when={authenticated()}>
 						<nav class="tabs" aria-label="Ways to see the photos">
 							<button
 								type="button"
@@ -332,10 +366,8 @@ export default function Page() {
 								Places
 							</button>
 						</nav>
-					</Show>
 
-					<div class="top-actions">
-						<Show when={authenticated()}>
+						<div class="top-actions">
 							<button
 								type="button"
 								class="button solid small"
@@ -344,19 +376,10 @@ export default function Page() {
 								<Icon name="upload" size={15} />
 								<span>Upload</span>
 							</button>
-						</Show>
-						<Show when={!authenticated() && session().configured}>
-							<button
-								type="button"
-								class="login-link"
-								onClick={() => requestLogin()}
-							>
-								Log in
-							</button>
-						</Show>
+						</div>
 					</div>
-				</div>
-			</header>
+				</header>
+			</Show>
 
 			<main>
 				<Hero
@@ -369,7 +392,6 @@ export default function Page() {
 					onUpload={requestUpload}
 					onLogin={() => requestLogin()}
 					onOpen={(photo) => openPhoto(photo, allPhotos())}
-					canUpload={session().configured}
 					locked={locked()}
 					coverUrl={COVER_URL}
 				/>
@@ -431,7 +453,6 @@ export default function Page() {
 									loading={loading()}
 									onOpen={openPhoto}
 									onUpload={requestUpload}
-									canUpload={session().configured}
 								/>
 							</Match>
 							<Match when={view() === "timeline"}>
@@ -440,7 +461,6 @@ export default function Page() {
 									loading={loading()}
 									onOpen={openPhoto}
 									onUpload={requestUpload}
-									canUpload={session().configured}
 								/>
 							</Match>
 							<Match when={view() === "places"}>
@@ -449,7 +469,6 @@ export default function Page() {
 									loading={loading()}
 									onOpen={openPhoto}
 									onUpload={requestUpload}
-									canUpload={session().configured}
 								/>
 							</Match>
 						</Switch>
@@ -457,40 +476,18 @@ export default function Page() {
 				</Show>
 			</main>
 
-			<Show
-				when={locked()}
-				fallback={
-					<footer class="footer">
-						<div>
-							<p class="footer-mark">A &amp; O</p>
-							<p>A small internet place for two people. Since 20 June 2025.</p>
-						</div>
-						<div class="footer-links">
-							<Show
-								when={authenticated()}
-								fallback={
-									<Show when={session().configured}>
-										<button
-											type="button"
-											class="link-button"
-											onClick={() => requestLogin()}
-										>
-											Oscar or Addy? Sign in
-										</button>
-									</Show>
-								}
-							>
-								<button type="button" class="link-button" onClick={signOut}>
-									Sign out
-								</button>
-							</Show>
-							<span>Made by Oscar, mostly on crack.</span>
-						</div>
-					</footer>
-				}
-			>
-				<footer class="footer footer-locked">
-					<span>Made by Oscar, mostly on crack.</span>
+			<Show when={authenticated()}>
+				<footer class="footer">
+					<div>
+						<p class="footer-mark">A &amp; O</p>
+						<p>A small internet place for two people. Since 20 June 2025.</p>
+					</div>
+					<div class="footer-links">
+						<button type="button" class="link-button" onClick={signOut}>
+							Sign out
+						</button>
+						<span>Made by Oscar, mostly on crack.</span>
+					</div>
 				</footer>
 			</Show>
 
@@ -506,6 +503,9 @@ export default function Page() {
 						onEdit={(photo) => setEditing(photo)}
 						onDelete={deleteFromViewer}
 						authenticated={session().authenticated}
+						coverId={coverId()}
+						onSetCover={pinCover}
+						onClearCover={unpinCover}
 					/>
 				)}
 			</Show>
@@ -515,7 +515,7 @@ export default function Page() {
 					onClose={() => setLoginOpen(false)}
 					onSuccess={() => {
 						const intent = loginIntent();
-						setSession((current) => ({ ...current, authenticated: true }));
+						setSession({ authenticated: true });
 						setLoginOpen(false);
 						void refresh();
 						if (intent === "upload") setUploadOpen(true);

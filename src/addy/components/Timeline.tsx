@@ -7,7 +7,6 @@ export function Timeline(props: {
 	photos: AddyPhoto[];
 	onOpen: (photo: AddyPhoto, list: AddyPhoto[]) => void;
 	onUpload: () => void;
-	canUpload: boolean;
 	loading: boolean;
 }) {
 	const groups = () => groupByMonth(props.photos);
@@ -45,16 +44,14 @@ export function Timeline(props: {
 								Photos keep the date they were taken. Add one, or give an old
 								photo a date, and the timeline starts itself.
 							</p>
-							<Show when={props.canUpload}>
-								<button
-									class="button solid"
-									type="button"
-									onClick={props.onUpload}
-								>
-									<Icon name="upload" size={16} />
-									Add a dated photo
-								</button>
-							</Show>
+							<button
+								class="button solid"
+								type="button"
+								onClick={props.onUpload}
+							>
+								<Icon name="upload" size={16} />
+								Add a dated photo
+							</button>
 						</div>
 					</Show>
 				}

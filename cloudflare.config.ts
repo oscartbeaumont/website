@@ -23,6 +23,9 @@ export default defineConfig({
 			DATA: bindings.r2({
 				name: "website-data",
 			}),
+			// Declared so local development can supply it from `.dev.vars`;
+			// the deployed Worker gets the real secret.
+			ADDY_PASSWORD: bindings.secret(),
 		},
 	},
 });

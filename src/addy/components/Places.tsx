@@ -49,7 +49,6 @@ export function Places(props: {
 	photos: AddyPhoto[];
 	onOpen: (photo: AddyPhoto, list: AddyPhoto[]) => void;
 	onUpload: () => void;
-	canUpload: boolean;
 	loading: boolean;
 }) {
 	const places = createMemo(() => groupPlaces(props.photos));
@@ -316,16 +315,14 @@ export function Places(props: {
 								Phones keep that quietly inside the file, and we read it on the
 								way in.
 							</p>
-							<Show when={props.canUpload}>
-								<button
-									class="button solid"
-									type="button"
-									onClick={props.onUpload}
-								>
-									<Icon name="upload" size={16} />
-									Add a photo with a place
-								</button>
-							</Show>
+							<button
+								class="button solid"
+								type="button"
+								onClick={props.onUpload}
+							>
+								<Icon name="upload" size={16} />
+								Add a photo with a place
+							</button>
 						</div>
 					</Show>
 				}

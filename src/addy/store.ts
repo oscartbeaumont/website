@@ -4,6 +4,11 @@ import { env } from "cloudflare:workers";
 const LEGACY_PREFIX = "addy/";
 const MEDIA_PREFIX = "addy/media/";
 const META_PREFIX = "addy/meta/";
+/**
+ * The one picture the logged-out landing page is allowed to show. It lives in
+ * R2 rather than in the repository so it is not part of a public checkout.
+ */
+const COVER_KEY = "addy/cover";
 
 const LEGACY_TYPES: Record<string, string> = {
 	png: "image/png",
@@ -101,6 +106,7 @@ async function listLegacyImages(): Promise<LegacyImage[]> {
 		const listed = await env.DATA.list({ prefix: LEGACY_PREFIX, cursor });
 		for (const object of listed.objects) {
 			if (object.key.length === LEGACY_PREFIX.length) continue;
+			if (object.key === COVER_KEY) continue;
 			if (object.key.startsWith(MEDIA_PREFIX)) continue;
 			if (object.key.startsWith(META_PREFIX)) continue;
 			if (object.key.endsWith("/")) continue;
@@ -149,6 +155,37 @@ function decodeMetaHeader(value: string): PhotoMeta | null {
 	} catch {
 		return null;
 	}
+}
+
+/** The date and place of a photo, as flat R2 custom metadata values. */
+function locationMetadata(meta: PhotoMeta): Record<string, string> {
+	return {
+		id: meta.id,
+		takenAt: meta.takenAt ?? "",
+		lat: meta.lat === null ? "" : String(meta.lat),
+		lng: meta.lng === null ? "" : String(meta.lng),
+		place: meta.place ?? "",
+	};
+}
+
+/** Read back what `locationMetadata` wrote. */
+function metadataLocation(custom: Record<string, string> | undefined): {
+	takenAt: string | null;
+	lat: number | null;
+	lng: number | null;
+	place: string | null;
+} | null {
+	if (!custom) return null;
+	const lat = custom.lat === "" ? null : Number(custom.lat);
+	const lng = custom.lng === "" ? null : Number(custom.lng);
+	if (lat !== null && !Number.isFinite(lat)) return null;
+	if (lng !== null && !Number.isFinite(lng)) return null;
+	return {
+		takenAt: custom.takenAt ? custom.takenAt : null,
+		lat,
+		lng,
+		place: custom.place ? custom.place : null,
+	};
 }
 
 async function listMeta(): Promise<PhotoMeta[]> {
@@ -292,12 +329,36 @@ export async function getPhoto(id: string): Promise<AddyPhoto | null> {
 
 export async function readMeta(id: string): Promise<PhotoMeta | null> {
 	const object = await env.DATA.get(`${META_PREFIX}${id}.json`);
-	if (!object) return null;
-	try {
-		return (await object.json()) as PhotoMeta;
-	} catch {
-		return null;
+	if (object) {
+		try {
+			return (await object.json()) as PhotoMeta;
+		} catch {
+			// Fall through to the copy stored on the photo itself.
+		}
 	}
+	// The sidecar is gone or unreadable. The image still carries the date and
+	// place written at upload time, so a photo reached by id can still be
+	// edited, downloaded and pinned. It cannot put the photo back in the
+	// listing, which is built from the sidecars alone.
+	const name = legacyName(id);
+	if (name) return null;
+	const head = await env.DATA.head(`${MEDIA_PREFIX}${id}/display.jpg`);
+	const located = metadataLocation(head?.customMetadata);
+	if (!head || !located) return null;
+	return {
+		id,
+		caption: "",
+		takenAt: located.takenAt,
+		lat: located.lat,
+		lng: located.lng,
+		place: located.place,
+		width: null,
+		height: null,
+		bytes: head.size,
+		contentType: "image/jpeg",
+		createdAt: head.uploaded.toISOString(),
+		originalName: null,
+	};
 }
 
 export async function writeMeta(meta: PhotoMeta): Promise<void> {
@@ -326,27 +387,6 @@ export async function createPhoto(input: {
 	const id = `photo-${Date.now().toString(36)}-${crypto.randomUUID().slice(0, 6)}`;
 	const base = `${MEDIA_PREFIX}${id}`;
 
-	await Promise.all([
-		env.DATA.put(`${base}/original`, input.original.stream(), {
-			httpMetadata: {
-				contentType: input.contentType,
-				cacheControl: "public, max-age=31536000, immutable",
-			},
-		}),
-		env.DATA.put(`${base}/display.jpg`, input.display.stream(), {
-			httpMetadata: {
-				contentType: "image/jpeg",
-				cacheControl: "public, max-age=31536000, immutable",
-			},
-		}),
-		env.DATA.put(`${base}/thumb.jpg`, input.thumb.stream(), {
-			httpMetadata: {
-				contentType: "image/jpeg",
-				cacheControl: "public, max-age=31536000, immutable",
-			},
-		}),
-	]);
-
 	const meta: PhotoMeta = {
 		id,
 		caption: input.caption,
@@ -361,6 +401,37 @@ export async function createPhoto(input: {
 		createdAt: new Date().toISOString(),
 		originalName: input.originalName,
 	};
+
+	// Every stored object carries the photo's date and place as R2 metadata,
+	// not just the JSON sidecar, so the location stays attached to the bytes it
+	// belongs to. The sidecar is still the record that edits rewrite; these
+	// copies keep the values from upload time.
+	const located = locationMetadata(meta);
+
+	await Promise.all([
+		env.DATA.put(`${base}/original`, input.original.stream(), {
+			httpMetadata: {
+				contentType: input.contentType,
+				cacheControl: "public, max-age=31536000, immutable",
+			},
+			customMetadata: located,
+		}),
+		env.DATA.put(`${base}/display.jpg`, input.display.stream(), {
+			httpMetadata: {
+				contentType: "image/jpeg",
+				cacheControl: "public, max-age=31536000, immutable",
+			},
+			customMetadata: located,
+		}),
+		env.DATA.put(`${base}/thumb.jpg`, input.thumb.stream(), {
+			httpMetadata: {
+				contentType: "image/jpeg",
+				cacheControl: "public, max-age=31536000, immutable",
+			},
+			customMetadata: located,
+		}),
+	]);
+
 	await writeMeta(meta);
 	return toPhoto(meta);
 }
@@ -414,11 +485,11 @@ export async function getPhotoVariant(
 			: `${MEDIA_PREFIX}${id}/${variant}.jpg`;
 	const object = await env.DATA.get(key);
 	if (!object) return null;
-	const meta = variant === "original" ? await readMeta(id) : null;
 	return {
 		object,
-		contentType:
-			meta?.contentType ?? object.httpMetadata?.contentType ?? "image/jpeg",
+		// The type was recorded on the object at upload time, so serving a
+		// variant never needs a second read of the JSON sidecar.
+		contentType: object.httpMetadata?.contentType ?? "image/jpeg",
 		immutable: true,
 	};
 }
@@ -447,10 +518,9 @@ export async function getLegacyImage(hash: string, download = false) {
 		if (type) headers.set("Content-Type", type);
 	}
 	if (image.hash === hash) {
-		headers.set("Cache-Control", "public, max-age=31536000, immutable");
-		headers.set("Cloudflare-CDN-Cache-Control", "public, max-age=31536000");
+		headers.set("Cache-Control", "private, max-age=31536000, immutable");
 	} else {
-		headers.set("Cache-Control", "no-cache");
+		headers.set("Cache-Control", "private, no-cache");
 	}
 	headers.set("ETag", object.httpEtag);
 	headers.set("X-Robots-Tag", "noindex, nofollow");
@@ -465,4 +535,73 @@ export async function getLegacyImage(hash: string, download = false) {
 
 export async function listLegacyForApi(): Promise<LegacyImage[]> {
 	return listLegacyImages();
+}
+
+export type CoverImage = {
+	object: R2ObjectBody;
+	contentType: string;
+	/** The photo the cover was pinned to, when it was pinned to one. */
+	source: string | null;
+};
+
+/**
+ * The single picture the logged-out landing page shows. It is the object
+ * pinned at `addy/cover` and nothing else: no photo is published by accident,
+ * and the front page does not move when someone uploads a new one.
+ */
+export async function getCover(): Promise<CoverImage | null> {
+	const pinned = await env.DATA.get(COVER_KEY);
+	if (!pinned) return null;
+
+	const source = pinned.customMetadata?.source ?? null;
+	// The cover is a copy of a photo. If that photo has since been deleted the
+	// copy has to go too, rather than outliving it on the front page.
+	if (source !== null && !(await getPhoto(source))) {
+		await env.DATA.delete(COVER_KEY);
+		return null;
+	}
+
+	return {
+		object: pinned,
+		contentType: pinned.httpMetadata?.contentType ?? "image/jpeg",
+		source,
+	};
+}
+
+/**
+ * Which photo is currently pinned as the cover, if any. A pin whose photo has
+ * been deleted is dropped here too, so a half-finished delete cannot leave the
+ * viewer claiming a photo is on the front page when it is not.
+ */
+export async function pinnedCoverSource(): Promise<string | null> {
+	const head = await env.DATA.head(COVER_KEY);
+	const source = head?.customMetadata?.source ?? null;
+	if (!source) return null;
+	if (await getPhoto(source)) return source;
+	await env.DATA.delete(COVER_KEY);
+	return null;
+}
+
+/** Copy one photo's web-sized image into the cover slot. */
+export async function setCoverFromPhoto(id: string): Promise<boolean> {
+	const photo = await getPhoto(id);
+	if (!photo) return false;
+	const variant = await getPhotoVariant(
+		id,
+		photo.legacy ? "original" : "display",
+	);
+	if (!variant) return false;
+	await env.DATA.put(COVER_KEY, variant.object.body, {
+		httpMetadata: {
+			contentType: variant.contentType,
+			cacheControl: "no-cache",
+		},
+		customMetadata: { source: id },
+	});
+	return true;
+}
+
+/** Drop the pinned cover, falling back to the newest photo. */
+export async function clearCover(): Promise<void> {
+	await env.DATA.delete(COVER_KEY);
 }

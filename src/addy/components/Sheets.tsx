@@ -7,6 +7,7 @@ import {
 	Show,
 	untrack,
 } from "solid-js";
+import { coordinateLabel } from "../album";
 import {
 	login,
 	type PhotoPatch,
@@ -123,8 +124,8 @@ export function LoginSheet(props: {
 	return (
 		<Sheet
 			kicker="Just for us"
-			title="The keys, please"
-			note="One password between the two of us. It unlocks uploads, edits, and the delete button."
+			title="Sign in"
+			note="One password between the two of us. It opens the photos, the uploads, and the delete button."
 			onClose={props.onClose}
 		>
 			<form class="sheet-form" onSubmit={submit}>
@@ -145,7 +146,7 @@ export function LoginSheet(props: {
 				<div class="sheet-actions">
 					<button class="button solid" type="submit" disabled={busy()}>
 						<Icon name="lock" size={16} />
-						{busy() ? "Checking…" : "Let me in"}
+						{busy() ? "Checking…" : "Sign in"}
 					</button>
 					<button class="button quiet" type="button" onClick={props.onClose}>
 						Never mind
@@ -168,6 +169,8 @@ type UploadItem = {
 	caption: string;
 	takenAt: string;
 	place: string;
+	/** The place the server worked out for us, shown once it is stored. */
+	uploadedPlace?: string;
 };
 
 export function UploadSheet(props: {
@@ -255,7 +258,12 @@ export function UploadSheet(props: {
 					place: item.place.trim(),
 				});
 				added.push(photo);
-				update(item.key, { status: "done" });
+				update(item.key, {
+					status: "done",
+					// The server is the one that names a place, so show what it
+					// decided rather than what the form guessed.
+					uploadedPlace: photo.place ?? undefined,
+				});
 			} catch (problem) {
 				update(item.key, { status: "error", error: message(problem) });
 			}
@@ -386,10 +394,22 @@ export function UploadSheet(props: {
 										</div>
 										<Show
 											when={item.prepared && item.prepared.exif.lat !== null}
+											fallback={
+												<Show when={item.place.trim().length > 2}>
+													<p class="field-hint">
+														<Icon name="pin" size={12} />
+														We&rsquo;ll look that place up on the map
+													</p>
+												</Show>
+											}
 										>
 											<p class="field-hint">
 												<Icon name="pin" size={12} />
-												Location found in the photo
+												Location in the photo ·{" "}
+												{coordinateLabel(
+													item.prepared?.exif.lat ?? 0,
+													item.prepared?.exif.lng ?? 0,
+												)}
 											</p>
 										</Show>
 									</Show>
@@ -399,6 +419,9 @@ export function UploadSheet(props: {
 									<Show when={item.status === "done"}>
 										<p class="field-hint done">
 											<Icon name="check" size={13} /> Added
+											<Show when={item.uploadedPlace}>
+												{(place) => <span> · {place()}</span>}
+											</Show>
 										</p>
 									</Show>
 									<Show when={item.status === "error"}>
