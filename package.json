@@ -15,8 +15,11 @@
 	},
 	"dependencies": {
 		"@fontsource-variable/fraunces": "^5.3.0",
+		"@fontsource-variable/inter": "^5.3.0",
+		"@fontsource-variable/manrope": "^5.3.0",
 		"@fontsource-variable/raleway": "^5.3.0",
 		"@fontsource/caveat": "^5.3.0",
+		"@fontsource/ibm-plex-mono": "^5.3.0",
 		"@fontsource/lora": "^5.3.0",
 		"@iconify-json/vscode-icons": "^1.2.82",
 		"@solidjs/meta": "1.0.0-next.2",

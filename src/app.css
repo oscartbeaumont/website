@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@page {
+	size: A4;
+	margin: 0;
+}
+
 @custom-variant dark (
 	&:where([data-kb-theme="dark"], [data-kb-theme="dark"] *)
 );
