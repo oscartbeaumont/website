@@ -1,3 +1,30 @@
+/*
+ * The album is the one page that opts into the whole screen (see the document
+ * shell). Two things follow from that.
+ *
+ * The sticky top bar grows by the status bar, so everything that has to clear
+ * it is measured from `--topbar-height` rather than from a number that is only
+ * right on a device with no notch. `--topbar-base` is the bar's own height,
+ * measured at 1440px wide (one row, 64px) and at 390px (wrapped to two rows,
+ * 107px); the breakpoint is where it wraps.
+ */
+body.addy-page {
+	--topbar-base: 64px;
+	--topbar-height: calc(var(--topbar-base) + env(safe-area-inset-top));
+	/*
+	 * Colour the page, not the album: `body`'s background is what the browser
+	 * paints behind the document, so rubber-banding past either end of the album
+	 * shows paper instead of a white flash.
+	 */
+	background: #f7f1e5;
+}
+
+@media (max-width: 560px) {
+	body.addy-page {
+		--topbar-base: 107px;
+	}
+}
+
 .addy {
 	--paper: #f7f1e5;
 	--paper-2: #efe5d2;
@@ -22,6 +49,32 @@
 	font-size: 16px;
 	line-height: 1.6;
 	isolation: isolate;
+	/* iOS inflates text in landscape unless it is told not to. */
+	text-size-adjust: 100%;
+	-webkit-tap-highlight-color: transparent;
+}
+
+/* Tap targets do their own thing on the second tap rather than waiting to see
+   whether it was a double-tap zoom. Pinch-zoom is left alone. */
+.addy button,
+.addy a,
+.addy input,
+.addy select,
+.addy textarea,
+.addy label {
+	touch-action: manipulation;
+}
+
+/*
+ * The photo grids open the viewer on tap, so a long press should not offer the
+ * system's own save sheet on top of that.
+ */
+.photo-button img,
+.tl-photo img,
+.mini-pile img,
+.place-cover img,
+.lb-image {
+	-webkit-touch-callout: none;
 }
 
 .addy h1,
@@ -400,7 +453,7 @@
 	display: flex;
 	flex-direction: column;
 	padding: clamp(22px, 3.4vw, 50px) clamp(22px, 4.4vw, 66px)
-		clamp(18px, 2.4vw, 32px);
+		calc(clamp(18px, 2.4vw, 32px) + env(safe-area-inset-bottom));
 }
 
 .split-top {
@@ -589,7 +642,7 @@
 	max-width: 1360px;
 	margin: 0 auto;
 	padding: 0 clamp(18px, 4vw, 52px) clamp(48px, 7vw, 84px);
-	scroll-margin-top: 78px;
+	scroll-margin-top: calc(var(--topbar-height) + 12px);
 }
 
 .section-head {
@@ -713,10 +766,18 @@
 		box-shadow 0.45s;
 }
 
-.photo-button:hover img,
 .photo-button:focus-visible img {
 	transform: rotate(0) translateY(-4px) scale(1.005);
 	box-shadow: 0 18px 38px var(--shadow);
+}
+
+/* A tap on a touch screen leaves `:hover` behind, and a photo stuck lifted and
+   straightened out of the pile reads as a broken state. */
+@media (hover: hover) {
+	.photo-button:hover img {
+		transform: rotate(0) translateY(-4px) scale(1.005);
+		box-shadow: 0 18px 38px var(--shadow);
+	}
 }
 
 .first-roll {
@@ -751,10 +812,16 @@
 	pointer-events: none;
 }
 
-.photo-button:hover .photo-open,
 .photo-button:focus-visible .photo-open {
 	opacity: 1;
 	transform: translateY(0);
+}
+
+@media (hover: hover) {
+	.photo-button:hover .photo-open {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 .pile-item figcaption {
@@ -816,7 +883,7 @@
 
 .tl-month-label {
 	position: sticky;
-	top: 70px;
+	top: calc(var(--topbar-height) + 6px);
 	z-index: 3;
 	display: flex;
 	justify-content: center;
@@ -913,10 +980,16 @@
 	transform: rotate(1deg);
 }
 
-.tl-photo:hover img,
 .tl-photo:focus-visible img {
 	transform: rotate(0) translateY(-3px);
 	box-shadow: 0 18px 38px var(--shadow);
+}
+
+@media (hover: hover) {
+	.tl-photo:hover img {
+		transform: rotate(0) translateY(-3px);
+		box-shadow: 0 18px 38px var(--shadow);
+	}
 }
 
 .tl-date {
@@ -1149,10 +1222,18 @@
 		box-shadow 0.25s;
 }
 
-.place-card:hover {
+.place-card:focus-visible {
 	transform: translateY(-2px);
 	border-color: var(--rule-strong);
 	box-shadow: 0 10px 24px var(--shadow);
+}
+
+@media (hover: hover) {
+	.place-card:hover {
+		transform: translateY(-2px);
+		border-color: var(--rule-strong);
+		box-shadow: 0 10px 24px var(--shadow);
+	}
 }
 
 .place-card.active {
@@ -1235,8 +1316,10 @@
 	transition: transform 0.3s;
 }
 
-.mini-pile button:hover img {
-	transform: translateY(-3px) rotate(-0.6deg);
+@media (hover: hover) {
+	.mini-pile button:hover img {
+		transform: translateY(-3px) rotate(-0.6deg);
+	}
 }
 
 /* ---------- lightbox ---------- */
@@ -1254,8 +1337,8 @@
 
 .lb-close {
 	position: absolute;
-	top: 16px;
-	right: 16px;
+	top: calc(16px + env(safe-area-inset-top));
+	right: calc(16px + env(safe-area-inset-right));
 	z-index: 6;
 	width: 42px;
 	height: 42px;
@@ -1326,8 +1409,11 @@
 	flex-direction: column;
 	gap: 14px;
 	min-height: 0;
-	padding: 30px 26px;
+	padding: 30px 26px calc(30px + env(safe-area-inset-bottom));
 	overflow-y: auto;
+	/* The viewer owns the screen; its panel should not drag the album behind
+	   it along when it runs out of content. */
+	overscroll-behavior: contain;
 	border-left: 1px solid #ffffff1f;
 }
 
@@ -1458,6 +1544,16 @@
 	align-items: center;
 	justify-content: center;
 	padding: clamp(12px, 3vw, 32px);
+	/*
+	 * With the keyboard open, the sheet centres in what is left of the screen
+	 * rather than behind the keyboard: the padding grows by exactly the height
+	 * the keyboard took, which is the difference between the layout viewport and
+	 * the visual one.
+	 */
+	padding-bottom: max(
+		clamp(12px, 3vw, 32px),
+		calc(100dvh - var(--visual-viewport-height, 100dvh))
+	);
 	background: #1a1410b3;
 	backdrop-filter: blur(5px);
 	animation: fadeIn 0.18s ease both;
@@ -1467,10 +1563,17 @@
 	position: relative;
 	z-index: 1;
 	width: min(620px, 100%);
-	max-height: min(90dvh, 900px);
+	/* Sized to the visible viewport so the fields and the buttons stay in front
+	   of the keyboard, with 900px as the ceiling on a big screen. */
+	max-height: min(
+		calc(var(--visual-viewport-height, 100dvh) - 2 * clamp(12px, 3vw, 32px)),
+		900px
+	);
 	padding: clamp(24px, 4vw, 40px);
 	padding-bottom: 0;
 	overflow: auto;
+	/* Scrolling to the end of a sheet should not carry on into the album. */
+	overscroll-behavior: contain;
 	background: var(--paper);
 	color: var(--ink);
 	border: 1px solid var(--rule);
@@ -1595,10 +1698,16 @@
 		background 0.2s;
 }
 
-.dropzone:hover,
 .dropzone.over {
 	border-color: var(--accent);
 	background: var(--accent-wash);
+}
+
+@media (hover: hover) {
+	.dropzone:hover {
+		border-color: var(--accent);
+		background: var(--accent-wash);
+	}
 }
 
 .dropzone:has(input:focus-visible) {
@@ -1645,6 +1754,7 @@
 	gap: 12px;
 	max-height: 42dvh;
 	overflow-y: auto;
+	overscroll-behavior: contain;
 	padding-right: 4px;
 }
 
@@ -1764,7 +1874,7 @@
 	gap: 10px;
 	margin-top: 22px;
 	padding-top: 12px;
-	padding-bottom: clamp(24px, 4vw, 40px);
+	padding-bottom: calc(clamp(24px, 4vw, 40px) + env(safe-area-inset-bottom));
 	border-top: 1px solid var(--rule);
 	background: var(--paper);
 }
@@ -1791,7 +1901,7 @@
 .footer {
 	max-width: 1360px;
 	margin: 10px auto 0;
-	padding: 28px clamp(18px, 4vw, 52px) 52px;
+	padding: 28px clamp(18px, 4vw, 52px) calc(52px + env(safe-area-inset-bottom));
 	border-top: 1px solid var(--rule);
 	display: flex;
 	justify-content: space-between;
@@ -1994,6 +2104,9 @@
 		border-top: 1px solid #ffffff1f;
 		border-left: 0;
 		padding: 20px;
+		/* The panel runs to the bottom edge, so the home indicator sits over
+		   its last line. */
+		padding-bottom: calc(20px + env(safe-area-inset-bottom));
 	}
 
 	.lb-topline {
@@ -2006,6 +2119,7 @@
 		margin-top: 8px;
 		padding-top: 12px;
 		overflow-x: auto;
+		overscroll-behavior-x: contain;
 		scrollbar-width: thin;
 	}
 
@@ -2164,7 +2278,12 @@
 	}
 
 	.sheet {
-		max-height: 92dvh;
+		/* Still roomy when nothing is in the way, but it gives up height to the
+		   keyboard rather than hiding the buttons behind it. */
+		max-height: min(
+			calc(var(--visual-viewport-height, 100dvh) - 2 * clamp(12px, 3vw, 32px)),
+			92dvh
+		);
 	}
 
 	.upload-list {
@@ -2237,14 +2356,6 @@
 
 	.split-signin {
 		width: 100%;
-	}
-
-	.tl-month-label {
-		top: 112px;
-	}
-
-	.photos {
-		scroll-margin-top: 112px;
 	}
 
 	.split-actions .button {

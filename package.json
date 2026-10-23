@@ -6,7 +6,7 @@
 	"packageManager": "pnpm@10.11.1",
 	"scripts": {
 		"dev": "cf dev",
-		"build": "cf workers types && node node_modules/typescript/bin/tsc -b && tsx src/generate-og.tsx && cf build",
+		"build": "cf workers types && node node_modules/typescript/bin/tsc -b && tsx src/generate-og.tsx && tsx src/generate-addy-icons.tsx && cf build",
 		"start": "vite preview",
 		"deploy": "cf deploy",
 		"types": "cf workers types",

@@ -25,5 +25,8 @@
 		"noUncheckedSideEffectImports": true
 	},
 	"include": ["src", ".cloudflare/types"],
-	"exclude": ["src/generate-og.tsx"]
+	/* The image generators build React elements for the Rust renderer, which is
+	   not the JSX the rest of the project compiles, so they are checked by
+	   running them instead. */
+	"exclude": ["src/generate-og.tsx", "src/generate-addy-icons.tsx"]
 }

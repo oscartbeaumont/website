@@ -2,6 +2,19 @@ const FOCUSABLE =
 	'a[href], button:not([disabled]):not([tabindex="-1"]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 /**
+ * Bring an element into view without moving the page behind an overlay. The
+ * document is scroll-locked while an overlay is open, so the only thing this
+ * can scroll is the overlay's own box — which is what is wanted when the
+ * keyboard has just taken half the screen.
+ */
+function revealInsideOverlay(element: HTMLElement) {
+	requestAnimationFrame(() => {
+		if (!element.isConnected) return;
+		element.scrollIntoView({ block: "nearest", inline: "nearest" });
+	});
+}
+
+/**
  * Keep Tab inside an overlay, move focus somewhere sensible on open, and hand
  * it back to whatever was focused before when the overlay goes away.
  *
@@ -27,7 +40,14 @@ export function trapFocus(
 		container?.querySelector<HTMLElement>(
 			"input:not([type='file']), textarea, select",
 		);
-	(initial ?? items()[0])?.focus();
+	// Focus without letting the browser scroll to it: it scrolls the *layout*
+	// viewport, which on a phone means the page behind the sheet moves and the
+	// field still ends up under the keyboard. The sheet is sized against the
+	// visual viewport instead, and the element is revealed inside its own
+	// scroll container below.
+	const target = initial ?? items()[0];
+	target?.focus({ preventScroll: true });
+	if (target) revealInsideOverlay(target);
 
 	const onKey = (event: KeyboardEvent) => {
 		if (event.key !== "Tab" || !container) return;

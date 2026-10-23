@@ -4,6 +4,7 @@ import { getRequestEvent } from "@solidjs/web";
 import { handleAddyApi } from "./addy/api";
 import { isAuthenticated } from "./addy/auth";
 import { handleAddyCover, handleAddyImage } from "./addy/images";
+import { manifestResponse } from "./addy/manifest";
 import { listLegacyForApi } from "./addy/store";
 import { isAddySite } from "./host";
 import { handlePostHog } from "./routes/ph_4DkU/[...rest]";
@@ -18,6 +19,13 @@ export default async function middleware(
 			await handlePostHog(request, url.pathname.slice("/ph_4DkU/".length)),
 		);
 	if (url.pathname.startsWith("/addy/api/")) return handleAddyApi(request, url);
+	// The album's Home Screen metadata, built per host so an installed app
+	// reopens where it was installed from.
+	if (
+		url.pathname === "/manifest.webmanifest" &&
+		(request.method === "GET" || request.method === "HEAD")
+	)
+		return manifestResponse(isAddySite());
 	// The cover is the one album image a logged-out visitor may see, so it is
 	// served before any of the private image routes below.
 	if (
@@ -71,7 +79,12 @@ export default async function middleware(
 			addyPage
 				? `connect-src 'self' https://tiles.openfreemap.org; worker-src 'self' blob:; child-src blob:`
 				: `connect-src 'self'`,
-		].join(";"),
+			// `manifest-src` falls back to `default-src`, which is `'none'`, so the
+			// album's Home Screen metadata has to be allowed by name.
+			addyPage ? `manifest-src 'self'` : "",
+		]
+			.filter(Boolean)
+			.join(";"),
 	);
 	// `/` is host-specific: the Addy domain serves the Addy page while
 	// `otbeaumont.me` serves the homepage. Workers Caching keys by path, not

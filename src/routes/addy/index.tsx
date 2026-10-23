@@ -1,9 +1,10 @@
-import { Meta, Title } from "@solidjs/meta";
+import { Link, Meta, Title } from "@solidjs/meta";
 import { defineFileRoute } from "@solidjs/router/fs";
 import { getRequestEvent } from "@solidjs/web";
 import {
 	createMemo,
 	createSignal,
+	For,
 	Match,
 	onSettled,
 	Show,
@@ -42,7 +43,9 @@ import {
 	UploadSheet,
 } from "../../addy/components/Sheets";
 import { Timeline } from "../../addy/components/Timeline";
+import { startupImages } from "../../addy/devices";
 import type { AddyPhoto } from "../../addy/store";
+import { trackVisualViewport } from "../../addy/viewport";
 import { createDateNow } from "../../date";
 
 export const route = defineFileRoute("/addy", {});
@@ -52,6 +55,13 @@ type Viewer = { list: AddyPhoto[]; index: number };
 type LoginIntent = "view" | "upload";
 
 const COVER_URL = "/addy/cover";
+
+/**
+ * Every launch image iOS might ask for, portrait and landscape. Built once:
+ * the list is static, and it is 44 `<link>`s in the head of the page that was
+ * added to the Home Screen — which is the only place they work.
+ */
+const STARTUP_IMAGES = startupImages();
 
 function viewFromHash(): View {
 	if (typeof window === "undefined") return "gallery";
@@ -132,6 +142,10 @@ export default function Page() {
 		const onPop = () => closeViewer(true);
 		window.addEventListener("hashchange", onHash);
 		window.addEventListener("popstate", onPop);
+		// Keeps the sheets sized to the room the keyboard has left. Tracked for
+		// the whole page rather than per overlay: it is two listeners and a
+		// custom property, and the album is one page.
+		const stopViewportTracking = trackVisualViewport();
 		// Ask who we are first: the photos endpoint only returns the album to a
 		// signed-in visitor.
 		void fetchSession()
@@ -145,6 +159,7 @@ export default function Page() {
 		return () => {
 			window.removeEventListener("hashchange", onHash);
 			window.removeEventListener("popstate", onPop);
+			stopViewportTracking();
 			if (toastTimer) window.clearTimeout(toastTimer);
 		};
 	});
@@ -325,6 +340,34 @@ export default function Page() {
 				name="description"
 				content="A small photo album for Addy and Oscar. The good bits, in the order they happened."
 			/>
+
+			{/*
+			 * Added to the Home Screen, the album should open as the album and not
+			 * as a page inside Safari. The viewport that opts into the safe areas
+			 * is set by the document shell, which knows which page it is rendering.
+			 */}
+			<Link rel="manifest" href="/manifest.webmanifest" />
+			<Link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+			{/* The `apple-` prefix is the one iOS reads for both standalone mode
+			    and startup images; the unprefixed tag is for everything else. */}
+			<Meta name="apple-mobile-web-app-capable" content="yes" />
+			<Meta name="mobile-web-app-capable" content="yes" />
+			<Meta name="apple-mobile-web-app-title" content="A&O" />
+			{/*
+			 * `default` keeps the system bar opaque above the page, which is the
+			 * legible choice over paper: `black-translucent` draws the page under
+			 * it, and the clock is then white over a cream album.
+			 */}
+			<Meta name="apple-mobile-web-app-status-bar-style" content="default" />
+			<For each={STARTUP_IMAGES}>
+				{(image) => (
+					<Link
+						rel="apple-touch-startup-image"
+						href={image.href}
+						media={image.media}
+					/>
+				)}
+			</For>
 
 			<div class="grain" aria-hidden="true" />
 
