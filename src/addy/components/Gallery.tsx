@@ -27,6 +27,14 @@ function PhotoCard(props: {
 					photo().caption ? `Open ${photo().caption}` : "Open this photo"
 				}
 			>
+				{/*
+				 * `width`/`height` reserve the picture's shape before it loads, and
+				 * the browser falls back to the picture's own ratio once it has. A
+				 * CSS `aspect-ratio` here would do neither: it would pin the box to
+				 * the stored numbers, which is a stretch whenever the stored size
+				 * disagrees with the pixels (older uploads kept the pre-rotation
+				 * dimensions), and it would override the real ratio for good.
+				 */}
 				<img
 					src={photo().thumbUrl}
 					alt={photo().caption || "A memory of us"}
@@ -34,12 +42,6 @@ function PhotoCard(props: {
 					height={photo().height ?? undefined}
 					loading={!photo().legacy && props.item.order < 6 ? "eager" : "lazy"}
 					decoding="async"
-					style={{
-						"aspect-ratio":
-							photo().width && photo().height
-								? `${photo().width} / ${photo().height}`
-								: undefined,
-					}}
 				/>
 				<span class="photo-open" aria-hidden="true">
 					Open

@@ -131,19 +131,18 @@ function HomeHero(props: HeroProps) {
 								photo().caption ? `Open ${photo().caption}` : "Open this photo"
 							}
 						>
+							{/*
+							 * The display copy, not the thumbnail: this is the one
+							 * picture shown at nearly the full height of the page, and
+							 * a 720px thumb stretched across it is visibly soft.
+							 */}
 							<img
-								src={photo().thumbUrl}
+								src={photo().displayUrl}
 								alt={photo().caption || "A memory of us"}
 								width={photo().width ?? undefined}
 								height={photo().height ?? undefined}
 								loading="eager"
 								decoding="async"
-								style={{
-									"aspect-ratio":
-										photo().width && photo().height
-											? `${photo().width} / ${photo().height}`
-											: undefined,
-								}}
 							/>
 							<PhotoPlate photo={photo()} />
 						</button>

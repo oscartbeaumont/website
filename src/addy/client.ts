@@ -167,7 +167,9 @@ export async function preparePhoto(file: File): Promise<PreparedPhoto> {
 	try {
 		const [display, thumb, exif] = await Promise.all([
 			toJpeg(bitmap, 2048, 0.86),
-			toJpeg(bitmap, 720, 0.8),
+			// Big enough to stay sharp in the grid and the timeline on a retina
+			// screen, where the timeline draws it at close to 1000 device pixels.
+			toJpeg(bitmap, 1080, 0.82),
 			readExif(file),
 		]);
 		const previewUrl = URL.createObjectURL(thumb);
