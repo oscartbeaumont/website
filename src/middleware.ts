@@ -5,7 +5,7 @@ import { handleAddyApi } from "./addy/api";
 import { isAuthenticated } from "./addy/auth";
 import { handleAddyCover, handleAddyImage } from "./addy/images";
 import { manifestResponse } from "./addy/manifest";
-import { ALBUM_ROBOTS, NO_INDEX } from "./addy/robots";
+import { NO_INDEX } from "./addy/robots";
 import { listLegacyForApi } from "./addy/store";
 import { isAddySite } from "./host";
 import { handlePostHog } from "./routes/ph_4DkU/[...rest]";
@@ -27,22 +27,6 @@ export default async function middleware(
 		(request.method === "GET" || request.method === "HEAD")
 	)
 		return manifestResponse(isAddySite());
-	// The whole album domain is private, so it is served a `robots.txt` that
-	// says so rather than Cloudflare's managed one, which allows the domain.
-	if (
-		url.pathname === "/robots.txt" &&
-		(request.method === "GET" || request.method === "HEAD") &&
-		isAddySite()
-	)
-		return new Response(ALBUM_ROBOTS, {
-			headers: {
-				"Content-Type": "text/plain; charset=utf-8",
-				// The path is shared with `otbeaumont.me`, which keeps its own
-				// file, and the CDN keys by path alone.
-				"Cache-Control": "public, max-age=3600",
-				Vary: "Host",
-			},
-		});
 	// The cover is the one album image a logged-out visitor may see, so it is
 	// served before any of the private image routes below.
 	if (
