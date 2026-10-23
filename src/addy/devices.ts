@@ -56,7 +56,10 @@ export function splashFileName(
 	size: DeviceSize,
 	orientation: Orientation,
 ): string {
-	return `${size.width}x${size.height}@${size.dpr}-${orientation}.png`;
+	// No `@`: Cloudflare's asset layer redirects a literal one to its
+	// percent-encoded form, which would put a round trip in front of every
+	// launch image.
+	return `${size.width}x${size.height}-${size.dpr}x-${orientation}.png`;
 }
 
 /** The image's pixel dimensions, which are the points scaled by the DPR. */
