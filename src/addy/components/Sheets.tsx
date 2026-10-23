@@ -122,12 +122,7 @@ export function LoginSheet(props: {
 	};
 
 	return (
-		<Sheet
-			kicker="Just for us"
-			title="Sign in"
-			note="One password between the two of us. It opens the photos, the uploads, and the delete button."
-			onClose={props.onClose}
-		>
+		<Sheet kicker="Just for us" title="Sign in" onClose={props.onClose}>
 			<form class="sheet-form" onSubmit={submit}>
 				<label class="field">
 					<span>Password</span>
@@ -147,9 +142,6 @@ export function LoginSheet(props: {
 					<button class="button solid" type="submit" disabled={busy()}>
 						<Icon name="lock" size={16} />
 						{busy() ? "Checking…" : "Sign in"}
-					</button>
-					<button class="button quiet" type="button" onClick={props.onClose}>
-						Never mind
 					</button>
 				</div>
 			</form>
