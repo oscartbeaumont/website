@@ -52,7 +52,6 @@ export async function handleAddyImage(
 				await getLegacyImage(hash, url.searchParams.has("download")),
 			);
 		}
-
 		const rest = url.pathname.slice("/addy/photos/".length);
 		const parts = rest.split("/");
 		if (parts.length !== 2) return notFound();

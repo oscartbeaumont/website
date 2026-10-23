@@ -418,6 +418,7 @@ export default function Page() {
 			<main>
 				<Hero
 					photos={allPhotos()}
+					loading={loading()}
 					days={daysTogether(now())}
 					places={placeCount()}
 					anniversary={anniversary()}

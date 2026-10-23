@@ -1,10 +1,12 @@
-import { createSignal, Show } from "solid-js";
+import { createMemo, createSignal, Show } from "solid-js";
 import { formatDay, START_LONG } from "../album";
 import type { AddyPhoto } from "../store";
 import { Icon } from "./Icons";
 
 type HeroProps = {
 	photos: AddyPhoto[];
+	/** True until the album has been fetched, so the page can hold its shape. */
+	loading: boolean;
 	days: number;
 	places: number | null;
 	anniversary: string | null;
@@ -85,11 +87,21 @@ function LockedHero(props: HeroProps) {
 }
 
 /**
- * The signed-in page. Same split, but the left half is the newest photo and
- * the right half is where the album actually stands.
+ * The signed-in page. Same split, but the left half is one photo from the
+ * album — a random one, so the front of it feels like opening the album rather
+ * than reading a feed — and the right half is where the album actually stands.
  */
 function HomeHero(props: HeroProps) {
-	const featured = () => props.photos[0] ?? null;
+	// Held until the album changes underneath it, so the picture does not
+	// reshuffle every time something re-renders.
+	let chosenId: string | null = null;
+	const featured = createMemo(() => {
+		const list = props.photos;
+		if (list.length === 0) return null;
+		if (chosenId === null || !list.some((photo) => photo.id === chosenId))
+			chosenId = list[Math.floor(Math.random() * list.length)].id;
+		return list.find((photo) => photo.id === chosenId) ?? null;
+	});
 
 	return (
 		<section class="split split-home" id="top">
@@ -97,11 +109,16 @@ function HomeHero(props: HeroProps) {
 				<Show
 					when={featured()}
 					fallback={
-						<div class="split-empty">
-							<Icon name="camera" size={28} />
-							<p>Your first photo goes here.</p>
-							<span>Snapshot, portrait, or something silly.</span>
-						</div>
+						// Nothing rather than "your first photo goes here": the album is
+						// still being fetched, and telling someone their album is empty
+						// while it loads is worse than an empty frame.
+						<Show when={!props.loading}>
+							<div class="split-empty">
+								<Icon name="camera" size={28} />
+								<p>Your first photo goes here.</p>
+								<span>Snapshot, portrait, or something silly.</span>
+							</div>
+						</Show>
 					}
 				>
 					{(photo) => (
