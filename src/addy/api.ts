@@ -556,8 +556,7 @@ export async function handleAddyApi(
 			if (!authenticated) return fail("Log in first.", 401);
 			const id = decodeSegment(path.slice("photos/".length));
 			if (id === null || !isPhotoId(id)) return fail("Unknown photo.", 404);
-			if (legacyName(id))
-				return fail("The first-roll photos are kept safe.", 409);
+			if (legacyName(id)) return fail("That photo can't be deleted.", 409);
 			const removed = await deletePhoto(id);
 			if (!removed) return fail("Unknown photo.", 404);
 			// A pinned cover holds a copy of the photo, so it would otherwise

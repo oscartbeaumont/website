@@ -1,7 +1,8 @@
 import { createMemo, For, Show } from "solid-js";
-import { formatDay, groupByMonth } from "../album";
+import { groupByMonth } from "../album";
 import type { AddyPhoto } from "../store";
 import { Icon } from "./Icons";
+import { PhotoPlate } from "./PhotoPlate";
 
 export function Timeline(props: {
 	photos: AddyPhoto[];
@@ -87,25 +88,7 @@ export function Timeline(props: {
 														loading="lazy"
 														decoding="async"
 													/>
-													{/* The date and the caption belong to this photo and
-													    to nothing else, so they sit on it rather than in
-													    a column beside it. */}
-													<span class="tl-plate">
-														<span class="tl-meta">
-															<span class="tl-date">
-																{formatDay(photo.takenAt)}
-															</span>
-															<Show when={photo.place}>
-																<span class="tl-place">
-																	<Icon name="pin" size={12} />
-																	{photo.place}
-																</span>
-															</Show>
-														</span>
-														<Show when={photo.caption}>
-															<span class="tl-caption">{photo.caption}</span>
-														</Show>
-													</span>
+													<PhotoPlate photo={photo} />
 												</button>
 											</div>
 											<span class="tl-dot" aria-hidden="true" />
@@ -121,9 +104,6 @@ export function Timeline(props: {
 							<h3 class="tl-month-label">
 								<span>Before the dates</span>
 							</h3>
-							<p class="tl-undated-note">
-								The first roll, and anything else still waiting for a date.
-							</p>
 							<div class="tl-undated">
 								<For each={groups().undated}>
 									{(photo) => (

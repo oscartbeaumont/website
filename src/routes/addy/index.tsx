@@ -24,7 +24,6 @@ import {
 } from "../../addy/album";
 import {
 	clearCover,
-	downloadAlbum,
 	fetchPhotos,
 	fetchSession,
 	logout,
@@ -107,10 +106,6 @@ export default function Page() {
 	const [toast, setToast] = createSignal<string | null>(null);
 	const [loadError, setLoadError] = createSignal<string | null>(null);
 	const [mounted, setMounted] = createSignal(false);
-	const [progress, setProgress] = createSignal<{
-		done: number;
-		total: number;
-	} | null>(null);
 	const [now] = createDateNow(60_000);
 
 	let toastTimer: number | undefined;
@@ -282,30 +277,6 @@ export default function Page() {
 		}
 	};
 
-	const downloadAll = async () => {
-		const list = allPhotos();
-		if (progress() !== null) return;
-		if (list.length === 0) {
-			say("Nothing to download yet.");
-			return;
-		}
-		setProgress({ done: 0, total: list.length });
-		try {
-			const { skipped } = await downloadAlbum(list, (done, total) =>
-				setProgress({ done, total }),
-			);
-			say(
-				skipped > 0
-					? `Album downloaded, but ${skipped} ${skipped === 1 ? "photo" : "photos"} wouldn't open.`
-					: "Album downloaded.",
-			);
-		} catch (error) {
-			say(errorText(error));
-		} finally {
-			setProgress(null);
-		}
-	};
-
 	const signOut = async () => {
 		try {
 			await logout();
@@ -378,7 +349,7 @@ export default function Page() {
 							onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
 							aria-label="Back to the top"
 						>
-							A<span>&amp;</span>O
+							Addy <span>&amp;</span> Oscar
 						</button>
 
 						<nav class="tabs" aria-label="Ways to see the photos">
@@ -488,20 +459,10 @@ export default function Page() {
 			<Show when={authenticated()}>
 				<footer class="footer">
 					<div>
-						<p class="footer-mark">A &amp; O</p>
+						<p class="footer-mark">Addy &amp; Oscar</p>
 						<p>A small internet place for two people. Since 20 June 2025.</p>
 					</div>
 					<div class="footer-links">
-						<button
-							type="button"
-							class="link-button"
-							onClick={downloadAll}
-							disabled={progress() !== null}
-						>
-							{progress()
-								? `Packing ${progress()?.done}/${progress()?.total}`
-								: "Download album"}
-						</button>
 						<button type="button" class="link-button" onClick={signOut}>
 							Sign out
 						</button>
@@ -571,15 +532,6 @@ export default function Page() {
 							say("Photo deleted.");
 						}}
 					/>
-				)}
-			</Show>
-
-			<Show when={progress()}>
-				{(state) => (
-					<div class="progress-pill" role="status">
-						<span class="spinner small" />
-						Packing photos… {state().done}/{state().total}
-					</div>
 				)}
 			</Show>
 

@@ -108,9 +108,6 @@ export function Lightbox(props: {
 							<span>
 								{props.index + 1} / {props.photos.length}
 							</span>
-							<Show when={current().legacy}>
-								<span class="lb-badge">first roll</span>
-							</Show>
 						</div>
 
 						<Show when={current().caption}>
@@ -187,12 +184,6 @@ export function Lightbox(props: {
 							<p class="lb-note">
 								The front page is the one photo anyone can see without signing
 								in. Tap “Front page” to put this one on it.
-							</p>
-						</Show>
-
-						<Show when={current().legacy}>
-							<p class="lb-note">
-								One of the original nine. The first roll stays put.
 							</p>
 						</Show>
 

@@ -41,9 +41,6 @@ function PhotoCard(props: {
 								: undefined,
 					}}
 				/>
-				<Show when={photo().legacy}>
-					<span class="first-roll">first roll</span>
-				</Show>
 				<span class="photo-open" aria-hidden="true">
 					Open
 				</span>

@@ -473,14 +473,6 @@ body.addy-page {
 	padding: 0 1px;
 }
 
-.split-label {
-	font-size: 9px;
-	font-weight: 500;
-	letter-spacing: 0.24em;
-	text-transform: uppercase;
-	color: var(--soft);
-}
-
 .split-body {
 	display: flex;
 	flex-direction: column;
@@ -772,20 +764,6 @@ body.addy-page {
 	}
 }
 
-.first-roll {
-	position: absolute;
-	top: 14px;
-	left: 12px;
-	padding: 4px 6px;
-	background: color-mix(in srgb, var(--ink) 82%, transparent);
-	color: var(--paper);
-	font-size: 8px;
-	letter-spacing: 0.14em;
-	text-transform: uppercase;
-	transform: rotate(-2deg);
-	pointer-events: none;
-}
-
 .photo-open {
 	position: absolute;
 	right: 14px;
@@ -943,7 +921,7 @@ body.addy-page {
  * beside it they looked like they could belong to either neighbour, and on a
  * wide screen they drifted a long way from the picture they described.
  */
-.tl-plate {
+.photo-plate {
 	position: absolute;
 	right: 10px;
 	bottom: 10px;
@@ -955,19 +933,22 @@ body.addy-page {
 	background: var(--paper);
 	box-shadow: 0 8px 20px #2b232029;
 	text-align: left;
-	/* Follows the tilt of the print it sits on. */
+}
+
+/* On the timeline the plate follows the tilt of the print it sits on. */
+.tl-item .photo-plate {
 	transform: rotate(-1deg);
 }
 
-.tl-meta {
+.tl-item.right .photo-plate {
+	transform: rotate(1deg);
+}
+
+.photo-plate-meta {
 	display: flex;
 	align-items: center;
 	gap: 12px;
 	flex-wrap: wrap;
-}
-
-.tl-item.right .tl-plate {
-	transform: rotate(1deg);
 }
 
 .tl-photo img {
@@ -998,21 +979,21 @@ body.addy-page {
 	}
 }
 
-.tl-date {
+.photo-plate-date {
 	font-size: 9px;
 	letter-spacing: 0.16em;
 	text-transform: uppercase;
 	color: var(--accent);
 }
 
-.tl-caption {
+.photo-plate-caption {
 	font-family: "Caveat", cursive;
 	font-size: 22px;
 	line-height: 1.15;
 	color: var(--ink);
 }
 
-.tl-place {
+.photo-plate-place {
 	display: inline-flex;
 	align-items: center;
 	gap: 4px;
@@ -1020,13 +1001,6 @@ body.addy-page {
 	letter-spacing: 0.12em;
 	text-transform: uppercase;
 	color: var(--soft);
-}
-
-.tl-undated-note {
-	text-align: center;
-	font-size: 12px;
-	color: var(--soft);
-	margin: 2px 0 18px;
 }
 
 .tl-undated {
@@ -1552,19 +1526,10 @@ body.addy-page {
 	align-items: center;
 	justify-content: space-between;
 	gap: 10px;
-	/* Keep the first-roll badge clear of the close button that floats above
-	   the panel on wide screens. */
-	padding-right: 46px;
 	font-size: 9.5px;
 	letter-spacing: 0.18em;
 	text-transform: uppercase;
 	color: #b9a893;
-}
-
-.lb-badge {
-	padding: 3px 7px;
-	border: 1px solid #ffffff33;
-	font-size: 8.5px;
 }
 
 .lb-caption {
@@ -2072,24 +2037,6 @@ body.addy-page {
 	box-shadow: 0 14px 34px #00000033;
 	transform: translateX(-50%);
 	animation: rise 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-}
-
-.progress-pill {
-	position: fixed;
-	left: 50%;
-	bottom: calc(76px + env(safe-area-inset-bottom));
-	z-index: 200;
-	display: flex;
-	align-items: center;
-	gap: 9px;
-	padding: 10px 16px;
-	border-radius: 999px;
-	background: var(--ink);
-	color: var(--paper);
-	font-size: 11px;
-	letter-spacing: 0.04em;
-	box-shadow: 0 14px 34px #00000033;
-	transform: translateX(-50%);
 }
 
 /* ---------- responsive ---------- */

@@ -1,7 +1,8 @@
 import { createMemo, createSignal, Show } from "solid-js";
-import { formatDay, START_LONG } from "../album";
+import { START_LONG } from "../album";
 import type { AddyPhoto } from "../store";
 import { Icon } from "./Icons";
+import { PhotoPlate } from "./PhotoPlate";
 
 type HeroProps = {
 	photos: AddyPhoto[];
@@ -59,7 +60,7 @@ function LockedHero(props: HeroProps) {
 			<div class="split-panel">
 				<div class="split-top">
 					<p class="split-mark">
-						A<span>&amp;</span>O
+						Addy <span>&amp;</span> Oscar
 					</p>
 				</div>
 
@@ -144,20 +145,13 @@ function HomeHero(props: HeroProps) {
 											: undefined,
 								}}
 							/>
+							<PhotoPlate photo={photo()} />
 						</button>
 					)}
 				</Show>
 			</div>
 
 			<div class="split-panel">
-				<div class="split-top">
-					<p class="split-label">
-						{featured()?.takenAt
-							? formatDay(featured()?.takenAt ?? null)
-							: "The first roll"}
-					</p>
-				</div>
-
 				<div class="split-body">
 					<Show when={props.anniversary}>
 						{(label) => (
