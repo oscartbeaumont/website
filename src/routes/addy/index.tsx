@@ -214,15 +214,6 @@ export default function Page() {
 		if (pop) window.history.back();
 	};
 
-	const openRandom = () => {
-		const list = allPhotos();
-		if (list.length === 0) {
-			say("Nothing in the pile yet. Add the first one?");
-			return;
-		}
-		openPhoto(list[Math.floor(Math.random() * list.length)], list);
-	};
-
 	const requestLogin = (intent: LoginIntent = "view") => {
 		setLoginIntent(intent);
 		setLoginOpen(true);
@@ -430,7 +421,6 @@ export default function Page() {
 					days={daysTogether(now())}
 					places={placeCount()}
 					anniversary={anniversary()}
-					onShuffle={openRandom}
 					onLogin={() => requestLogin()}
 					onOpen={(photo) => openPhoto(photo, allPhotos())}
 					locked={locked()}

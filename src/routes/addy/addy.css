@@ -629,13 +629,6 @@ body.addy-page {
 	color: var(--soft);
 }
 
-.split-actions {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 10px;
-	margin-top: clamp(22px, 2.8vw, 32px);
-}
 /* ---------- sections ---------- */
 
 .photos {
@@ -916,30 +909,11 @@ body.addy-page {
 	padding-right: 20px;
 }
 
-.tl-text {
-	grid-column: 3;
-	grid-row: 1;
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: 8px;
-	max-width: 350px;
-	padding-left: 20px;
-}
-
 .tl-item.right .tl-photo-wrap {
 	grid-column: 3;
 	justify-content: flex-start;
 	padding-right: 0;
 	padding-left: 20px;
-}
-
-.tl-item.right .tl-text {
-	grid-column: 1;
-	align-items: flex-end;
-	padding-left: 0;
-	padding-right: 20px;
-	text-align: right;
 }
 
 .tl-dot {
@@ -956,12 +930,45 @@ body.addy-page {
 }
 
 .tl-photo {
+	position: relative;
 	display: block;
-	width: min(100%, 420px);
+	width: min(100%, 470px);
 	padding: 0;
 	border: 0;
 	background: transparent;
 	cursor: zoom-in;
+}
+
+/*
+ * The date, the place and the caption sit on the photo itself. In a column
+ * beside it they looked like they could belong to either neighbour, and on a
+ * wide screen they drifted a long way from the picture they described.
+ */
+.tl-plate {
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+	left: 10px;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding: 9px 13px;
+	background: var(--paper);
+	box-shadow: 0 8px 20px #2b232029;
+	text-align: left;
+	/* Follows the tilt of the print it sits on. */
+	transform: rotate(-1deg);
+}
+
+.tl-meta {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.tl-item.right .tl-plate {
+	transform: rotate(1deg);
 }
 
 .tl-photo img {
@@ -1000,9 +1007,8 @@ body.addy-page {
 }
 
 .tl-caption {
-	max-width: 36ch;
 	font-family: "Caveat", cursive;
-	font-size: 23px;
+	font-size: 22px;
 	line-height: 1.15;
 	color: var(--ink);
 }
@@ -2350,16 +2356,8 @@ body.addy-page {
 		padding: 9px 12px;
 	}
 
-	.split-actions .button.quiet {
-		flex: 0 0 auto;
-	}
-
 	.split-signin {
 		width: 100%;
-	}
-
-	.split-actions .button {
-		flex: 1 1 auto;
 	}
 
 	.places-grid {

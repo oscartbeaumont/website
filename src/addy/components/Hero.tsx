@@ -8,7 +8,6 @@ type HeroProps = {
 	days: number;
 	places: number | null;
 	anniversary: string | null;
-	onShuffle: () => void;
 	onOpen: (photo: AddyPhoto) => void;
 	onLogin: () => void;
 	locked: boolean;
@@ -176,17 +175,6 @@ function HomeHero(props: HeroProps) {
 							<b>{props.places ?? "—"}</b>
 							<span>{props.places === 1 ? "place" : "places"}</span>
 						</div>
-					</div>
-
-					<div class="split-actions">
-						<button
-							class="button solid"
-							type="button"
-							onClick={props.onShuffle}
-						>
-							<Icon name="sparkle" size={16} />
-							Surprise me
-						</button>
 					</div>
 				</div>
 			</div>

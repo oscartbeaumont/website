@@ -87,21 +87,28 @@ export function Timeline(props: {
 														loading="lazy"
 														decoding="async"
 													/>
+													{/* The date and the caption belong to this photo and
+													    to nothing else, so they sit on it rather than in
+													    a column beside it. */}
+													<span class="tl-plate">
+														<span class="tl-meta">
+															<span class="tl-date">
+																{formatDay(photo.takenAt)}
+															</span>
+															<Show when={photo.place}>
+																<span class="tl-place">
+																	<Icon name="pin" size={12} />
+																	{photo.place}
+																</span>
+															</Show>
+														</span>
+														<Show when={photo.caption}>
+															<span class="tl-caption">{photo.caption}</span>
+														</Show>
+													</span>
 												</button>
 											</div>
 											<span class="tl-dot" aria-hidden="true" />
-											<div class="tl-text">
-												<p class="tl-date">{formatDay(photo.takenAt)}</p>
-												<Show when={photo.caption}>
-													<p class="tl-caption">{photo.caption}</p>
-												</Show>
-												<Show when={photo.place}>
-													<p class="tl-place">
-														<Icon name="pin" size={13} />
-														{photo.place}
-													</p>
-												</Show>
-											</div>
 										</article>
 									)}
 								</For>
