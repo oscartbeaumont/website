@@ -43,7 +43,7 @@ import {
 	UploadSheet,
 } from "../../addy/components/Sheets";
 import { Timeline } from "../../addy/components/Timeline";
-import { startupImages } from "../../addy/devices";
+import { artworkUrl, startupImages } from "../../addy/devices";
 import type { AddyPhoto } from "../../addy/store";
 import { trackVisualViewport } from "../../addy/viewport";
 import { createDateNow } from "../../date";
@@ -345,7 +345,7 @@ export default function Page() {
 			 * is set by the document shell, which knows which page it is rendering.
 			 */}
 			<Link rel="manifest" href="/manifest.webmanifest" />
-			<Link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+			<Link rel="apple-touch-icon" href={artworkUrl("/apple-touch-icon.png")} />
 			{/* The `apple-` prefix is the one iOS reads for both standalone mode
 			    and startup images; the unprefixed tag is for everything else. */}
 			<Meta name="apple-mobile-web-app-capable" content="yes" />

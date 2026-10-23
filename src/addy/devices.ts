@@ -39,18 +39,24 @@ export const DEVICE_SIZES: readonly DeviceSize[] = [
 	{ width: 1032, height: 1376, dpr: 2 },
 ];
 
+/**
+ * Icons and launch screens are cached hard — by the browser, by the edge, and
+ * by a Home Screen entry that keeps the icon it first saw — so changing the
+ * artwork means changing the URL. The version is part of every one of them.
+ */
+export const ARTWORK_VERSION = "2";
+
+/** The same path with the artwork version on it. */
+export function artworkUrl(path: string): string {
+	return `${path}?v${ARTWORK_VERSION}`;
+}
+
 export type Orientation = "portrait" | "landscape";
 
 export type StartupImage = {
 	href: string;
 	media: string;
 };
-
-/**
- * Startup artwork is cached hard per Home Screen entry, so a change to it needs
- * a new URL rather than a rebuild.
- */
-export const SPLASH_VERSION = "1";
 
 export function splashFileName(
 	size: DeviceSize,
@@ -92,7 +98,7 @@ export function startupImages(): StartupImage[] {
 	for (const size of DEVICE_SIZES)
 		for (const orientation of ["portrait", "landscape"] as const)
 			images.push({
-				href: `/splash/${splashFileName(size, orientation)}?v${SPLASH_VERSION}`,
+				href: artworkUrl(`/splash/${splashFileName(size, orientation)}`),
 				media: media(size, orientation),
 			});
 	return images;
