@@ -132,7 +132,9 @@ body.addy-page {
 	gap: 18px;
 }
 
-.wordmark {
+/* `.addy button` resets the font for every button, and it is a heavier selector
+   than a bare class — so the wordmark has to name its parent to win. */
+.addy .wordmark {
 	position: relative;
 	background: none;
 	border: 0;
