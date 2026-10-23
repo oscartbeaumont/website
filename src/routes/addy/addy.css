@@ -491,12 +491,6 @@
 	margin-top: clamp(24px, 3.2vw, 34px);
 }
 
-.split-note {
-	margin: 15px 0 0;
-	font-size: 11px;
-	color: var(--soft);
-}
-
 .split-credit {
 	margin: 0;
 	font-size: 9px;
@@ -1960,11 +1954,6 @@
 	.split-signin {
 		margin-top: clamp(12px, 2.8dvh, 26px);
 		padding: clamp(8px, 1.3dvh, 12px) 16px;
-	}
-
-	.split-note {
-		margin-top: clamp(6px, 1.5dvh, 14px);
-		font-size: clamp(10.5px, 1.4dvh, 11px);
 	}
 
 	.split-title {

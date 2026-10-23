@@ -62,7 +62,6 @@ function LockedHero(props: HeroProps) {
 					<p class="split-mark">
 						A<span>&amp;</span>O
 					</p>
-					<p class="split-label">Private</p>
 				</div>
 
 				<div class="split-body">
@@ -72,10 +71,6 @@ function LockedHero(props: HeroProps) {
 					</p>
 					<span class="split-rule" aria-hidden="true" />
 					<p class="split-since">{START_LONG}</p>
-					<p class="split-line">A private album for the two of us.</p>
-					<p class="split-sub">
-						The photos are just for us. Sign in and they&rsquo;re all here.
-					</p>
 					<button
 						class="button solid split-signin"
 						type="button"
@@ -84,7 +79,6 @@ function LockedHero(props: HeroProps) {
 						<Icon name="lock" size={14} />
 						Sign in
 					</button>
-					<p class="split-note">Only the two of us.</p>
 				</div>
 
 				<p class="split-credit">Made by Oscar, mostly on crack.</p>
@@ -148,7 +142,6 @@ function HomeHero(props: HeroProps) {
 							? formatDay(featured()?.takenAt ?? null)
 							: "The first roll"}
 					</p>
-					<p class="split-label">Private</p>
 				</div>
 
 				<div class="split-body">
@@ -161,7 +154,7 @@ function HomeHero(props: HeroProps) {
 					</Show>
 					<p class="split-eyebrow">Est. 20 June 2025 · Perth</p>
 					<h1 class="split-title">
-						Addy <em>&amp; me.</em>
+						Addy <em>&amp; Oscar</em>
 					</h1>
 					<p class="split-line">
 						A home for the photos that deserve more than a camera roll.
