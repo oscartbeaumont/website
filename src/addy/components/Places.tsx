@@ -1,9 +1,8 @@
-import type { FeatureCollection, Point } from "geojson";
 import "maplibre-gl/dist/maplibre-gl.css";
 import type {
-	GeoJSONSource,
-	MapGeoJSONFeature,
 	Map as MapLibreMap,
+	Marker as MapLibreMarker,
+	MarkerOptions,
 } from "maplibre-gl";
 import mapWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import {
@@ -19,30 +18,90 @@ import { lockBodyScroll } from "../scroll-lock";
 import type { AddyPhoto } from "../store";
 import { Icon } from "./Icons";
 
-type PlaceProperties = {
-	key: string;
-	name: string;
-	count: number;
-};
-
-type PlaceSource = FeatureCollection<Point, PlaceProperties>;
-
 const MAP_STYLE = "https://tiles.openfreemap.org/styles/positron";
 const HOME = { center: [115.6, -31.6] as [number, number], zoom: 1.45 };
+/** How close two places have to be on screen before they share one pin. */
+const CLUSTER_PX = 78;
+/** Photos shown in the pile; the rest are counted on the badge. */
+const PILE = 3;
 
-function sourceFor(places: PlaceGroup[]): PlaceSource {
-	return {
-		type: "FeatureCollection",
-		features: places.map((place) => ({
-			type: "Feature",
-			geometry: { type: "Point", coordinates: [place.lng, place.lat] },
-			properties: {
-				key: place.key,
-				name: place.name,
-				count: place.photos.length,
-			},
-		})),
-	};
+type Pin = {
+	signature: string;
+	kind: "place" | "cluster";
+	places: PlaceGroup[];
+	photos: AddyPhoto[];
+	/** Every photo in the pin, including the ones the pile cannot show. */
+	count: number;
+	center: [number, number];
+};
+
+/**
+ * Group the places that would land on top of each other at the current zoom, so
+ * a pin is always something you can hit with a thumb.
+ */
+function pinsFor(
+	places: PlaceGroup[],
+	project: (lngLat: [number, number]) => { x: number; y: number },
+): Pin[] {
+	const groups: Array<{ x: number; y: number; places: PlaceGroup[] }> = [];
+	for (const place of places) {
+		const point = project([place.lng, place.lat]);
+		const near = groups.find(
+			(group) => Math.hypot(group.x - point.x, group.y - point.y) < CLUSTER_PX,
+		);
+		if (near) near.places.push(place);
+		else groups.push({ x: point.x, y: point.y, places: [place] });
+	}
+
+	return groups.map((group) => {
+		const single = group.places.length === 1;
+		return {
+			signature: `${single ? "place" : "cluster"}:${group.places
+				.map((place) => place.key)
+				.join(",")}`,
+			kind: single ? "place" : "cluster",
+			places: group.places,
+			// One place shows its newest photos; a cluster shows one photo from
+			// each place it is standing in for.
+			photos: single
+				? group.places[0].photos.slice(-PILE)
+				: group.places.slice(0, PILE).map((place) => place.cover),
+			count: group.places.reduce((sum, place) => sum + place.photos.length, 0),
+			center: [
+				group.places.reduce((sum, place) => sum + place.lng, 0) /
+					group.places.length,
+				group.places.reduce((sum, place) => sum + place.lat, 0) /
+					group.places.length,
+			],
+		};
+	});
+}
+
+/**
+ * Rough metres between two points — enough to pick a zoom, not a measurement.
+ */
+function metresBetween(aLat: number, aLng: number, bLat: number, bLng: number) {
+	const x =
+		(aLng - bLng) * Math.cos(((aLat + bLat) / 2) * (Math.PI / 180)) * 111_320;
+	const y = (aLat - bLat) * 111_320;
+	return Math.hypot(x, y);
+}
+
+/**
+ * The zoom at which a group this wide comes apart into separate pins, so one
+ * tap on a cluster is worth more than a nudge. Web Mercator halves the world
+ * every zoom level, which is all the arithmetic needs.
+ */
+function zoomToSeparate(pin: Pin, pixels: number): number {
+	let widest = 0;
+	for (const a of pin.places)
+		for (const b of pin.places)
+			widest = Math.max(widest, metresBetween(a.lat, a.lng, b.lat, b.lng));
+	const metresPerPixel = Math.max(widest, 1) / pixels;
+	return Math.log2(
+		(156_543.03392 * Math.cos((pin.center[1] * Math.PI) / 180)) /
+			metresPerPixel,
+	);
 }
 
 export function Places(props: {
@@ -61,31 +120,79 @@ export function Places(props: {
 	);
 
 	let container: HTMLDivElement | undefined;
+	let mapWrap: HTMLDivElement | undefined;
 	let map: MapLibreMap | undefined;
+	let MarkerClass: { new (options: MarkerOptions): MapLibreMarker } | undefined;
+	let markers: MapLibreMarker[] = [];
+	let markerSignature = "";
 	let releaseScroll: (() => void) | undefined;
 	let booted = false;
 	let disposed = false;
 
+	const coarsePointer = () =>
+		typeof window !== "undefined" &&
+		window.matchMedia("(pointer: coarse)").matches;
+
 	const onKey = (event: KeyboardEvent) => {
 		if (event.key === "Escape" && expanded()) setExpanded(false);
 	};
-	const resize = () => map?.resize();
 
 	onCleanup(() => {
 		disposed = true;
 		document.removeEventListener("keydown", onKey);
 		window.removeEventListener("resize", resize);
 		releaseScroll?.();
+		for (const marker of markers) marker.remove();
+		markers = [];
 		map?.remove();
 		map = undefined;
 	});
 
-	const focusPlace = (place: PlaceGroup, zoom = 12) => {
+	const resize = () => {
+		map?.resize();
+		// Screen positions decide what clusters, so the pins are rebuilt too.
+		syncMarkers();
+	};
+
+	/**
+	 * How much of the map the photo sheet covers, so the pin a place opens onto
+	 * lands above it rather than behind it.
+	 */
+	const sheetPadding = () =>
+		Math.round((container?.clientHeight ?? 420) * 0.46);
+
+	const selectPlace = (place: PlaceGroup) => {
 		setSelectedKey(place.key);
-		map?.flyTo({
-			center: [place.lng, place.lat],
-			zoom: Math.max(map.getZoom(), zoom),
-			duration: 1400,
+		if (map) {
+			const bottom = sheetPadding();
+			map.flyTo({
+				center: [place.lng, place.lat],
+				zoom: Math.max(map.getZoom(), 12),
+				padding: { top: 20, bottom, left: 20, right: 20 },
+				duration: 1200,
+				essential: true,
+			});
+		}
+		// The list of places sits under the map on a phone, so opening one from
+		// there has to bring the map back into view.
+		requestAnimationFrame(() =>
+			mapWrap?.scrollIntoView({ block: "nearest", behavior: "smooth" }),
+		);
+	};
+
+	const openCluster = (pin: Pin) => {
+		if (!map) return;
+		const target = zoomToSeparate(pin, CLUSTER_PX * 2);
+		// Past this the pins cannot be pulled apart any further, so open the
+		// busiest place instead of zooming into nothing.
+		if (!Number.isFinite(target) || map.getZoom() >= 15) {
+			selectPlace(pin.places[0]);
+			return;
+		}
+		map.easeTo({
+			center: pin.center,
+			zoom: Math.min(Math.max(target, map.getZoom() + 0.8), 15.5),
+			duration: 1100,
 			essential: true,
 		});
 	};
@@ -98,6 +205,76 @@ export function Places(props: {
 			duration: 1400,
 			essential: true,
 		});
+	};
+
+	const pinLabel = (pin: Pin) => {
+		if (pin.kind === "place")
+			return `${pin.places[0].name}, ${pin.count} ${
+				pin.count === 1 ? "photo" : "photos"
+			}`;
+		return `${pin.places.length} places, ${pin.count} ${
+			pin.count === 1 ? "photo" : "photos"
+		}`;
+	};
+
+	/** One pin: a pile of photos, a count when there are more, and the name. */
+	const pinElement = (pin: Pin) => {
+		const button = document.createElement("button");
+		button.type = "button";
+		button.className = `map-pin ${pin.kind}`;
+		button.title = pinLabel(pin);
+		button.setAttribute("aria-label", pinLabel(pin));
+
+		const stack = document.createElement("span");
+		stack.className = "map-pin-stack";
+		for (const photo of pin.photos) {
+			const image = document.createElement("img");
+			image.className = "map-pin-photo";
+			image.src = photo.thumbUrl;
+			image.alt = "";
+			image.loading = "lazy";
+			image.decoding = "async";
+			stack.appendChild(image);
+		}
+		button.appendChild(stack);
+
+		if (pin.kind === "cluster" || pin.count > pin.photos.length) {
+			const badge = document.createElement("span");
+			badge.className = "map-pin-count";
+			badge.textContent = String(pin.count);
+			button.appendChild(badge);
+		}
+		if (pin.kind === "place") {
+			const name = document.createElement("span");
+			name.className = "map-pin-name";
+			name.textContent = pin.places[0].name;
+			button.appendChild(name);
+		}
+
+		button.addEventListener("click", (event) => {
+			event.stopPropagation();
+			if (pin.kind === "place") selectPlace(pin.places[0]);
+			else openCluster(pin);
+		});
+		return button;
+	};
+
+	const syncMarkers = () => {
+		const Ctor = MarkerClass;
+		if (!map || !Ctor || disposed) return;
+		const instance = map;
+		const pins = pinsFor(places(), (lngLat) => instance.project(lngLat));
+		const signature = pins.map((pin) => pin.signature).join("|");
+		// Rebuilding re-fetches the thumbnails, so only do it when the grouping
+		// actually changed.
+		if (signature === markerSignature) return;
+		markerSignature = signature;
+		for (const marker of markers) marker.remove();
+		markers = pins.map((pin) =>
+			new Ctor({ element: pinElement(pin), anchor: "center" })
+				.setLngLat(pin.center)
+				.addTo(instance),
+		);
 	};
 
 	/** Built from the element's ref: by then it is attached and has a size. */
@@ -113,8 +290,9 @@ export function Places(props: {
 		}, 20_000);
 
 		void import("maplibre-gl")
-			.then(({ Map, NavigationControl, setWorkerUrl }) => {
+			.then(({ Map, Marker, NavigationControl, setWorkerUrl }) => {
 				if (disposed || !container) return;
+				MarkerClass = Marker;
 				// MapLibre v6 ships its worker as a separate module. Vite emits the
 				// `?url` asset, so point the library at that copy explicitly.
 				setWorkerUrl(mapWorkerUrl);
@@ -127,6 +305,10 @@ export function Places(props: {
 					maxZoom: 17,
 					renderWorldCopies: false,
 					attributionControl: false,
+					// On a phone one finger belongs to the page: it scrolls, and the
+					// map takes two. The full-screen map turns this back off, because
+					// there the map is the whole page.
+					cooperativeGestures: coarsePointer(),
 				});
 				map = instance;
 				instance.addControl(
@@ -140,126 +322,10 @@ export function Places(props: {
 					window.clearTimeout(failTimer);
 					instance.setProjection({ type: "globe" });
 					instance.jumpTo({ center: HOME.center, zoom: HOME.zoom });
-					instance.addSource("places", {
-						type: "geojson",
-						data: sourceFor(places()),
-						cluster: true,
-						clusterRadius: 46,
-						clusterMaxZoom: 9,
-					});
-					instance.addLayer({
-						id: "place-clusters",
-						type: "circle",
-						source: "places",
-						filter: ["has", "point_count"],
-						paint: {
-							"circle-color": "#a84c36",
-							"circle-opacity": 0.16,
-							"circle-radius": [
-								"step",
-								["get", "point_count"],
-								26,
-								2,
-								34,
-								5,
-								42,
-							],
-							"circle-stroke-color": "#a84c36",
-							"circle-stroke-opacity": 0.32,
-							"circle-stroke-width": 1,
-						},
-					});
-					instance.addLayer({
-						id: "place-cluster-count",
-						type: "symbol",
-						source: "places",
-						filter: ["has", "point_count"],
-						layout: {
-							"text-field": ["get", "point_count_abbreviated"],
-							"text-font": ["Noto Sans Bold"],
-							"text-size": 12,
-						},
-						paint: {
-							"text-color": "#7d3524",
-						},
-					});
-					instance.addLayer({
-						id: "place-points",
-						type: "circle",
-						source: "places",
-						filter: ["!", ["has", "point_count"]],
-						paint: {
-							"circle-color": "#a84c36",
-							"circle-radius": 7,
-							"circle-stroke-color": "#fffbf3",
-							"circle-stroke-width": 2.5,
-						},
-					});
-					instance.addLayer({
-						id: "place-labels",
-						type: "symbol",
-						source: "places",
-						filter: ["!", ["has", "point_count"]],
-						minzoom: 6,
-						layout: {
-							"text-field": ["get", "name"],
-							"text-font": ["Noto Sans Regular"],
-							"text-size": 12,
-							"text-offset": [0, 1.2],
-							"text-anchor": "top",
-							"text-allow-overlap": false,
-						},
-						paint: {
-							"text-color": "#2b2320",
-							"text-halo-color": "#f7f1e5",
-							"text-halo-width": 2,
-						},
-					});
-
-					const zoomTo = (feature: MapGeoJSONFeature) => {
-						const source = instance.getSource<GeoJSONSource>("places");
-						const clusterId = feature.properties?.cluster_id;
-						if (!source || typeof clusterId !== "number") return;
-						void source
-							.getClusterExpansionZoom(clusterId)
-							.then((zoom: number) =>
-								instance.easeTo({
-									center: (feature.geometry as Point).coordinates as [
-										number,
-										number,
-									],
-									zoom: Math.max(zoom + 0.6, 4.5),
-									duration: 1200,
-								}),
-							);
-					};
-
-					instance.on("click", "place-clusters", (event) => {
-						const feature = event.features?.[0];
-						if (feature) zoomTo(feature);
-					});
-					instance.on("click", "place-points", (event) => {
-						const feature = event.features?.[0];
-						const key = feature?.properties?.key;
-						const place = places().find((entry) => entry.key === key);
-						if (place) focusPlace(place);
-					});
-					instance.on("click", (event) => {
-						const hits = instance.queryRenderedFeatures(event.point, {
-							layers: ["place-clusters", "place-points"],
-						});
-						if (hits.length === 0) setSelectedKey(null);
-					});
-					for (const layer of ["place-clusters", "place-points"]) {
-						instance.on("mouseenter", layer, () => {
-							instance.getCanvas().style.cursor = "pointer";
-						});
-						instance.on("mouseleave", layer, () => {
-							instance.getCanvas().style.cursor = "";
-						});
-					}
-
+					instance.on("click", () => setSelectedKey(null));
+					instance.on("moveend", syncMarkers);
 					setReady(true);
+					syncMarkers();
 				});
 
 				instance.on("error", (event) => {
@@ -274,9 +340,11 @@ export function Places(props: {
 	};
 
 	createEffect(
-		() => sourceFor(places()),
-		(data) => {
-			map?.getSource<GeoJSONSource>("places")?.setData(data);
+		() => places(),
+		() => {
+			// A new album means new pins even if the grouping happens to match.
+			markerSignature = "";
+			syncMarkers();
 		},
 	);
 
@@ -285,7 +353,12 @@ export function Places(props: {
 		setExpanded(next);
 		if (next) releaseScroll = lockBodyScroll();
 		else releaseScroll?.();
-		requestAnimationFrame(() => map?.resize());
+		if (next) map?.cooperativeGestures.disable();
+		else if (coarsePointer()) map?.cooperativeGestures.enable();
+		requestAnimationFrame(() => {
+			map?.resize();
+			syncMarkers();
+		});
 	};
 
 	return (
@@ -328,7 +401,7 @@ export function Places(props: {
 				}
 			>
 				<div class={["world", { "world-expanded": expanded() }]}>
-					<div class="world-map-wrap">
+					<div class="world-map-wrap" ref={mapWrap}>
 						<div
 							ref={(element) => {
 								container = element;
@@ -346,7 +419,7 @@ export function Places(props: {
 						</Show>
 						<Show when={failed()}>
 							<div class="world-loading">
-								<p>The map couldn't load. The list below still works.</p>
+								<p>The map couldn't load. The list beside it still works.</p>
 							</div>
 						</Show>
 						<div class="world-tools">
@@ -384,14 +457,72 @@ export function Places(props: {
 								OpenFreeMap
 							</a>
 						</p>
+
+						{/* Opened by a pin: every photo of that place, on the map it
+						    was taken from. */}
+						<Show when={selected()}>
+							{(place) => (
+								<div
+									class="map-sheet"
+									role="dialog"
+									aria-label={`${place().name}, ${place().photos.length} photos`}
+								>
+									<div class="map-sheet-head">
+										<div>
+											<p class="kicker">Showing</p>
+											<h3>{place().name}</h3>
+											<p class="map-sheet-meta">
+												{place().photos.length}{" "}
+												{place().photos.length === 1 ? "photo" : "photos"}
+												<Show when={place().last}>
+													{" · "}
+													{formatDay(place().last)}
+												</Show>
+											</p>
+										</div>
+										<button
+											type="button"
+											class="icon-button"
+											onClick={() => setSelectedKey(null)}
+											aria-label="Close these photos"
+										>
+											<Icon name="close" size={16} />
+										</button>
+									</div>
+									<div class="map-sheet-grid">
+										<For each={place().photos}>
+											{(photo) => (
+												<button
+													type="button"
+													onClick={() => props.onOpen(photo, place().photos)}
+													aria-label={
+														photo.caption
+															? `Open ${photo.caption}`
+															: "Open this photo"
+													}
+												>
+													<img
+														src={photo.thumbUrl}
+														alt={photo.caption || "A memory of us"}
+														loading="lazy"
+														decoding="async"
+													/>
+												</button>
+											)}
+										</For>
+									</div>
+								</div>
+							)}
+						</Show>
 					</div>
 
 					<div class="world-side">
 						<div class="world-side-head">
-							<p class="kicker">Click a pin to zoom in</p>
+							<p class="kicker">Tap a pile to open it</p>
 							<p>
-								Pins that land on top of each other gather into a cluster. Tap
-								one to open it up, then keep going right down to the street.
+								Every pin is the photos from one place. Tap it to see them all;
+								pins that land on top of each other gather into a cluster, and
+								tapping one of those zooms in until they come apart.
 							</p>
 						</div>
 						<div class="places-grid">
@@ -406,7 +537,7 @@ export function Places(props: {
 										aria-pressed={
 											selectedKey() === place.key ? "true" : "false"
 										}
-										onClick={() => focusPlace(place)}
+										onClick={() => selectPlace(place)}
 									>
 										<div class="place-cover">
 											<img
@@ -433,48 +564,6 @@ export function Places(props: {
 						</div>
 					</div>
 				</div>
-
-				<Show when={selected()}>
-					{(place) => (
-						<section class="place-detail">
-							<div class="place-detail-head">
-								<div>
-									<p class="kicker">Showing</p>
-									<h3>{place().name}</h3>
-								</div>
-								<button
-									type="button"
-									class="link-button"
-									onClick={() => setSelectedKey(null)}
-								>
-									Show every place
-								</button>
-							</div>
-							<div class="mini-pile">
-								<For each={place().photos}>
-									{(photo) => (
-										<button
-											type="button"
-											onClick={() => props.onOpen(photo, place().photos)}
-											aria-label={
-												photo.caption
-													? `Open ${photo.caption}`
-													: "Open this photo"
-											}
-										>
-											<img
-												src={photo.thumbUrl}
-												alt={photo.caption || "A memory of us"}
-												loading="lazy"
-												decoding="async"
-											/>
-										</button>
-									)}
-								</For>
-							</div>
-						</section>
-					)}
-				</Show>
 			</Show>
 		</>
 	);

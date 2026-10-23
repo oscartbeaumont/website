@@ -71,7 +71,6 @@ body.addy-page {
  */
 .photo-button img,
 .tl-photo img,
-.mini-pile img,
 .place-cover img,
 .lb-image {
 	-webkit-touch-callout: none;
@@ -1073,6 +1072,10 @@ body.addy-page {
 .world-map-wrap {
 	position: relative;
 	min-height: 540px;
+	/* The map is in a grid row that stretches to the list of places beside it,
+	   which can be a lot taller than the screen. Capping it keeps the map — and
+	   the photos that open over its bottom edge — where they can be seen. */
+	max-height: 78vh;
 	overflow: hidden;
 	border: 1px solid var(--rule);
 	background: var(--paper-2);
@@ -1135,16 +1138,178 @@ body.addy-page {
 	backdrop-filter: blur(8px);
 }
 
+/*
+ * Attribution sits in the corner, above whatever else is there: it has to stay
+ * readable, including over the photos a pin opens.
+ */
 .world-credit {
 	position: absolute;
 	right: 10px;
 	bottom: 8px;
-	z-index: 3;
+	z-index: 6;
 	padding: 3px 6px;
 	background: color-mix(in srgb, var(--paper) 82%, transparent);
 	font-size: 9px;
 	letter-spacing: 0.03em;
 	color: var(--soft);
+}
+
+/* ---------- map pins ---------- */
+
+/*
+ * A pin is the photos from one place, stacked the way the pile stacks them, so
+ * the map shows what is actually there rather than a dot that needs a legend.
+ */
+.map-pin {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 3px;
+	padding: 0;
+	border: 0;
+	background: none;
+	cursor: pointer;
+}
+
+.map-pin-stack {
+	position: relative;
+	display: block;
+	width: 56px;
+	height: 56px;
+}
+
+.map-pin-photo {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border: 3px solid var(--print);
+	box-shadow: 0 6px 14px #2b232033;
+}
+
+.map-pin-photo:nth-child(1) {
+	transform: rotate(-9deg) translate(-7px, 2px);
+}
+
+.map-pin-photo:nth-child(2) {
+	transform: rotate(7deg) translate(7px, -1px);
+}
+
+.map-pin-photo:nth-child(3) {
+	transform: rotate(-2deg);
+}
+
+/* The newest photo is the one on top of the pile. */
+.map-pin-photo:last-child {
+	z-index: 2;
+}
+
+.map-pin-photo:first-child:last-child {
+	transform: none;
+}
+
+.map-pin-count {
+	position: absolute;
+	top: -6px;
+	right: -4px;
+	z-index: 3;
+	min-width: 20px;
+	padding: 1px 5px;
+	border-radius: 999px;
+	background: var(--accent);
+	color: var(--paper);
+	font-size: 10px;
+	line-height: 1.5;
+	letter-spacing: 0.02em;
+	box-shadow: 0 3px 8px #2b232040;
+}
+
+.map-pin-name {
+	padding: 2px 6px;
+	background: var(--paper);
+	font-size: 8.5px;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--ink);
+	white-space: nowrap;
+	box-shadow: 0 3px 8px #2b232026;
+}
+
+.map-pin:hover .map-pin-stack,
+.map-pin:focus-visible .map-pin-stack {
+	transform: translateY(-2px);
+}
+
+.map-pin-stack {
+	transition: transform 0.25s;
+}
+
+/* ---------- the photos a pin opens ---------- */
+
+.map-sheet {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 4;
+	display: flex;
+	flex-direction: column;
+	max-height: min(62%, 360px);
+	background: var(--paper);
+	border-top: 1px solid var(--rule);
+	box-shadow: 0 -18px 40px #2b232026;
+	animation: sheetIn 0.24s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.map-sheet-head {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 13px 14px 9px;
+}
+
+.map-sheet-head h3 {
+	margin: 2px 0 0;
+	font-size: 26px;
+	line-height: 1;
+}
+
+.map-sheet-meta {
+	margin-top: 4px;
+	font-size: 9px;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--soft);
+}
+
+.map-sheet-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+	gap: 8px;
+	min-height: 0;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	/* The bottom band is left to the map's attribution, which floats over it. */
+	padding: 0 14px 34px;
+}
+
+.map-sheet-grid button {
+	padding: 0;
+	border: 0;
+	background: none;
+	cursor: zoom-in;
+}
+
+.map-sheet-grid img {
+	display: block;
+	width: 100%;
+	aspect-ratio: 1 / 1;
+	object-fit: cover;
+	border: 4px solid var(--print);
+	box-shadow: 0 6px 14px var(--shadow);
 }
 
 .world-credit a {
@@ -1278,54 +1443,6 @@ body.addy-page {
 	letter-spacing: 0.1em;
 	text-transform: uppercase;
 	color: var(--soft);
-}
-
-.place-detail {
-	margin-top: 36px;
-}
-
-.place-detail-head {
-	display: flex;
-	align-items: flex-end;
-	justify-content: space-between;
-	gap: 18px;
-	padding-top: 20px;
-	margin-bottom: 18px;
-	border-top: 1px solid var(--rule);
-}
-
-.place-detail-head h3 {
-	font-size: 32px;
-	line-height: 1;
-}
-
-.mini-pile {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-	gap: 12px;
-}
-
-.mini-pile button {
-	padding: 0;
-	border: 0;
-	background: none;
-	cursor: zoom-in;
-}
-
-.mini-pile img {
-	display: block;
-	width: 100%;
-	aspect-ratio: 1 / 1;
-	object-fit: cover;
-	border: 5px solid var(--print);
-	box-shadow: 0 8px 18px var(--shadow);
-	transition: transform 0.3s;
-}
-
-@media (hover: hover) {
-	.mini-pile button:hover img {
-		transform: translateY(-3px) rotate(-0.6deg);
-	}
 }
 
 /* ---------- lightbox ---------- */
@@ -2365,7 +2482,22 @@ body.addy-page {
 	}
 
 	.world-map-wrap {
-		min-height: 360px;
+		min-height: 380px;
+	}
+
+	/* A thumb-sized pile is the whole tap target, so it keeps its size on a
+	   phone and the map gives up height instead. */
+	.map-pin-stack {
+		width: 58px;
+		height: 58px;
+	}
+
+	.map-sheet {
+		max-height: 66%;
+	}
+
+	.map-sheet-grid {
+		grid-template-columns: repeat(3, 1fr);
 	}
 
 	.world-tools .button {
@@ -2374,10 +2506,6 @@ body.addy-page {
 	}
 
 	.tl-undated {
-		grid-template-columns: repeat(2, 1fr);
-	}
-
-	.mini-pile {
 		grid-template-columns: repeat(2, 1fr);
 	}
 
