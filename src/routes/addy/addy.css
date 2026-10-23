@@ -1235,6 +1235,13 @@ body.addy-page {
 	color: var(--ink);
 	white-space: nowrap;
 	box-shadow: 0 3px 8px #2b232026;
+	transition: opacity 0.2s;
+}
+
+/* Two pins close enough that their names would print over each other: the one
+   underneath gives up its name, and both stay exactly where they belong. */
+.map-pin-crowded .map-pin-name {
+	opacity: 0;
 }
 
 .map-pin:hover .map-pin-stack,

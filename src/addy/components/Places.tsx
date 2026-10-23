@@ -20,89 +20,13 @@ import { Icon } from "./Icons";
 
 const MAP_STYLE = "https://tiles.openfreemap.org/styles/positron";
 const HOME = { center: [115.6, -31.6] as [number, number], zoom: 1.45 };
-/** How close two places have to be on screen before they share one pin. */
-const CLUSTER_PX = 78;
+/**
+ * How close two pins have to be on screen before their names would print over
+ * each other. Only the name is hidden: every pin stays where it belongs.
+ */
+const CROWDED_PX = 46;
 /** Photos shown in the pile; the rest are counted on the badge. */
 const PILE = 3;
-
-type Pin = {
-	signature: string;
-	kind: "place" | "cluster";
-	places: PlaceGroup[];
-	photos: AddyPhoto[];
-	/** Every photo in the pin, including the ones the pile cannot show. */
-	count: number;
-	center: [number, number];
-};
-
-/**
- * Group the places that would land on top of each other at the current zoom, so
- * a pin is always something you can hit with a thumb.
- */
-function pinsFor(
-	places: PlaceGroup[],
-	project: (lngLat: [number, number]) => { x: number; y: number },
-): Pin[] {
-	const groups: Array<{ x: number; y: number; places: PlaceGroup[] }> = [];
-	for (const place of places) {
-		const point = project([place.lng, place.lat]);
-		const near = groups.find(
-			(group) => Math.hypot(group.x - point.x, group.y - point.y) < CLUSTER_PX,
-		);
-		if (near) near.places.push(place);
-		else groups.push({ x: point.x, y: point.y, places: [place] });
-	}
-
-	return groups.map((group) => {
-		const single = group.places.length === 1;
-		return {
-			signature: `${single ? "place" : "cluster"}:${group.places
-				.map((place) => place.key)
-				.join(",")}`,
-			kind: single ? "place" : "cluster",
-			places: group.places,
-			// One place shows its newest photos; a cluster shows one photo from
-			// each place it is standing in for.
-			photos: single
-				? group.places[0].photos.slice(-PILE)
-				: group.places.slice(0, PILE).map((place) => place.cover),
-			count: group.places.reduce((sum, place) => sum + place.photos.length, 0),
-			center: [
-				group.places.reduce((sum, place) => sum + place.lng, 0) /
-					group.places.length,
-				group.places.reduce((sum, place) => sum + place.lat, 0) /
-					group.places.length,
-			],
-		};
-	});
-}
-
-/**
- * Rough metres between two points — enough to pick a zoom, not a measurement.
- */
-function metresBetween(aLat: number, aLng: number, bLat: number, bLng: number) {
-	const x =
-		(aLng - bLng) * Math.cos(((aLat + bLat) / 2) * (Math.PI / 180)) * 111_320;
-	const y = (aLat - bLat) * 111_320;
-	return Math.hypot(x, y);
-}
-
-/**
- * The zoom at which a group this wide comes apart into separate pins, so one
- * tap on a cluster is worth more than a nudge. Web Mercator halves the world
- * every zoom level, which is all the arithmetic needs.
- */
-function zoomToSeparate(pin: Pin, pixels: number): number {
-	let widest = 0;
-	for (const a of pin.places)
-		for (const b of pin.places)
-			widest = Math.max(widest, metresBetween(a.lat, a.lng, b.lat, b.lng));
-	const metresPerPixel = Math.max(widest, 1) / pixels;
-	return Math.log2(
-		(156_543.03392 * Math.cos((pin.center[1] * Math.PI) / 180)) /
-			metresPerPixel,
-	);
-}
 
 export function Places(props: {
 	photos: AddyPhoto[];
@@ -123,7 +47,10 @@ export function Places(props: {
 	let mapWrap: HTMLDivElement | undefined;
 	let map: MapLibreMap | undefined;
 	let MarkerClass: { new (options: MarkerOptions): MapLibreMarker } | undefined;
-	let markers: MapLibreMarker[] = [];
+	let markers = new Map<
+		string,
+		{ marker: MapLibreMarker; element: HTMLElement }
+	>();
 	let markerSignature = "";
 	let releaseScroll: (() => void) | undefined;
 	let booted = false;
@@ -142,8 +69,8 @@ export function Places(props: {
 		document.removeEventListener("keydown", onKey);
 		window.removeEventListener("resize", resize);
 		releaseScroll?.();
-		for (const marker of markers) marker.remove();
-		markers = [];
+		for (const entry of markers.values()) entry.marker.remove();
+		markers = new Map();
 		map?.remove();
 		map = undefined;
 	});
@@ -180,23 +107,6 @@ export function Places(props: {
 		);
 	};
 
-	const openCluster = (pin: Pin) => {
-		if (!map) return;
-		const target = zoomToSeparate(pin, CLUSTER_PX * 2);
-		// Past this the pins cannot be pulled apart any further, so open the
-		// busiest place instead of zooming into nothing.
-		if (!Number.isFinite(target) || map.getZoom() >= 15) {
-			selectPlace(pin.places[0]);
-			return;
-		}
-		map.easeTo({
-			center: pin.center,
-			zoom: Math.min(Math.max(target, map.getZoom() + 0.8), 15.5),
-			duration: 1100,
-			essential: true,
-		});
-	};
-
 	const resetGlobe = () => {
 		setSelectedKey(null);
 		map?.flyTo({
@@ -207,27 +117,47 @@ export function Places(props: {
 		});
 	};
 
-	const pinLabel = (pin: Pin) => {
-		if (pin.kind === "place")
-			return `${pin.places[0].name}, ${pin.count} ${
-				pin.count === 1 ? "photo" : "photos"
-			}`;
-		return `${pin.places.length} places, ${pin.count} ${
-			pin.count === 1 ? "photo" : "photos"
-		}`;
+	/**
+	 * Open on the places rather than on the whole planet: they are all in one
+	 * corner of it, and a globe would stack every pin on the same pixel.
+	 */
+	const fitPlaces = () => {
+		if (!map) return;
+		const list = places();
+		if (list.length === 0) return;
+		const lngs = list.map((place) => place.lng);
+		const lats = list.map((place) => place.lat);
+		map.fitBounds(
+			[
+				[Math.min(...lngs), Math.min(...lats)],
+				[Math.max(...lngs), Math.max(...lats)],
+			],
+			{ padding: 64, maxZoom: 11, duration: 0 },
+		);
 	};
 
-	/** One pin: a pile of photos, a count when there are more, and the name. */
-	const pinElement = (pin: Pin) => {
+	const pinLabel = (place: PlaceGroup) =>
+		`${place.name}, ${place.photos.length} ${
+			place.photos.length === 1 ? "photo" : "photos"
+		}`;
+
+	/**
+	 * One pin per place, standing on that place's own coordinates — never a
+	 * point averaged with a neighbour, so a photo is only ever drawn where it
+	 * was taken. The pile is the place's newest photos and the badge counts the
+	 * ones the pile could not show.
+	 */
+	const pinElement = (place: PlaceGroup) => {
 		const button = document.createElement("button");
 		button.type = "button";
-		button.className = `map-pin ${pin.kind}`;
-		button.title = pinLabel(pin);
-		button.setAttribute("aria-label", pinLabel(pin));
+		button.className = "map-pin place";
+		button.title = pinLabel(place);
+		button.setAttribute("aria-label", pinLabel(place));
 
+		const photos = place.photos.slice(-PILE);
 		const stack = document.createElement("span");
 		stack.className = "map-pin-stack";
-		for (const photo of pin.photos) {
+		for (const photo of photos) {
 			const image = document.createElement("img");
 			image.className = "map-pin-photo";
 			image.src = photo.thumbUrl;
@@ -238,23 +168,20 @@ export function Places(props: {
 		}
 		button.appendChild(stack);
 
-		if (pin.kind === "cluster" || pin.count > pin.photos.length) {
+		if (place.photos.length > photos.length) {
 			const badge = document.createElement("span");
 			badge.className = "map-pin-count";
-			badge.textContent = String(pin.count);
+			badge.textContent = String(place.photos.length);
 			button.appendChild(badge);
 		}
-		if (pin.kind === "place") {
-			const name = document.createElement("span");
-			name.className = "map-pin-name";
-			name.textContent = pin.places[0].name;
-			button.appendChild(name);
-		}
+		const name = document.createElement("span");
+		name.className = "map-pin-name";
+		name.textContent = place.name;
+		button.appendChild(name);
 
 		button.addEventListener("click", (event) => {
 			event.stopPropagation();
-			if (pin.kind === "place") selectPlace(pin.places[0]);
-			else openCluster(pin);
+			selectPlace(place);
 		});
 		return button;
 	};
@@ -263,18 +190,45 @@ export function Places(props: {
 		const Ctor = MarkerClass;
 		if (!map || !Ctor || disposed) return;
 		const instance = map;
-		const pins = pinsFor(places(), (lngLat) => instance.project(lngLat));
-		const signature = pins.map((pin) => pin.signature).join("|");
-		// Rebuilding re-fetches the thumbnails, so only do it when the grouping
-		// actually changed.
-		if (signature === markerSignature) return;
-		markerSignature = signature;
-		for (const marker of markers) marker.remove();
-		markers = pins.map((pin) =>
-			new Ctor({ element: pinElement(pin), anchor: "center" })
-				.setLngLat(pin.center)
-				.addTo(instance),
-		);
+		const list = places();
+		const signature = list
+			.map((place) => `${place.key}:${place.photos.length}`)
+			.join("|");
+		// Rebuilding re-fetches the thumbnails, so only do it when the places
+		// themselves changed.
+		if (signature !== markerSignature) {
+			markerSignature = signature;
+			for (const entry of markers.values()) entry.marker.remove();
+			markers = new Map();
+			// The busiest place goes on last, so a pile of them opens the one
+			// with the most behind it.
+			for (const place of [...list].sort(
+				(a, b) => a.photos.length - b.photos.length,
+			)) {
+				const element = pinElement(place);
+				const marker = new Ctor({ element, anchor: "center" })
+					.setLngLat([place.lng, place.lat])
+					.addTo(instance);
+				markers.set(place.key, { marker, element });
+			}
+		}
+
+		// A pin with a neighbour on top of it keeps quiet about its name, so a
+		// pile does not print every name over the others.
+		const points = list.map((place) => ({
+			key: place.key,
+			...instance.project([place.lng, place.lat]),
+		}));
+		for (const point of points) {
+			const crowded = points.some(
+				(other) =>
+					other.key !== point.key &&
+					Math.hypot(other.x - point.x, other.y - point.y) < CROWDED_PX,
+			);
+			markers
+				.get(point.key)
+				?.element.classList.toggle("map-pin-crowded", crowded);
+		}
 	};
 
 	/** Built from the element's ref: by then it is attached and has a size. */
@@ -321,9 +275,9 @@ export function Places(props: {
 					styleReady = true;
 					window.clearTimeout(failTimer);
 					instance.setProjection({ type: "globe" });
-					instance.jumpTo({ center: HOME.center, zoom: HOME.zoom });
 					instance.on("click", () => setSelectedKey(null));
 					instance.on("moveend", syncMarkers);
+					fitPlaces();
 					setReady(true);
 					syncMarkers();
 				});
@@ -370,8 +324,8 @@ export function Places(props: {
 				</div>
 				<p class="section-meta">
 					<Show when={!props.loading} fallback="Finding the pins…">
-						{places().length} {places().length === 1 ? "place" : "places"} · the
-						whole globe
+						{places().length} {places().length === 1 ? "place" : "places"} ·
+						every one of them
 					</Show>
 				</p>
 			</div>
@@ -520,9 +474,10 @@ export function Places(props: {
 						<div class="world-side-head">
 							<p class="kicker">Tap a pile to open it</p>
 							<p>
-								Every pin is the photos from one place. Tap it to see them all;
-								pins that land on top of each other gather into a cluster, and
-								tapping one of those zooms in until they come apart.
+								Every pin is the photos from one place, standing on the spot
+								they were taken. Tap one to see them all. Where two places are
+								close together their pins overlap, and zooming in pulls them
+								apart.
 							</p>
 						</div>
 						<div class="places-grid">
