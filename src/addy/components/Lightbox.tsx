@@ -113,9 +113,9 @@ export function Lightbox(props: {
 							</Show>
 						</div>
 
-						<h2 class="lb-caption">
-							{current().caption || "We never wrote this one down."}
-						</h2>
+						<Show when={current().caption}>
+							<h2 class="lb-caption">{current().caption}</h2>
+						</Show>
 
 						<div class="lb-meta">
 							<p>{formatDay(current().takenAt)}</p>

@@ -388,8 +388,6 @@ export default function Page() {
 					places={placeCount()}
 					anniversary={anniversary()}
 					onShuffle={openRandom}
-					onTimeline={() => selectView("timeline")}
-					onUpload={requestUpload}
 					onLogin={() => requestLogin()}
 					onOpen={(photo) => openPhoto(photo, allPhotos())}
 					locked={locked()}
@@ -416,36 +414,6 @@ export default function Page() {
 
 				<Show when={authenticated()}>
 					<section class="photos" id="photos">
-						<div class="album-bar">
-							<div>
-								<p class="kicker">The private part</p>
-								<p class="album-bar-copy">
-									Everything the two of us have kept so far.
-								</p>
-							</div>
-							<div class="album-bar-actions">
-								<button
-									type="button"
-									class="button line small"
-									onClick={requestUpload}
-								>
-									<Icon name="upload" size={15} />
-									Add photos
-								</button>
-								<button
-									type="button"
-									class="button line small"
-									onClick={downloadAll}
-									disabled={progress() !== null}
-								>
-									<Icon name="download" size={15} />
-									{progress()
-										? `Packing ${progress()?.done}/${progress()?.total}`
-										: "Download album"}
-								</button>
-							</div>
-						</div>
-
 						<Switch>
 							<Match when={view() === "gallery"}>
 								<Gallery
@@ -483,6 +451,16 @@ export default function Page() {
 						<p>A small internet place for two people. Since 20 June 2025.</p>
 					</div>
 					<div class="footer-links">
+						<button
+							type="button"
+							class="link-button"
+							onClick={downloadAll}
+							disabled={progress() !== null}
+						>
+							{progress()
+								? `Packing ${progress()?.done}/${progress()?.total}`
+								: "Download album"}
+						</button>
 						<button type="button" class="link-button" onClick={signOut}>
 							Sign out
 						</button>

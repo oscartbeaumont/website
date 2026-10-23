@@ -625,29 +625,6 @@
 	white-space: nowrap;
 }
 
-.album-bar {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 20px;
-	flex-wrap: wrap;
-	margin-bottom: 26px;
-	padding: 16px 20px;
-	border: 1px solid var(--rule);
-	background: var(--card);
-}
-
-.album-bar-copy {
-	font-size: 12.5px;
-	color: var(--soft);
-}
-
-.album-bar-actions {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 8px;
-}
-
 .load-error {
 	max-width: 1360px;
 	margin: 0 auto 30px;
@@ -1680,6 +1657,42 @@
 	border-top: 1px solid var(--rule);
 }
 
+/*
+ * Upload progress: one meter for the file in flight, and one at the top of the
+ * list for the roll as a whole. The bar is a hairline rather than a box so it
+ * reads as part of the row instead of another control.
+ */
+.upload-meter {
+	position: relative;
+	height: 3px;
+	margin: 2px 0 6px;
+	overflow: hidden;
+	border-radius: 999px;
+	background: color-mix(in srgb, var(--ink) 12%, transparent);
+}
+
+.upload-meter span {
+	position: absolute;
+	inset: 0 auto 0 0;
+	background: var(--accent);
+	transition: width 140ms linear;
+}
+
+.upload-summary {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 10px;
+	padding: 10px 12px;
+	border: 1px solid var(--rule);
+	background: var(--card);
+}
+
+.upload-summary .upload-meter {
+	flex: 1;
+	margin: 0;
+}
+
 .upload-preview {
 	width: 64px;
 	aspect-ratio: 1 / 1;
@@ -1725,6 +1738,13 @@
 
 .field-hint.done {
 	color: var(--sage);
+}
+
+.upload-summary .field-hint {
+	flex: 0 0 auto;
+	color: var(--accent);
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
 }
 
 .field-error {
@@ -2242,19 +2262,6 @@
 	.world-tools .button {
 		font-size: 10.5px;
 		padding: 8px 11px;
-	}
-
-	.album-bar {
-		flex-direction: column;
-		align-items: flex-start;
-	}
-
-	.album-bar-actions {
-		width: 100%;
-	}
-
-	.album-bar-actions .button {
-		flex: 1 1 auto;
 	}
 
 	.tl-undated {

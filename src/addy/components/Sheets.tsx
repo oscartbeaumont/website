@@ -10,6 +10,7 @@ import {
 import { coordinateLabel } from "../album";
 import {
 	login,
+	lookupPlace,
 	type PhotoPatch,
 	type PreparedPhoto,
 	patchPhoto,
@@ -161,6 +162,10 @@ type UploadItem = {
 	caption: string;
 	takenAt: string;
 	place: string;
+	/** True when the place was worked out from the photo, not typed. */
+	placeFromGps?: boolean;
+	/** How much of this file has gone up, 0 to 1. */
+	progress?: number;
 	/** The place the server worked out for us, shown once it is stored. */
 	uploadedPlace?: string;
 };
@@ -217,6 +222,24 @@ export function UploadSheet(props: {
 						takenAt:
 							prepared.exif.takenAt?.slice(0, 16) ?? localInputValue(fallback),
 					});
+					// Name the place before it is uploaded, so the form shows
+					// where the photo is going to land and can be corrected.
+					// A photo in the middle of nowhere is still worth uploading,
+					// so a failed lookup is not an error.
+					if (prepared.exif.lat !== null && prepared.exif.lng !== null) {
+						void lookupPlace(prepared.exif.lat, prepared.exif.lng)
+							.then((place) => {
+								if (!place || disposed) return;
+								const current = items().find((entry) => entry.key === key);
+								if (!current) return;
+								// Don't overwrite something they typed while we looked.
+								if (current.place.trim() !== "") return;
+								update(key, { place, placeFromGps: true });
+							})
+							.catch(() => {
+								// The upload still resolves the place on the server.
+							});
+					}
 				} catch (problem) {
 					if (!disposed)
 						update(key, { status: "error", error: message(problem) });
@@ -235,6 +258,26 @@ export function UploadSheet(props: {
 		items().filter((item) => item.status === "ready").length;
 	const preparing = () => items().some((item) => item.status === "preparing");
 
+	/**
+	 * One number for the whole roll, so the sheet can say "3 of 5" rather than
+	 * five separate bars that each jump around.
+	 */
+	const overall = () => {
+		const queued = items().filter((item) => item.prepared);
+		if (queued.length === 0) return null;
+		const fraction =
+			queued.reduce(
+				(sum, item) =>
+					sum + (item.status === "done" ? 1 : (item.progress ?? 0)),
+				0,
+			) / queued.length;
+		return {
+			done: queued.filter((item) => item.status === "done").length,
+			total: queued.length,
+			percent: Math.round(fraction * 100),
+		};
+	};
+
 	const submit = async () => {
 		if (busy() || preparing()) return;
 		setBusy(true);
@@ -242,16 +285,21 @@ export function UploadSheet(props: {
 		const added: AddyPhoto[] = [];
 		for (const item of items()) {
 			if (item.status !== "ready" || !item.prepared) continue;
-			update(item.key, { status: "uploading" });
+			update(item.key, { status: "uploading", progress: 0 });
 			try {
-				const photo = await uploadPhoto(item.prepared, {
-					caption: item.caption.trim(),
-					takenAt: item.takenAt || null,
-					place: item.place.trim(),
-				});
+				const photo = await uploadPhoto(
+					item.prepared,
+					{
+						caption: item.caption.trim(),
+						takenAt: item.takenAt || null,
+						place: item.place.trim(),
+					},
+					(fraction) => update(item.key, { progress: fraction }),
+				);
 				added.push(photo);
 				update(item.key, {
 					status: "done",
+					progress: 1,
 					// The server is the one that names a place, so show what it
 					// decided rather than what the form guessed.
 					uploadedPlace: photo.place ?? undefined,
@@ -313,6 +361,18 @@ export function UploadSheet(props: {
 			</label>
 
 			<Show when={items().length > 0}>
+				<Show when={busy() ? overall() : null}>
+					{(state) => (
+						<div class="upload-summary" role="status">
+							<div class="upload-meter">
+								<span style={{ width: `${state().percent}%` }} />
+							</div>
+							<p class="field-hint">
+								{state().done} of {state().total} added · {state().percent}%
+							</p>
+						</div>
+					)}
+				</Show>
 				<div class="upload-list">
 					<For each={items()}>
 						{(item) => (
@@ -334,6 +394,27 @@ export function UploadSheet(props: {
 								</div>
 								<div class="upload-fields">
 									<p class="upload-name">{item.name}</p>
+									{/* The meter sits above the fields, where the sticky
+									    footer cannot cover it while the file goes up. */}
+									<Show when={item.status === "uploading"}>
+										<div
+											class="upload-meter"
+											role="progressbar"
+											aria-valuemin={0}
+											aria-valuemax={100}
+											aria-valuenow={Math.round((item.progress ?? 0) * 100)}
+											aria-label={`Uploading ${item.name}`}
+										>
+											<span
+												style={{
+													width: `${Math.round((item.progress ?? 0) * 100)}%`,
+												}}
+											/>
+										</div>
+										<p class="field-hint">
+											{Math.round((item.progress ?? 0) * 100)}% of the file sent
+										</p>
+									</Show>
 									<Show
 										when={
 											item.status === "ready" ||
@@ -397,16 +478,18 @@ export function UploadSheet(props: {
 										>
 											<p class="field-hint">
 												<Icon name="pin" size={12} />
-												Location in the photo ·{" "}
-												{coordinateLabel(
-													item.prepared?.exif.lat ?? 0,
-													item.prepared?.exif.lng ?? 0,
-												)}
+												<Show
+													when={!item.placeFromGps}
+													fallback="Worked out from the photo's location"
+												>
+													Location in the photo ·{" "}
+													{coordinateLabel(
+														item.prepared?.exif.lat ?? 0,
+														item.prepared?.exif.lng ?? 0,
+													)}
+												</Show>
 											</p>
 										</Show>
-									</Show>
-									<Show when={item.status === "uploading"}>
-										<p class="field-hint">Uploading…</p>
 									</Show>
 									<Show when={item.status === "done"}>
 										<p class="field-hint done">
@@ -426,6 +509,7 @@ export function UploadSheet(props: {
 													update(item.key, {
 														status: "ready",
 														error: undefined,
+														progress: 0,
 													})
 												}
 											>

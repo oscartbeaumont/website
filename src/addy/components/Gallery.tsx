@@ -48,18 +48,16 @@ function PhotoCard(props: {
 					Open
 				</span>
 			</button>
-			<figcaption>
-				<span class="caption">
-					{photo().caption ||
-						photo().place ||
-						(photo().legacy ? "From the first roll" : "One for the pile")}
-				</span>
-				<span class="caption-meta">
-					{photo().legacy && !photo().takenAt
-						? "first roll"
-						: formatDay(photo().takenAt)}
-				</span>
-			</figcaption>
+			<Show when={photo().caption || photo().takenAt}>
+				<figcaption>
+					<Show when={photo().caption}>
+						<span class="caption">{photo().caption}</span>
+					</Show>
+					<Show when={photo().takenAt}>
+						<span class="caption-meta">{formatDay(photo().takenAt)}</span>
+					</Show>
+				</figcaption>
+			</Show>
 		</figure>
 	);
 }

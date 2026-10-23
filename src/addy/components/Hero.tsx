@@ -9,8 +9,6 @@ type HeroProps = {
 	places: number | null;
 	anniversary: string | null;
 	onShuffle: () => void;
-	onTimeline: () => void;
-	onUpload: () => void;
 	onOpen: (photo: AddyPhoto) => void;
 	onLogin: () => void;
 	locked: boolean;
@@ -188,17 +186,6 @@ function HomeHero(props: HeroProps) {
 						>
 							<Icon name="sparkle" size={16} />
 							Surprise me
-						</button>
-						<button
-							class="button line"
-							type="button"
-							onClick={props.onTimeline}
-						>
-							Read our timeline
-						</button>
-						<button class="button quiet" type="button" onClick={props.onUpload}>
-							<Icon name="upload" size={15} />
-							Add photos
 						</button>
 					</div>
 				</div>

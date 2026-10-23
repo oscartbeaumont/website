@@ -43,6 +43,21 @@ export async function fetchSession(): Promise<SessionState> {
 	return request("/addy/api/session");
 }
 
+/**
+ * Ask the server what a set of coordinates is called. The lookups go through
+ * the Worker so the map provider sees one well-behaved client, and so the
+ * answer is cached for the next photo taken in the same spot.
+ */
+export async function lookupPlace(
+	lat: number,
+	lng: number,
+): Promise<string | null> {
+	const data = await request<{ place: string | null }>(
+		`/addy/api/location?lat=${lat}&lng=${lng}`,
+	);
+	return data.place ?? null;
+}
+
 export async function setCover(id: string): Promise<string> {
 	const data = await request<{ coverId: string }>("/addy/api/cover", {
 		method: "POST",
@@ -170,9 +185,16 @@ export async function preparePhoto(file: File): Promise<PreparedPhoto> {
 	}
 }
 
-export async function uploadPhoto(
+/**
+ * The upload is the one request worth watching: a roll of phone photos can be
+ * a hundred megabytes over a hotel connection. `fetch` cannot report how much
+ * of a request body has gone out, so this one goes through XHR, whose upload
+ * events can.
+ */
+export function uploadPhoto(
 	prepared: PreparedPhoto,
 	fields: { caption: string; takenAt: string | null; place: string },
+	onProgress?: (fraction: number) => void,
 ): Promise<AddyPhoto> {
 	const form = new FormData();
 	form.append(
@@ -191,14 +213,34 @@ export async function uploadPhoto(
 	form.append("display", prepared.display, "display.jpg");
 	form.append("thumb", prepared.thumb, "thumb.jpg");
 
-	const response = await fetch("/addy/api/photos", {
-		method: "POST",
-		body: form,
-		cache: "no-store",
+	return new Promise<AddyPhoto>((resolve, reject) => {
+		const xhr = new XMLHttpRequest();
+		xhr.open("POST", "/addy/api/photos");
+		xhr.responseType = "json";
+		xhr.upload.addEventListener("progress", (event) => {
+			if (event.lengthComputable && event.total > 0)
+				onProgress?.(event.loaded / event.total);
+		});
+		xhr.addEventListener("load", () => {
+			const data = xhr.response as {
+				photo?: AddyPhoto;
+				error?: string;
+			} | null;
+			if (xhr.status >= 200 && xhr.status < 300 && data?.photo) {
+				onProgress?.(1);
+				resolve(data.photo);
+				return;
+			}
+			reject(new Error(data?.error ?? `Something went wrong (${xhr.status}).`));
+		});
+		xhr.addEventListener("error", () =>
+			reject(new Error("The upload was cut off. Try again?")),
+		);
+		xhr.addEventListener("abort", () =>
+			reject(new Error("That upload was cancelled.")),
+		);
+		xhr.send(form);
 	});
-	if (!response.ok) throw new Error(await errorMessage(response));
-	const data = (await response.json()) as { photo: AddyPhoto };
-	return data.photo;
 }
 
 export function downloadPhoto(photo: AddyPhoto) {

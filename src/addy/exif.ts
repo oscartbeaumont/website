@@ -82,7 +82,7 @@ function parsePng(view: DataView): PhotoExif {
 }
 
 function xmpTag(xmp: string, name: string): string | null {
-	const match = new RegExp(`<exif:${name}>([^<]*)</exif:${name}>`).exec(xmp);
+	const match = new RegExp(`<${name}>([^<]*)</${name}>`).exec(xmp);
 	return match ? match[1].trim() : null;
 }
 
@@ -112,12 +112,17 @@ function perthTime(value: string | null): string | null {
 
 function parseXmp(xmp: string): PhotoExif {
 	if (!xmp) return EMPTY;
-	const lat = xmpCoordinate(xmpTag(xmp, "GPSLatitude"));
-	const lng = xmpCoordinate(xmpTag(xmp, "GPSLongitude"));
-	const date = xmpTag(xmp, "DateTimeOriginal");
+	const lat = xmpCoordinate(xmpTag(xmp, "exif:GPSLatitude"));
+	const lng = xmpCoordinate(xmpTag(xmp, "exif:GPSLongitude"));
+	// Apple writes the local clock into all three of these, whatever the spec
+	// says about `xmp:CreateDate` being UTC, so they are read the same way.
+	const date =
+		xmpTag(xmp, "exif:DateTimeOriginal") ??
+		xmpTag(xmp, "photoshop:DateCreated") ??
+		xmpTag(xmp, "xmp:CreateDate");
 	const takenAt = date
 		? `${date.slice(0, 19).replace(" ", "T")}+08:00`
-		: perthTime(xmpTag(xmp, "GPSTimeStamp"));
+		: perthTime(xmpTag(xmp, "exif:GPSTimeStamp"));
 	const validLat = lat !== null && Math.abs(lat) <= 90 ? lat : null;
 	const validLng = lng !== null && Math.abs(lng) <= 180 ? lng : null;
 	return {
@@ -234,13 +239,22 @@ function parseTiff(view: DataView, base: number): PhotoExif {
 	let takenAt: string | null = null;
 	if (exifIfd >= 0) {
 		const exif = readIfd(exifIfd);
-		const date = exif.find((entry) => entry.tag === 0x9003);
+		const date =
+			exif.find((entry) => entry.tag === 0x9003) ??
+			exif.find((entry) => entry.tag === 0x9004);
 		const offsetEntry = exif.find((entry) => entry.tag === 0x9011);
 		if (date)
 			takenAt = normaliseDate(
 				ascii(date),
 				offsetEntry ? ascii(offsetEntry) : null,
 			);
+	}
+	if (!takenAt) {
+		// Some exports keep only the file's own clock, in IFD0. It is the
+		// moment the file was written rather than the shutter, but for a photo
+		// that is usually the same minute.
+		const date = ifd0.find((entry) => entry.tag === 0x0132);
+		if (date) takenAt = normaliseDate(ascii(date), null);
 	}
 
 	let lat: number | null = null;

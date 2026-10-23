@@ -21,6 +21,7 @@ import {
 	type PhotoMeta,
 	pinnedCoverSource,
 	readMeta,
+	readOriginalHead,
 	setCoverFromPhoto,
 	writeMeta,
 } from "./store";
@@ -203,6 +204,170 @@ export async function handleAddyApi(
 			if (!authenticated) return fail("Log in first.", 401);
 			await clearCover();
 			return json({ coverId: null });
+		}
+
+		if (path === "location" && method === "GET") {
+			if (!authenticated) return fail("Log in first.", 401);
+			const lat = cleanNumber(url.searchParams.get("lat"), -90, 90);
+			const lng = cleanNumber(url.searchParams.get("lng"), -180, 180);
+			if (lat === null || lng === null)
+				return fail("Those coordinates don't look right.");
+			return json({ place: await reverseGeocode(lat, lng) });
+		}
+
+		/**
+		 * Fill in the date, place and pin on photos that are missing them, by
+		 * reading the stored original and asking the map. Batched because a
+		 * Worker gets a limited number of subrequests per call, and idempotent
+		 * because the photos that carry no location at all come back unchanged.
+		 */
+		if (path === "backfill" && method === "POST") {
+			if (!authenticated) return fail("Log in first.", 401);
+			const data = await body(request);
+			const requested = cleanNumber(data.limit, 1, 12);
+			const limit = requested === null ? 6 : Math.floor(requested);
+			const photos = await listPhotos(true);
+			// A photo with coordinates only needs a name; one with a name only
+			// needs a pin; one with neither needs luck.
+			const weight = (photo: { lat: number | null; place: string | null }) =>
+				(photo.lat === null ? 0 : 2) + (photo.place ? 1 : 0);
+			const pending = photos
+				.filter(
+					(photo) => !photo.place || photo.lat === null || photo.lng === null,
+				)
+				.sort((a, b) => weight(b) - weight(a));
+
+			// One outing leaves several photos a few minutes apart in the same
+			// place. When a file carries no location of its own — a screenshot, or
+			// something that came through a chat app — the nearest photo in time is
+			// the best answer there is, as long as it is close enough to still be
+			// that outing rather than a different day out.
+			const OUTING = 3 * 60 * 60 * 1000;
+			// Some timestamps carry an offset and some do not, because the upload
+			// form's date field offers no timezone. Everything in this album
+			// happened on one clock, so a bare timestamp is read as that clock
+			// rather than as UTC, which would put it eight hours out and hide the
+			// neighbour it belongs to.
+			const momentOf = (takenAt: string): number | null => {
+				const text = /[Zz]|[+-]\d{2}:\d{2}$/.test(takenAt)
+					? takenAt
+					: takenAt.length === 10
+						? `${takenAt}T00:00:00+08:00`
+						: `${takenAt}+08:00`;
+				const at = new Date(text).getTime();
+				return Number.isNaN(at) ? null : at;
+			};
+			const placed: Array<{ lat: number; lng: number; at: number }> = [];
+			for (const photo of photos) {
+				if (photo.lat === null || photo.lng === null || !photo.takenAt)
+					continue;
+				const at = momentOf(photo.takenAt);
+				if (at === null) continue;
+				placed.push({ lat: photo.lat, lng: photo.lng, at });
+			}
+			const neighbourFor = (takenAt: string | null) => {
+				if (!takenAt) return null;
+				const at = momentOf(takenAt);
+				if (at === null) return null;
+				let best: { lat: number; lng: number } | null = null;
+				let closest = OUTING;
+				for (const other of placed) {
+					const gap = Math.abs(other.at - at);
+					if (gap < closest) {
+						closest = gap;
+						best = other;
+					}
+				}
+				return best;
+			};
+
+			const results: Array<{
+				id: string;
+				place: string | null;
+				lat: number | null;
+				lng: number | null;
+				found: string[];
+			}> = [];
+
+			for (const photo of pending.slice(0, limit)) {
+				const meta = await readMeta(photo.id);
+				let lat = photo.lat;
+				let lng = photo.lng;
+				let place = photo.place;
+				let takenAt = photo.takenAt;
+				const found: string[] = [];
+
+				if (lat === null || lng === null || place === null) {
+					// The file is the only thing that cannot be wrong, so look at
+					// it before believing there is nothing left to find.
+					const head = await readOriginalHead(photo.id);
+					const exif = head ? await readExif(head) : null;
+					if (exif) {
+						if (
+							(lat === null || lng === null) &&
+							exif.lat !== null &&
+							exif.lng !== null
+						) {
+							lat = exif.lat;
+							lng = exif.lng;
+							found.push("gps");
+						}
+						if (takenAt === null && exif.takenAt) {
+							takenAt = exif.takenAt;
+							found.push("date");
+						}
+					}
+				}
+
+				if (lat === null && lng === null) {
+					const neighbour = neighbourFor(takenAt);
+					if (neighbour) {
+						lat = neighbour.lat;
+						lng = neighbour.lng;
+						found.push("nearby");
+					}
+				}
+
+				if (place === null && lat !== null && lng !== null) {
+					place = await reverseGeocode(lat, lng);
+					if (place) found.push("place");
+				}
+				if (lat === null && place !== null) {
+					const point = await forwardGeocode(place);
+					if (point) {
+						lat = point.lat;
+						lng = point.lng;
+						found.push("pin");
+					}
+				}
+
+				if (found.length > 0) {
+					await writeMeta({
+						id: photo.id,
+						caption: meta?.caption ?? photo.caption,
+						takenAt,
+						lat,
+						lng,
+						place,
+						width: meta?.width ?? photo.width,
+						height: meta?.height ?? photo.height,
+						bytes: meta?.bytes ?? photo.bytes,
+						contentType:
+							meta?.contentType ?? (photo.legacy ? "image/png" : "image/jpeg"),
+						createdAt: meta?.createdAt ?? photo.createdAt,
+						originalName: meta?.originalName ?? photo.originalName,
+					});
+				}
+				results.push({ id: photo.id, place, lat, lng, found });
+			}
+
+			return json({
+				pending: pending.length,
+				processed: results.length,
+				resolved: results.filter((result) => result.found.length > 0).length,
+				remaining: Math.max(0, pending.length - results.length),
+				results,
+			});
 		}
 
 		if (path === "photos" && method === "POST") {

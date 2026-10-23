@@ -1,8 +1,66 @@
 import { env } from "cloudflare:workers";
 
 /**
+ * The address fields worth calling a photo's place. The first list names the
+ * actual place; the second is what is left when the map has nothing better to
+ * say than "Western Australia", which is only worth using when nothing else
+ * exists.
+ */
+const LOCAL_KEYS = [
+	"city",
+	"town",
+	"village",
+	"suburb",
+	"locality",
+	"hamlet",
+	"city_district",
+	"borough",
+	"municipality",
+	"district",
+];
+
+const REGION_KEYS = ["county", "state_district", "state"];
+
+async function reverseLookup(
+	lat: number,
+	lng: number,
+	zoom: number,
+	keys: string[],
+): Promise<string | null> {
+	const url = new URL("https://nominatim.openstreetmap.org/reverse");
+	url.searchParams.set("format", "jsonv2");
+	url.searchParams.set("lat", String(lat));
+	url.searchParams.set("lon", String(lng));
+	url.searchParams.set("zoom", String(zoom));
+	url.searchParams.set("addressdetails", "1");
+	url.searchParams.set("accept-language", "en");
+
+	const response = await fetch(url, {
+		headers: {
+			"User-Agent":
+				"hireareallycutemodel.com/1.0 (a small personal photo album)",
+		},
+		signal: AbortSignal.timeout(4_000),
+	});
+	if (!response.ok) return null;
+	const data = (await response.json()) as {
+		address?: Record<string, string>;
+	};
+	const address = data.address ?? {};
+	for (const key of keys) {
+		const value = address[key];
+		if (value) return value;
+	}
+	return null;
+}
+
+/**
  * Turn rounded coordinates into a friendly place name. Only two decimal
  * places (~1 km) ever leave the Worker, and results are cached in KV.
+ *
+ * The first pass asks for the town the photo is in. A beach, a national park
+ * or the middle of a farm has no town, and that pass comes back empty, so a
+ * second one names the nearest city instead: still true, just less precise.
  */
 export async function reverseGeocode(
 	lat: number,
@@ -20,35 +78,12 @@ export async function reverseGeocode(
 	}
 
 	try {
-		const url = new URL("https://nominatim.openstreetmap.org/reverse");
-		url.searchParams.set("format", "jsonv2");
-		url.searchParams.set("lat", String(roundedLat));
-		url.searchParams.set("lon", String(roundedLng));
-		url.searchParams.set("zoom", "12");
-		url.searchParams.set("addressdetails", "1");
-		url.searchParams.set("accept-language", "en");
-
-		const response = await fetch(url, {
-			headers: {
-				"User-Agent":
-					"hireareallycutemodel.com/1.0 (a small personal photo album)",
-			},
-			signal: AbortSignal.timeout(4_000),
-		});
-		if (!response.ok) return null;
-		const data = (await response.json()) as {
-			address?: Record<string, string>;
-		};
-		const address = data.address ?? {};
-		const name =
-			address.city ||
-			address.town ||
-			address.village ||
-			address.suburb ||
-			address.hamlet ||
-			address.county ||
-			address.state_district ||
-			address.state;
+		let name = await reverseLookup(roundedLat, roundedLng, 12, LOCAL_KEYS);
+		if (!name)
+			name = await reverseLookup(roundedLat, roundedLng, 10, [
+				...LOCAL_KEYS,
+				...REGION_KEYS,
+			]);
 		if (!name) return null;
 
 		try {

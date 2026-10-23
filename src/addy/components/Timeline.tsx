@@ -141,10 +141,9 @@ export function Timeline(props: {
 												loading="lazy"
 												decoding="async"
 											/>
-											<span>
-												{photo.caption ||
-													(photo.legacy ? "First roll" : "Undated")}
-											</span>
+											<Show when={photo.caption}>
+												<span>{photo.caption}</span>
+											</Show>
 										</button>
 									)}
 								</For>

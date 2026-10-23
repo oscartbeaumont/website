@@ -327,6 +327,24 @@ export async function getPhoto(id: string): Promise<AddyPhoto | null> {
 	return meta ? toPhoto(meta) : null;
 }
 
+/**
+ * The first stretch of a stored original. EXIF always sits at the front, so
+ * there is no reason to pull a 40 MB photo through the Worker to read it.
+ */
+export async function readOriginalHead(id: string): Promise<File | null> {
+	const name = legacyName(id);
+	const key = name
+		? `${LEGACY_PREFIX}${name}`
+		: `${MEDIA_PREFIX}${id}/original`;
+	const object = await env.DATA.get(key, {
+		range: { offset: 0, length: 512 * 1024 },
+	});
+	if (!object) return null;
+	return new File([await object.arrayBuffer()], name ?? "original", {
+		type: object.httpMetadata?.contentType ?? "",
+	});
+}
+
 export async function readMeta(id: string): Promise<PhotoMeta | null> {
 	const object = await env.DATA.get(`${META_PREFIX}${id}.json`);
 	if (object) {
