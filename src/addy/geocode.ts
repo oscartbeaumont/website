@@ -1,22 +1,25 @@
 import { env } from "cloudflare:workers";
 
 /**
- * The address fields worth calling a photo's place. The first list names the
- * actual place; the second is what is left when the map has nothing better to
- * say than "Western Australia", which is only worth using when nothing else
- * exists.
+ * The address fields worth calling a photo's place, most specific first. The
+ * first list names the place itself, starting with the suburb because that is
+ * the name a local would use — "Marmion", not the "Perth" that covers forty
+ * suburbs. The second is what is left when the map has nothing better to say
+ * than "Western Australia", which is only worth using when nothing else exists.
  */
 const LOCAL_KEYS = [
-	"city",
-	"town",
-	"village",
 	"suburb",
-	"locality",
+	"quarter",
+	"neighbourhood",
+	"village",
 	"hamlet",
+	"locality",
+	"town",
 	"city_district",
 	"borough",
 	"municipality",
 	"district",
+	"city",
 ];
 
 const REGION_KEYS = ["county", "state_district", "state"];
@@ -68,7 +71,9 @@ export async function reverseGeocode(
 ): Promise<string | null> {
 	const roundedLat = Number(lat.toFixed(2));
 	const roundedLng = Number(lng.toFixed(2));
-	const key = `addy:geo:${roundedLat},${roundedLng}`;
+	// The version is part of the key so a change to how a place is named is not
+	// hidden behind three months of cached answers.
+	const key = `addy:geo:2:${roundedLat},${roundedLng}`;
 
 	try {
 		const cached = await env.KV.get(key);
