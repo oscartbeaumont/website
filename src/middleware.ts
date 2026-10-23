@@ -36,7 +36,10 @@ export default async function middleware(
 		return handleAddyCover(request);
 	if (request.method === "GET" && url.pathname === "/addy/imgs.json") {
 		if (!(await isAuthenticated(request)))
-			return new Response("Sign in first.", { status: 401 });
+			return new Response("Sign in first.", {
+				status: 401,
+				headers: { "X-Robots-Tag": NO_INDEX },
+			});
 		return Response.json(await listLegacyForApi(), {
 			headers: {
 				"Cache-Control": "no-store",
@@ -58,13 +61,17 @@ export default async function middleware(
 	// standalone Addy site serves it from `/` as well as `/addy`.
 	const albumPath =
 		url.pathname === "/addy" || (url.pathname === "/" && isAddySite());
+	// Anything under `/addy` is private, including the paths that turn out not to
+	// exist: a 404 is not indexed either, but there is no reason for it to say
+	// something different from the rest.
+	const privateAlbum = albumPath || url.pathname.startsWith("/addy/");
 	if (albumPath)
 		getRequestEvent()!.locals.addyAuthenticated =
 			await isAuthenticated(request);
 	const response = await next();
 	// Nothing about the album belongs in a search result, and the header is the
 	// half of that a crawler sees before it has parsed anything.
-	if (albumPath) response.headers.set("X-Robots-Tag", NO_INDEX);
+	if (privateAlbum) response.headers.set("X-Robots-Tag", NO_INDEX);
 	const addyPage = ["/addy", "/"].includes(url.pathname);
 	response.headers.set(
 		"Content-Security-Policy",

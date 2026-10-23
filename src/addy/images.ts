@@ -96,7 +96,10 @@ export async function handleAddyImage(
 		return new Response(body, { headers });
 	} catch (error) {
 		console.error("Error serving Addy photo:", error);
-		return new Response("Internal server error", { status: 500 });
+		return new Response("Internal server error", {
+			status: 500,
+			headers: { "X-Robots-Tag": NO_INDEX },
+		});
 	}
 }
 
@@ -109,7 +112,7 @@ export async function handleAddyCover(request: Request): Promise<Response> {
 	if (request.method !== "GET" && request.method !== "HEAD")
 		return new Response("Method not allowed", {
 			status: 405,
-			headers: { Allow: "GET, HEAD" },
+			headers: { Allow: "GET, HEAD", "X-Robots-Tag": NO_INDEX },
 		});
 
 	try {
@@ -143,7 +146,10 @@ export async function handleAddyCover(request: Request): Promise<Response> {
 		return new Response(body, { headers });
 	} catch (error) {
 		console.error("Error serving the Addy cover:", error);
-		return new Response("Internal server error", { status: 500 });
+		return new Response("Internal server error", {
+			status: 500,
+			headers: { "X-Robots-Tag": NO_INDEX },
+		});
 	}
 }
 

@@ -517,17 +517,29 @@ export async function getPhotoVariant(
 
 /** The legacy image endpoint used by already-shared links. */
 export async function getLegacyImage(hash: string, download = false) {
-	if (!hash) return new Response("Image hash is required", { status: 400 });
+	if (!hash)
+		return new Response("Image hash is required", {
+			status: 400,
+			headers: { "X-Robots-Tag": NO_INDEX },
+		});
 
 	// The content hash and nothing else. The file's own name used to work here
 	// too, which made every one of the first roll reachable at a URL anyone
 	// could guess from the filename.
 	const images = await listLegacyImages();
 	const image = images.find((entry) => entry.hash === hash);
-	if (!image) return new Response("File not found", { status: 404 });
+	if (!image)
+		return new Response("File not found", {
+			status: 404,
+			headers: { "X-Robots-Tag": NO_INDEX },
+		});
 
 	const object = await env.DATA.get(`${LEGACY_PREFIX}${image.name}`);
-	if (!object) return new Response("File not found", { status: 404 });
+	if (!object)
+		return new Response("File not found", {
+			status: 404,
+			headers: { "X-Robots-Tag": NO_INDEX },
+		});
 
 	const headers = new Headers();
 	object.writeHttpMetadata(headers);
