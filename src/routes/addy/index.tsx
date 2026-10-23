@@ -325,7 +325,14 @@ export default function Page() {
 			data-addy-session={authenticated() ? "in" : "out"}
 		>
 			<Title>A really cute model</Title>
-			<Meta name="robots" content="noindex" />
+			{/* Belt and braces with the `X-Robots-Tag` header the middleware sets:
+			    the header stops a crawler before it parses anything, this stops it
+			    indexing what it has already read, and `noimageindex` keeps the
+			    photos out of image search. */}
+			<Meta
+				name="robots"
+				content="noindex, nofollow, noarchive, nosnippet, noimageindex"
+			/>
 			<Meta name="theme-color" content="#f7f1e5" />
 			<Meta
 				name="description"

@@ -10,6 +10,7 @@ import {
 } from "./auth";
 import { readExif } from "./exif";
 import { forwardGeocode, reverseGeocode } from "./geocode";
+import { NO_INDEX } from "./robots";
 import {
 	clearCover,
 	createPhoto,
@@ -29,7 +30,7 @@ import {
 const JSON_HEADERS = {
 	"Cache-Control": "no-store, no-transform",
 	"Content-Type": "application/json; charset=utf-8",
-	"X-Robots-Tag": "noindex, nofollow",
+	"X-Robots-Tag": NO_INDEX,
 };
 
 const MAX_ORIGINAL_BYTES = 40 * 1024 * 1024;

@@ -1,5 +1,6 @@
 import { downloadNameFor } from "./album";
 import { isAuthenticated } from "./auth";
+import { NO_INDEX } from "./robots";
 import { getCover, getLegacyImage, getPhoto, getPhotoVariant } from "./store";
 
 function decodeSegment(value: string): string | null {
@@ -12,7 +13,10 @@ function decodeSegment(value: string): string | null {
 }
 
 function notFound(): Response {
-	return new Response("Not found", { status: 404 });
+	return new Response("Not found", {
+		status: 404,
+		headers: { "X-Robots-Tag": NO_INDEX },
+	});
 }
 
 /** Drop the body of a GET response for a HEAD request, keeping the headers. */
@@ -40,7 +44,7 @@ export async function handleAddyImage(
 				status: 401,
 				headers: {
 					"Cache-Control": "no-store",
-					"X-Robots-Tag": "noindex, nofollow",
+					"X-Robots-Tag": NO_INDEX,
 				},
 			});
 
@@ -75,7 +79,7 @@ export async function handleAddyImage(
 		);
 		headers.set("ETag", resolved.object.httpEtag);
 		headers.set("Content-Length", String(resolved.object.size));
-		headers.set("X-Robots-Tag", "noindex, nofollow");
+		headers.set("X-Robots-Tag", NO_INDEX);
 		headers.set("X-Content-Type-Options", "nosniff");
 		headers.set("Accept-Ranges", "none");
 
@@ -115,7 +119,7 @@ export async function handleAddyCover(request: Request): Promise<Response> {
 				status: 404,
 				headers: {
 					"Cache-Control": "no-store",
-					"X-Robots-Tag": "noindex, nofollow",
+					"X-Robots-Tag": NO_INDEX,
 				},
 			});
 
@@ -125,7 +129,7 @@ export async function handleAddyCover(request: Request): Promise<Response> {
 		// next load, and a 304 is cheap next to serving the wrong picture.
 		headers.set("Cache-Control", "no-cache");
 		headers.set("ETag", cover.object.httpEtag);
-		headers.set("X-Robots-Tag", "noindex, nofollow");
+		headers.set("X-Robots-Tag", NO_INDEX);
 		headers.set("X-Content-Type-Options", "nosniff");
 		headers.set("Accept-Ranges", "none");
 

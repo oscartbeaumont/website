@@ -5,6 +5,7 @@ import { handleAddyApi } from "./addy/api";
 import { isAuthenticated } from "./addy/auth";
 import { handleAddyCover, handleAddyImage } from "./addy/images";
 import { manifestResponse } from "./addy/manifest";
+import { ALBUM_ROBOTS, NO_INDEX } from "./addy/robots";
 import { listLegacyForApi } from "./addy/store";
 import { isAddySite } from "./host";
 import { handlePostHog } from "./routes/ph_4DkU/[...rest]";
@@ -26,6 +27,22 @@ export default async function middleware(
 		(request.method === "GET" || request.method === "HEAD")
 	)
 		return manifestResponse(isAddySite());
+	// The whole album domain is private, so it is served a `robots.txt` that
+	// says so rather than Cloudflare's managed one, which allows the domain.
+	if (
+		url.pathname === "/robots.txt" &&
+		(request.method === "GET" || request.method === "HEAD") &&
+		isAddySite()
+	)
+		return new Response(ALBUM_ROBOTS, {
+			headers: {
+				"Content-Type": "text/plain; charset=utf-8",
+				// The path is shared with `otbeaumont.me`, which keeps its own
+				// file, and the CDN keys by path alone.
+				"Cache-Control": "public, max-age=3600",
+				Vary: "Host",
+			},
+		});
 	// The cover is the one album image a logged-out visitor may see, so it is
 	// served before any of the private image routes below.
 	if (
@@ -39,7 +56,7 @@ export default async function middleware(
 		return Response.json(await listLegacyForApi(), {
 			headers: {
 				"Cache-Control": "no-store",
-				"X-Robots-Tag": "noindex, nofollow",
+				"X-Robots-Tag": NO_INDEX,
 			},
 		});
 	}
@@ -61,6 +78,9 @@ export default async function middleware(
 		getRequestEvent()!.locals.addyAuthenticated =
 			await isAuthenticated(request);
 	const response = await next();
+	// Nothing about the album belongs in a search result, and the header is the
+	// half of that a crawler sees before it has parsed anything.
+	if (albumPath) response.headers.set("X-Robots-Tag", NO_INDEX);
 	const addyPage = ["/addy", "/"].includes(url.pathname);
 	response.headers.set(
 		"Content-Security-Policy",
