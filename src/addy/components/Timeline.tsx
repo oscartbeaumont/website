@@ -10,7 +10,6 @@ export function Timeline(props: {
 	loading: boolean;
 }) {
 	const groups = () => groupByMonth(props.photos);
-	const dated = () => props.photos.filter((photo) => photo.takenAt).length;
 	const alternation = createMemo(() => {
 		const order = new Map<string, number>();
 		let index = 0;
@@ -26,11 +25,6 @@ export function Timeline(props: {
 					<p class="kicker">Timeline</p>
 					<h2 class="section-title">In the order it happened</h2>
 				</div>
-				<p class="section-meta">
-					<Show when={!props.loading} fallback="Lining up the dates…">
-						{dated()} dated{dated() > 0 ? " · oldest first" : ""}
-					</Show>
-				</p>
 			</div>
 
 			<Show
