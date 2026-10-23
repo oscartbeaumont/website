@@ -1,4 +1,5 @@
 import { env } from "cloudflare:workers";
+import { NO_INDEX } from "./robots";
 
 /** An image key relative to the `addy/` prefix. */
 const LEGACY_PREFIX = "addy/";
@@ -544,7 +545,7 @@ export async function getLegacyImage(hash: string, download = false) {
 		headers.set("Cache-Control", "private, no-cache");
 	}
 	headers.set("ETag", object.httpEtag);
-	headers.set("X-Robots-Tag", "noindex, nofollow");
+	headers.set("X-Robots-Tag", NO_INDEX);
 	headers.set("X-Content-Type-Options", "nosniff");
 	if (download)
 		headers.set(

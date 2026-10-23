@@ -1,3 +1,5 @@
+import { NO_INDEX } from "./robots";
+
 /**
  * The album's web app manifest.
  *
@@ -46,7 +48,7 @@ export function manifestResponse(standaloneSite: boolean): Response {
 			// it, so the CDN has to be told.
 			"Cache-Control": "public, max-age=3600",
 			Vary: "Host",
-			"X-Robots-Tag": "noindex, nofollow",
+			"X-Robots-Tag": NO_INDEX,
 		},
 	});
 }
