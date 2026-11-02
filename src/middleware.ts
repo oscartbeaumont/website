@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto";
+import type { StartMiddleware } from "@solidjs/vite-plugin";
 import _headers from "virtual:_headers";
-import { getRequestEvent } from "@solidjs/web";
 import { handleAddyApi } from "./addy/api";
 import { isAuthenticated } from "./addy/auth";
 import { handleAddyCover, handleAddyImage } from "./addy/images";
@@ -10,10 +10,8 @@ import { listLegacyForApi } from "./addy/store";
 import { isAddySite } from "./host";
 import { handlePostHog } from "./routes/ph_4DkU/[...rest]";
 
-export default async function middleware(
-	request: Request,
-	next: () => Response | Promise<Response>,
-) {
+const middleware: StartMiddleware = async (event, next) => {
+	const request = event.request;
 	const url = new URL(request.url);
 	if (url.pathname.startsWith("/ph_4DkU/"))
 		return preventCaching(
@@ -55,7 +53,7 @@ export default async function middleware(
 		return handleAddyImage(request, url);
 
 	const nonce = randomBytes(16).toString("base64");
-	getRequestEvent()!.locals.nonce = nonce;
+	event.locals.nonce = nonce;
 	// The album renders its signed-in or signed-out page on the server, so a
 	// visitor with a session cookie never sees the lock screen flash past. The
 	// standalone Addy site serves it from `/` as well as `/addy`.
@@ -66,8 +64,7 @@ export default async function middleware(
 	// something different from the rest.
 	const privateAlbum = albumPath || url.pathname.startsWith("/addy/");
 	if (albumPath)
-		getRequestEvent()!.locals.addyAuthenticated =
-			await isAuthenticated(request);
+		event.locals.addyAuthenticated = await isAuthenticated(request);
 	const response = await next();
 	// Nothing about the album belongs in a search result, and the header is the
 	// half of that a crawler sees before it has parsed anything.
@@ -147,3 +144,5 @@ function preventCaching(response: Response) {
 		headers,
 	});
 }
+
+export default middleware;
