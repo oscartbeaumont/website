@@ -6,7 +6,8 @@
 	"packageManager": "pnpm@10.11.1",
 	"pnpm": {
 		"overrides": {
-			"seroval": "^1.7.6"
+			"seroval": "^1.7.6",
+			"seroval-plugins": "^1.7.6"
 		}
 	},
 	"scripts": {
