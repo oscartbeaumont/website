@@ -7,7 +7,7 @@ import { openGraphImageSize } from "../constants";
 const title = "Oscar Beaumont";
 const description =
 	"I'm a software developer based in Perth, Australia. I am self-taught and love creating solutions to help people use technology effectively.";
-const canonical = "http://otbeaumont.me";
+const canonical = "https://otbeaumont.me";
 
 export default function Layout(props: ParentProps) {
 	const origin = isServer
