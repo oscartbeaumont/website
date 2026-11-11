@@ -1,3 +1,14 @@
+import gurafiLogoUrl from "../assets/gurafi-logo.svg";
+
+export function GurafiLogo(props: { class?: string }) {
+	return (
+		<img
+			src={gurafiLogoUrl}
+			alt=""
+			class={`dark:invert ${props.class ?? ""}`}
+		/>
+	);
+}
 export function RspcLogo() {
 	return (
 		<svg
@@ -28,6 +39,17 @@ export function RspcLogo() {
 					<stop offset="1" stop-color="#00A4FA" stop-opacity="0" />
 				</linearGradient>
 			</defs>
+		</svg>
+	);
+}
+export function FskLogo() {
+	return (
+		<svg viewBox="0 0 120 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<title>fsk</title>
+			<rect x="4" y="0" width="112" height="26" rx="7" fill="#8FB0D0" />
+			<rect x="4" y="41" width="91" height="23" rx="6" fill="#2B6CB0" />
+			<rect x="4" y="76" width="26" height="16" rx="5" fill="#0F2E4D" />
+			<rect x="37" y="76" width="26" height="16" rx="5" fill="#0F2E4D" />
 		</svg>
 	);
 }

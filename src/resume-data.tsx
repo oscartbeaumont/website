@@ -1,10 +1,11 @@
 import type { JSX } from "@solidjs/web";
 
+import erynLogoUrl from "./assets/eryn-logo.png";
 import imageUrl from "./assets/logo.jpeg";
 import mattraxLogoUrl from "./assets/matrax-logo.png";
 import spectaLogoUrl from "./assets/specta-logo.png";
 import spotistatsLogoUrl from "./assets/spotistats-logo.png";
-import { RspcLogo, SpectaLogo } from "./components/icons";
+import { FskLogo, GurafiLogo, RspcLogo, SpectaLogo } from "./components/icons";
 
 type Icon = (props: { class: string }) => JSX.Element;
 type Logo = (props: { class?: string }) => JSX.Element;
@@ -402,6 +403,8 @@ export type Project = {
 	href: string;
 	logo: string;
 	logoClass?: string;
+	/** 1 = headline project, 2 = secondary project. */
+	tier?: 1 | 2;
 	links?: { href: string; title: string; icon: Icon }[];
 	subsections?: ProjectSubsection[];
 };
@@ -412,6 +415,7 @@ export const projects: Project[] = [
 		description: "Rust crates for building better web apps",
 		href: "https://specta.dev",
 		logo: spectaLogoUrl,
+		tier: 1,
 		links: [
 			{
 				href: "https://discord.com/invite/JgqH8b4ycw",
@@ -441,6 +445,16 @@ export const projects: Project[] = [
 				logo: IconSimpleIconsMidi,
 			},
 			{
+				name: "fsk",
+				href: "https://github.com/specta-rs/fsk",
+				logo: FskLogo,
+			},
+			{
+				name: "gurafi",
+				href: "https://github.com/specta-rs/gurafi",
+				logo: GurafiLogo,
+			},
+			{
 				name: "rspc",
 				href: "https://github.com/specta-rs/rspc",
 				logo: RspcLogo,
@@ -455,6 +469,7 @@ export const projects: Project[] = [
 		href: "https://mattrax.app",
 		logo: mattraxLogoUrl,
 		logoClass: "dark:invert",
+		tier: 2,
 		links: [
 			{
 				href: "https://discord.gg/WPBHmDSfAn",
@@ -469,10 +484,26 @@ export const projects: Project[] = [
 		],
 	},
 	{
+		name: "Eryn",
+		description: "Your personal agent in Discord",
+		href: "https://eryn.otbeaumont.me",
+		logo: erynLogoUrl,
+		logoClass: "dark:invert",
+		tier: 2,
+		links: [
+			{
+				href: "https://github.com/oscartbeaumont/eryn",
+				title: "GitHub",
+				icon: IconLogosGithubIcon,
+			},
+		],
+	},
+	{
 		name: "Spotistats",
 		description: "Analyse and backup your music on Spotify",
 		href: "https://spotistats.otbeaumont.me",
 		logo: spotistatsLogoUrl,
+		tier: 2,
 		links: [
 			{
 				href: "https://github.com/oscartbeaumont/spotistats",

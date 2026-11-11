@@ -9,6 +9,7 @@ import {
 	type ParentProps,
 	Show,
 } from "solid-js";
+import IconArrowUpRight from "~icons/heroicons/arrow-up-right20-solid.jsx";
 
 import { createDateNow } from "../../date";
 import {
@@ -158,25 +159,35 @@ function About() {
 	);
 }
 
-const WorkingOn = () => (
-	<section class="pb-8">
-		<SectionTitle>What i'm working on?</SectionTitle>
+const tierOneProjects = projects.filter((project) => project.tier === 1);
+const tierTwoProjects = projects.filter((project) => project.tier !== 1);
 
-		<div class="mt-3 ml-6 space-y-3">
-			<For each={projects}>{(project) => <ProjectPanel {...project} />}</For>
+const WorkingOn = () => (
+	<section class="pb-6">
+		<SectionTitle compact>What i'm working on?</SectionTitle>
+
+		<div class="mt-3 sm:ml-6">
+			<For each={tierOneProjects}>
+				{(project) => <FeaturedProject {...project} />}
+			</For>
+			<div class="mt-3 flex flex-col">
+				<For each={tierTwoProjects}>
+					{(project) => <ProjectRow {...project} />}
+				</For>
+			</div>
 		</div>
 
-		<div class="mt-5 sm:ml-6 pt-4 border-t border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-y-2 sm:gap-x-4">
+		<div class="mt-4 sm:ml-6 pt-3 border-t border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-y-2 sm:gap-x-4">
 			<a
 				href="https://tauri.app"
 				target="_blank"
 				rel="noopener"
-				class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200 mx-auto sm:mx-0"
+				class="group inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
 			>
 				<IconLogosTauri class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
 				<span>Tauri Working Group Member</span>
 			</a>
-			<div class="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-2">
+			<div class="flex flex-wrap items-center gap-x-4 gap-y-2">
 				<span class="text-xs font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-wider leading-none">
 					Previously
 				</span>
@@ -212,55 +223,124 @@ const WorkingOn = () => (
 	</section>
 );
 
-const ProjectPanel = (props: Project) => {
+const ProjectRow = (props: Project) => {
 	return (
-		<div class="py-2">
+		<div class="flex items-start gap-3 py-1">
+			<a
+				href={props.href}
+				target="_blank"
+				rel="noopener"
+				class="group flex min-w-0 flex-1 flex-col transition-transform duration-300 ease-in-out motion-safe:hover:translate-x-2"
+			>
+				<span class="flex h-6 items-center gap-2.5">
+					<img
+						src={props.logo}
+						alt={`${props.name} logo`}
+						class={clsx("h-6 w-6 shrink-0 object-contain", props.logoClass)}
+					/>
+					<span class="flex min-w-0 items-center gap-1">
+						<span class="truncate text-[15px] font-semibold text-gray-900 dark:text-gray-100">
+							{props.name}
+						</span>
+						<IconArrowUpRight
+							class="h-3.5 w-3.5 shrink-0 text-gray-400 opacity-0 transition-opacity duration-200 group-hover:opacity-100 dark:text-gray-500"
+							aria-hidden="true"
+						/>
+					</span>
+				</span>
+				<span class="mt-0.5 text-[12.5px] leading-snug text-gray-600 dark:text-gray-400">
+					{props.description}
+				</span>
+			</a>
+			<div class="flex h-6 shrink-0 items-center gap-2.5">
+				<For each={props.links ?? []}>
+					{(link) => (
+						<a
+							href={link.href}
+							target="_blank"
+							rel="noopener"
+							title={link.title}
+							aria-label={link.title}
+							class="flex items-center"
+						>
+							{link.icon({
+								class:
+									"brightness-0 dark:invert hover:brightness-100 dark:hover:invert-0 h-[18px] w-[18px] transition-colors duration-300 ease-in-out",
+							})}
+						</a>
+					)}
+				</For>
+			</div>
+		</div>
+	);
+};
+
+const FeaturedProject = (props: Project) => {
+	return (
+		<div class="py-1">
 			<div class="flex items-center justify-between gap-4">
 				<a
 					href={props.href}
 					target="_blank"
 					rel="noopener"
-					class="flex items-center gap-3 flex-1 min-w-0 transition-transform duration-300 ease-in-out motion-safe:hover:translate-x-2"
+					class="group flex min-w-0 flex-1 items-center gap-3 transition-transform duration-300 ease-in-out motion-safe:hover:translate-x-2"
 				>
 					<img
 						src={props.logo}
 						alt={`${props.name} logo`}
-						class={clsx("w-12 object-contain", props.logoClass)}
+						class={clsx("h-10 w-10 shrink-0 object-contain", props.logoClass)}
 					/>
-					<div class="min-w-0 flex-1">
-						<div class="font-semibold text-gray-900 dark:text-gray-100">
-							{props.name}
+					<div class="min-w-0">
+						<div class="flex items-center gap-1">
+							<div class="text-base font-semibold text-gray-900 dark:text-gray-100">
+								{props.name}
+							</div>
+							<IconArrowUpRight
+								class="h-4 w-4 shrink-0 text-gray-400 opacity-0 transition-opacity duration-200 group-hover:opacity-100 dark:text-gray-500"
+								aria-hidden="true"
+							/>
 						</div>
-						<div class="text-sm text-gray-600 dark:text-gray-400">
+						<div class="text-[13.5px] leading-snug text-gray-600 dark:text-gray-400">
 							{props.description}
 						</div>
 					</div>
 				</a>
-				<div class="flex items-center gap-3 shrink-0">
-					<div class="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-						<For each={props.links ?? []}>
-							{(link) => (
-								<a
-									href={link.href}
-									target="_blank"
-									rel="noopener"
-									title={link.title}
-									aria-label={link.title}
-								>
-									{link.icon({
-										class:
-											"brightness-0 dark:invert hover:brightness-100 dark:hover:invert-0 w-5 h-5 transition-colors duration-300 ease-in-out",
-									})}
-								</a>
-							)}
-						</For>
-					</div>
+				<div class="flex shrink-0 items-center gap-2">
+					<For each={props.links ?? []}>
+						{(link) => (
+							<a
+								href={link.href}
+								target="_blank"
+								rel="noopener"
+								title={link.title}
+								aria-label={link.title}
+								class="flex items-center"
+							>
+								{link.icon({
+									class:
+										"brightness-0 dark:invert hover:brightness-100 dark:hover:invert-0 w-5 h-5 transition-colors duration-300 ease-in-out",
+								})}
+							</a>
+						)}
+					</For>
 				</div>
 			</div>
 			{props.subsections?.length ? (
-				<div class="ml-[3.75rem] mt-2 flex flex-wrap gap-2">
+				<div class="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 sm:pl-[52px]">
 					<For each={props.subsections}>
-						{(subsection) => <ProjectSubsection {...subsection} />}
+						{(subsection, index) => (
+							<>
+								<Show when={index() > 0}>
+									<span
+										aria-hidden="true"
+										class="text-gray-300 dark:text-gray-600"
+									>
+										·
+									</span>
+								</Show>
+								<SubsectionLink {...subsection} />
+							</>
+						)}
 					</For>
 				</div>
 			) : null}
@@ -268,7 +348,7 @@ const ProjectPanel = (props: Project) => {
 	);
 };
 
-const ProjectSubsection = (props: {
+const SubsectionLink = (props: {
 	href: string;
 	name: string;
 	logo?: (props: { class?: string }) => JSX.Element;
@@ -278,34 +358,37 @@ const ProjectSubsection = (props: {
 		href={props.href}
 		target="_blank"
 		rel="noopener"
-		class={clsx(
-			"inline-flex items-center gap-1.5 font-mono text-xs px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200",
-			props.deprecated
-				? "text-gray-400 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-500"
-				: "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100",
-		)}
 		title={props.deprecated ? `${props.name} (deprecated)` : undefined}
+		class={clsx(
+			"-mx-1 -my-0.5 inline-flex items-center gap-1 rounded px-1 py-0.5 font-mono text-[11px] transition-colors duration-200",
+			props.deprecated
+				? "text-gray-300 line-through decoration-dotted hover:bg-gray-100 dark:text-gray-600 dark:hover:bg-gray-800"
+				: "text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:text-gray-500 dark:hover:bg-gray-800 dark:hover:text-gray-300",
+		)}
 	>
 		<Show when={props.logo}>
 			{(logo) => (
 				<span
 					class={clsx(
-						"w-3 h-3 shrink-0 [&>svg]:w-3 [&>svg]:h-3",
+						"h-3 w-3 shrink-0 [&>svg]:h-3 [&>svg]:w-3",
 						props.deprecated && "opacity-50",
 					)}
 				>
-					{logo()({ class: "w-3 h-3" })}
+					{logo()({ class: "h-3 w-3" })}
 				</span>
 			)}
 		</Show>
-		<span class={clsx(props.deprecated && "line-through decoration-dotted")}>
-			{props.name}
-		</span>
+		<span>{props.name}</span>
 	</a>
 );
 
-const SectionTitle = (props: ParentProps) => (
-	<h2 class="text-sm font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider mb-8">
+const SectionTitle = (props: ParentProps<{ compact?: boolean }>) => (
+	<h2
+		class={clsx(
+			"text-sm font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider",
+			props.compact ? "mb-4" : "mb-8",
+		)}
+	>
 		{props.children}
 	</h2>
 );
@@ -360,7 +443,7 @@ const Skills = () => {
 
 	return (
 		<section class="pb-8">
-			<SectionTitle>What I use?</SectionTitle>
+			<SectionTitle compact>What I use?</SectionTitle>
 
 			<div class="relative overflow-hidden mask-[linear-gradient(to_right,transparent,black_20%,black_80%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]">
 				<div
@@ -401,7 +484,7 @@ const SkillItem = (props: {
 	>
 		{props.logo({
 			class:
-				"w-12 h-12 object-contain grayscale group-hover:grayscale-0 transition-colors duration-300 ease-in-out",
+				"w-10 h-10 object-contain grayscale group-hover:grayscale-0 transition-colors duration-300 ease-in-out",
 		})}
 		<span class="min-h-[2rem] text-center text-xs leading-tight font-medium text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors duration-300 ease-in-out">
 			{props.name}
