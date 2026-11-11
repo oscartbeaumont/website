@@ -195,7 +195,7 @@ const WorkingOn = () => (
 			</div>
 		</div>
 
-		<div class="mt-4 sm:ml-6 pt-3 border-t border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-y-2 sm:gap-x-4">
+		<div class="mt-4 sm:ml-6 pt-3 border-t border-gray-100 dark:border-gray-800 flex flex-col items-center sm:flex-row sm:flex-wrap sm:items-center gap-y-2 sm:gap-x-4">
 			<a
 				href="https://tauri.app"
 				target="_blank"
@@ -205,7 +205,7 @@ const WorkingOn = () => (
 				<IconLogosTauri class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
 				<span>Tauri Working Group Member</span>
 			</a>
-			<div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+			<div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:justify-start">
 				<span class="text-xs font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-wider leading-none">
 					Previously
 				</span>
@@ -355,7 +355,7 @@ const FeaturedProject = (props: Project) => {
 				</div>
 			</div>
 			{props.subsections?.length ? (
-				<div class="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 sm:pl-[52px]">
+				<div class="mt-1.5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 sm:justify-start sm:pl-[52px]">
 					<For each={props.subsections}>
 						{(subsection, index) => (
 							<>
