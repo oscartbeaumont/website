@@ -170,11 +170,27 @@ const WorkingOn = () => (
 
 		<div class="mt-3 sm:ml-6">
 			<For each={tierOneProjects}>
-				{(project) => <FeaturedProject {...project} />}
+				{(project, index) => (
+					<div
+						class="motion-safe:animate-[riseIn_0.5s_ease-out_backwards]"
+						style={{ "animation-delay": `${index() * 70}ms` }}
+					>
+						<FeaturedProject {...project} />
+					</div>
+				)}
 			</For>
 			<div class="mt-3 flex flex-col">
 				<For each={tierTwoProjects}>
-					{(project) => <ProjectRow {...project} />}
+					{(project, index) => (
+						<div
+							class="motion-safe:animate-[riseIn_0.5s_ease-out_backwards]"
+							style={{
+								"animation-delay": `${(index() + tierOneProjects.length) * 70}ms`,
+							}}
+						>
+							<ProjectRow {...project} />
+						</div>
+					)}
 				</For>
 			</div>
 		</div>
@@ -514,28 +530,22 @@ const Availability = () => (
 		onClick={() => {
 			window.location.href = `mailto:${profile.email}`;
 		}}
-		class="group inline-flex min-w-0 cursor-pointer items-center gap-2.5 self-start rounded-full bg-emerald-50 px-3 py-1 text-left transition-colors duration-200 hover:bg-emerald-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 sm:self-auto dark:bg-emerald-500/10 dark:hover:bg-emerald-500/15"
+		class="group relative flex w-full cursor-pointer items-start gap-2.5 border-0 bg-transparent py-1 pl-8 text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-600 md:pl-12"
 	>
 		<span
 			aria-hidden="true"
-			class="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500"
+			class="absolute -left-1.25 top-3.5 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-emerald-500 ring-4 ring-white transition-transform duration-300 group-hover:scale-110 dark:ring-gray-900"
 		/>
-		<p class="m-0 truncate text-sm text-gray-600 dark:text-gray-400">
-			<span class="font-semibold text-emerald-700 dark:text-emerald-400">
+		<span class="flex min-w-0 flex-col gap-0.5">
+			<span class="inline-flex items-center gap-1.5 text-[15px] font-semibold text-emerald-700 dark:text-emerald-400">
 				Open to new work
+				<IconArrowUpRight
+					class="h-3.5 w-3.5 shrink-0 text-gray-400 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 [@media(hover:none)]:opacity-100 dark:text-gray-500"
+					aria-hidden="true"
+				/>
 			</span>
-			<span class="mx-2 hidden text-emerald-300 sm:inline dark:text-emerald-500/40">
-				/
-			</span>
-			<span class="hidden text-emerald-700/80 sm:inline dark:text-emerald-400/80">
+			<span class="font-mono text-[10px] tracking-[0.12em] text-gray-400 uppercase dark:text-gray-500">
 				Full-time or contract
-			</span>
-		</p>
-		<span class="grid grid-cols-[1fr] opacity-100 transition-[grid-template-columns,opacity] duration-300 ease-out sm:grid-cols-[0fr] sm:opacity-0 sm:group-focus-visible:grid-cols-[1fr] sm:group-focus-visible:opacity-100 sm:group-hover:grid-cols-[1fr] sm:group-hover:opacity-100">
-			<span class="overflow-hidden">
-				<span class="block whitespace-nowrap border-l border-emerald-300/60 pl-2 text-sm font-medium text-emerald-700 dark:border-emerald-500/30 dark:text-emerald-400">
-					Get in touch
-				</span>
 			</span>
 		</span>
 	</button>
@@ -560,18 +570,16 @@ const Experience = () => {
 
 	return (
 		<section class="pb-8">
-			<div class="mb-8 flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-5">
-				<SectionTitle inline>Work Experience</SectionTitle>
-				<Show when={isOpenToWork()}>
-					<Availability />
-				</Show>
-			</div>
+			<SectionTitle>Work Experience</SectionTitle>
 
 			<div
 				id="experience-list"
 				class="relative border-l border-neutral-200 dark:border-neutral-700 ml-3"
 			>
 				<div class="space-y-12">
+					<Show when={isOpenToWork()}>
+						<Availability />
+					</Show>
 					<For each={experience.slice(0, 3)}>
 						{(job) => <WorkExperienceItem job={job} />}
 					</For>
@@ -588,8 +596,9 @@ const Experience = () => {
 									: "auto"
 								: "7rem",
 						}}
-						aria-hidden={expanded() ? undefined : "true"}
-						inert={!expanded()}
+						onFocusIn={() => {
+							if (!expanded()) setExpanded(true);
+						}}
 					>
 						<div ref={moreRef} class="flex flex-col gap-12">
 							<For each={experience.slice(3)}>
@@ -643,14 +652,25 @@ const WorkExperienceItem = (props: { job: ExperienceItem }) => (
 					when={props.job.href}
 					fallback={<h3 class="text-lg font-bold">{props.job.company}</h3>}
 				>
-					<a href={props.job.href} target="_blank" rel="noopener">
+					<a
+						href={props.job.href}
+						target="_blank"
+						rel="noopener"
+						class="group/link"
+					>
 						<h3
 							class={clsx(
 								"text-lg font-bold text-neutral-900 dark:text-neutral-100",
 								props.job.companyClass,
 							)}
 						>
-							{props.job.company}
+							<span class="inline-flex items-center gap-1">
+								{props.job.company}
+								<IconArrowUpRight
+									class="h-3.5 w-3.5 shrink-0 text-gray-400 opacity-0 transition-opacity duration-200 group-hover/link:opacity-100 group-focus-visible/link:opacity-100 [@media(hover:none)]:opacity-100 dark:text-gray-500"
+									aria-hidden="true"
+								/>
+							</span>
 						</h3>
 					</a>
 				</Show>

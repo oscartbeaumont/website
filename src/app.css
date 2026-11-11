@@ -33,4 +33,16 @@
 			opacity: 1;
 		}
 	}
+
+	@keyframes riseIn {
+		from {
+			transform: translateY(0.4rem);
+			opacity: 0;
+		}
+
+		to {
+			transform: translateY(0);
+			opacity: 1;
+		}
+	}
 }
