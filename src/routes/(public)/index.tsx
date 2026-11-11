@@ -205,7 +205,7 @@ const WorkingOn = () => (
 				<IconLogosTauri class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
 				<span>Tauri Working Group Member</span>
 			</a>
-			<div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:justify-start">
+			<div class="flex flex-wrap items-center justify-around gap-x-4 gap-y-2 sm:justify-start">
 				<span class="text-xs font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-wider leading-none">
 					Previously
 				</span>
