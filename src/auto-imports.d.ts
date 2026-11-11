@@ -10,6 +10,7 @@ export {}
 declare global {
   const IconCatppuccinDrizzleOrm: typeof import('~icons/catppuccin/drizzle-orm.jsx').default
   const IconHeroiconsArrowTopRightOnSquare20Solid: typeof import("~icons/heroicons/arrow-top-right-on-square20-solid.jsx").default
+  const IconHeroiconsChevronDown20Solid: typeof import('~icons/heroicons/chevron-down20-solid.jsx').default
   const IconHeroiconsComputerDesktop20Solid: typeof import('~icons/heroicons/computer-desktop20-solid.jsx').default
   const IconHeroiconsMoon20Solid: typeof import('~icons/heroicons/moon20-solid.jsx').default
   const IconHeroiconsSun20Solid: typeof import('~icons/heroicons/sun20-solid.jsx').default

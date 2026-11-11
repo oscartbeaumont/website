@@ -534,18 +534,94 @@ const LookingForWork = () => (
 	</div>
 );
 
-const Experience = () => (
-	<section class="pb-8">
-		<SectionTitle>Work Experience</SectionTitle>
-		<Show when={isOpenToWork()}>
-			<LookingForWork />
-		</Show>
+const Experience = () => {
+	const [expanded, setExpanded] = createSignal(false);
+	const [moreHeight, setMoreHeight] = createSignal(0);
+	let moreRef: HTMLDivElement | undefined;
 
-		<div class="relative border-l border-neutral-200 dark:border-neutral-700 ml-3 space-y-12">
-			<For each={experience}>{(job) => <WorkExperienceItem job={job} />}</For>
-		</div>
-	</section>
-);
+	onSettled(() => {
+		if (!moreRef) return;
+
+		const update = () => setMoreHeight(moreRef?.scrollHeight ?? 0);
+		update();
+
+		const observer = new ResizeObserver(update);
+		observer.observe(moreRef);
+
+		return () => observer.disconnect();
+	});
+
+	return (
+		<section class="pb-8">
+			<SectionTitle>Work Experience</SectionTitle>
+			<Show when={isOpenToWork()}>
+				<LookingForWork />
+			</Show>
+
+			<div
+				id="experience-list"
+				class="relative border-l border-neutral-200 dark:border-neutral-700 ml-3"
+			>
+				<div class="space-y-12">
+					<For each={experience.slice(0, 3)}>
+						{(job) => <WorkExperienceItem job={job} />}
+					</For>
+				</div>
+
+				<Show when={experience.length > 3}>
+					<div
+						id="experience-more"
+						class="relative mt-12 overflow-hidden transition-[height] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+						style={{
+							height: expanded()
+								? moreHeight()
+									? `${moreHeight()}px`
+									: "auto"
+								: "7rem",
+						}}
+						aria-hidden={expanded() ? undefined : "true"}
+						inert={!expanded()}
+					>
+						<div ref={moreRef} class="flex flex-col gap-12">
+							<For each={experience.slice(3)}>
+								{(job) => <WorkExperienceItem job={job} />}
+							</For>
+						</div>
+						<div
+							class={clsx(
+								"pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-white to-transparent transition-opacity duration-300 dark:from-gray-900",
+								expanded() && "opacity-0",
+							)}
+						/>
+					</div>
+
+					<button
+						type="button"
+						aria-expanded={expanded() ? "true" : "false"}
+						aria-controls="experience-more"
+						onClick={() => {
+							setExpanded((value) => !value);
+						}}
+						class="group relative flex w-full cursor-pointer items-center border-0 bg-transparent py-6 pl-8 text-left md:pl-12"
+					>
+						<span class="absolute left-0 top-1/2 flex h-5 w-5 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-500 transition-colors group-hover:border-neutral-300 group-hover:text-neutral-900 dark:border-neutral-700 dark:bg-gray-900 dark:text-neutral-400 dark:group-hover:border-neutral-600 dark:group-hover:text-neutral-100">
+							<IconHeroiconsChevronDown20Solid
+								class={clsx(
+									"h-3 w-3 transition-transform duration-300",
+									expanded() && "rotate-180",
+								)}
+								aria-hidden="true"
+							/>
+						</span>
+						<span class="text-sm font-medium text-gray-500 transition-colors group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-gray-100">
+							{expanded() ? "Show less" : "Show all experience"}
+						</span>
+					</button>
+				</Show>
+			</div>
+		</section>
+	);
+};
 
 const WorkExperienceItem = (props: { job: ExperienceItem }) => (
 	<div class="relative pl-8 md:pl-12 group">
