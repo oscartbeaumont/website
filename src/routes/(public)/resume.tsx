@@ -9,6 +9,7 @@ import {
 	awards,
 	education,
 	experience,
+	formatExperiencePeriod,
 	profile,
 	projects,
 	skillGroups,
@@ -156,7 +157,7 @@ export default function Resume() {
 											)}
 										</p>
 										<p class="m-0 font-[IBM_Plex_Mono,monospace] text-[9.3px] leading-[14px] text-[#275d8c]">
-											{job.period.toUpperCase()}
+											{formatExperiencePeriod(job).toUpperCase()}
 										</p>
 									</div>
 									<div class="col-start-2 flex min-w-0 flex-col gap-[5px] sm:col-start-auto print:col-start-auto">
@@ -202,7 +203,9 @@ export default function Resume() {
 									</h3>
 									<p class="m-0 text-[9.3px] leading-[14px] text-[#43515b]">
 										{skills
-											.filter((skill) => skill.group === group)
+											.filter(
+												(skill) => skill.group === group && !skill.homepageOnly,
+											)
 											.map((skill) => skill.name)
 											.join(" · ")}
 									</p>

@@ -15,6 +15,8 @@ import { createDateNow } from "../../date";
 import {
 	type Experience as ExperienceItem,
 	experience,
+	formatExperiencePeriod,
+	isOpenToWork,
 	type Project,
 	profile,
 	projects,
@@ -223,6 +225,19 @@ const WorkingOn = () => (
 	</section>
 );
 
+const projectLinkIconClass = (size: string) =>
+	clsx(
+		"shrink-0 [&_path]:fill-current [shape-rendering:geometricPrecision]",
+		size,
+	);
+
+const projectLinkColorClass = (title: string) =>
+	clsx(
+		"flex items-center text-gray-900 transition-colors duration-300 ease-in-out dark:text-gray-100",
+		title === "Discord" && "hover:text-[#5865F2] dark:hover:text-[#5865F2]",
+		title === "GitHub" && "hover:text-[#161614] dark:hover:text-white",
+	);
+
 const ProjectRow = (props: Project) => {
 	return (
 		<div class="flex items-start gap-3 py-1">
@@ -261,11 +276,10 @@ const ProjectRow = (props: Project) => {
 							rel="noopener"
 							title={link.title}
 							aria-label={link.title}
-							class="flex items-center"
+							class={projectLinkColorClass(link.title)}
 						>
 							{link.icon({
-								class:
-									"brightness-0 dark:invert hover:brightness-100 dark:hover:invert-0 h-[18px] w-[18px] transition-colors duration-300 ease-in-out",
+								class: projectLinkIconClass("h-[18px] w-[18px]"),
 							})}
 						</a>
 					)}
@@ -314,11 +328,10 @@ const FeaturedProject = (props: Project) => {
 								rel="noopener"
 								title={link.title}
 								aria-label={link.title}
-								class="flex items-center"
+								class={projectLinkColorClass(link.title)}
 							>
 								{link.icon({
-									class:
-										"brightness-0 dark:invert hover:brightness-100 dark:hover:invert-0 w-5 h-5 transition-colors duration-300 ease-in-out",
+									class: projectLinkIconClass("w-5 h-5"),
 								})}
 							</a>
 						)}
@@ -492,9 +505,41 @@ const SkillItem = (props: {
 	</a>
 );
 
+const LookingForWork = () => (
+	<div class="mb-8 flex items-center justify-between gap-4 border-b border-gray-200 pb-3 dark:border-gray-800">
+		<div class="flex min-w-0 items-center gap-2.5">
+			<span
+				aria-hidden="true"
+				class="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500"
+			/>
+			<p class="m-0 truncate text-sm text-gray-600 dark:text-gray-400">
+				<span class="font-semibold text-gray-900 dark:text-gray-100">
+					Open to new work
+				</span>
+				<span class="mx-2 hidden text-gray-300 sm:inline dark:text-gray-700">
+					/
+				</span>
+				<span class="hidden sm:inline">Full-time or contract</span>
+			</p>
+		</div>
+		<button
+			type="button"
+			class="shrink-0 cursor-pointer border-0 bg-transparent p-0 text-sm font-medium text-gray-500 underline-offset-4 transition-colors hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-gray-100"
+			onClick={() => {
+				window.location.href = `mailto:${profile.email}`;
+			}}
+		>
+			Get in touch
+		</button>
+	</div>
+);
+
 const Experience = () => (
 	<section class="pb-8">
 		<SectionTitle>Work Experience</SectionTitle>
+		<Show when={isOpenToWork()}>
+			<LookingForWork />
+		</Show>
 
 		<div class="relative border-l border-neutral-200 dark:border-neutral-700 ml-3 space-y-12">
 			<For each={experience}>{(job) => <WorkExperienceItem job={job} />}</For>
@@ -526,7 +571,7 @@ const WorkExperienceItem = (props: { job: ExperienceItem }) => (
 				</Show>
 
 				<span class="text-sm font-mono text-gray-500 dark:text-gray-400 tabular-nums">
-					{props.job.period}
+					{formatExperiencePeriod(props.job)}
 				</span>
 			</div>
 			<Show when={props.job.company !== "Freelancer"}>

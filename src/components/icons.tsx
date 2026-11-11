@@ -1,5 +1,44 @@
 import gurafiLogoUrl from "../assets/gurafi-logo.svg";
+import kobalteDarkUrl from "../assets/kobalte-dark.png";
+import kobalteLightUrl from "../assets/kobalte-light.png";
 
+export function TracingLogo(props: { class?: string }) {
+	return (
+		<svg
+			class={props.class}
+			viewBox="8 4 52 24"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+			aria-hidden="true"
+		>
+			<title>tracing</title>
+			<g stroke="#A674E5" stroke-width="4.3" stroke-linecap="round">
+				<circle cx="46" cy="16" r="10" />
+				<path d="M10 9.5h26" />
+				<path d="M19.5 16.5h15.5" />
+				<path d="M23.5 23.9h13.5" />
+			</g>
+			<circle cx="46" cy="16" r="3" fill="#A674E5" />
+			<circle cx="20" cy="23.9" r="3.6" fill="#A674E5" />
+		</svg>
+	);
+}
+export function KobalteLogo(props: { class?: string }) {
+	return (
+		<>
+			<img
+				src={kobalteLightUrl}
+				alt=""
+				class={`${props.class ?? ""} dark:hidden`}
+			/>
+			<img
+				src={kobalteDarkUrl}
+				alt=""
+				class={`hidden ${props.class ?? ""} dark:block`}
+			/>
+		</>
+	);
+}
 export function GurafiLogo(props: { class?: string }) {
 	return (
 		<img

@@ -13,15 +13,20 @@ declare global {
   const IconHeroiconsComputerDesktop20Solid: typeof import('~icons/heroicons/computer-desktop20-solid.jsx').default
   const IconHeroiconsMoon20Solid: typeof import('~icons/heroicons/moon20-solid.jsx').default
   const IconHeroiconsSun20Solid: typeof import('~icons/heroicons/sun20-solid.jsx').default
+  const IconLogosCloudflareIcon: typeof import('~icons/logos/cloudflare-icon.jsx').default
   const IconLogosDiscordIcon: typeof import('~icons/logos/discord-icon.jsx').default
+  const IconLogosDockerIcon: typeof import('~icons/logos/docker-icon.jsx').default
   const IconLogosEffect: typeof import('~icons/logos/effect.jsx').default
   const IconLogosElectron: typeof import('~icons/logos/electron.jsx').default
   const IconLogosGithubIcon: typeof import('~icons/logos/github-icon.jsx').default
   const IconLogosGo: typeof import('~icons/logos/go.jsx').default
   const IconLogosLinkedinIcon: typeof import('~icons/logos/linkedin-icon.jsx').default
   const IconLogosMicrosoftWindowsIcon: typeof import('~icons/logos/microsoft-windows-icon.jsx').default
+  const IconLogosMysqlIcon: typeof import('~icons/logos/mysql-icon.jsx').default
   const IconLogosNetlifyIcon: typeof import('~icons/logos/netlify-icon.jsx').default
   const IconLogosNextjsIcon: typeof import('~icons/logos/nextjs-icon.jsx').default
+  const IconLogosPlaywright: typeof import('~icons/logos/playwright.jsx').default
+  const IconLogosPostgresql: typeof import('~icons/logos/postgresql.jsx').default
   const IconLogosPosthogIcon: typeof import('~icons/logos/posthog-icon.jsx').default
   const IconLogosPython: typeof import('~icons/logos/python.jsx').default
   const IconLogosReact: typeof import('~icons/logos/react.jsx').default
@@ -39,6 +44,7 @@ declare global {
   const IconSimpleIconsMidi: typeof import('~icons/simple-icons/midi.jsx').default
   const IconSimpleIconsPlanetscale: typeof import('~icons/simple-icons/planetscale.jsx').default
   const IconSimpleIconsTanstack: typeof import('~icons/simple-icons/tanstack.jsx').default
+  const IconSimpleIconsTokio: typeof import('~icons/simple-icons/tokio.jsx').default
   const IconSimpleIconsWgpu: typeof import('~icons/simple-icons/wgpu.jsx').default
   const IconVscodeIconsFileTypeRust: typeof import('~icons/vscode-icons/file-type-rust.jsx').default
 }

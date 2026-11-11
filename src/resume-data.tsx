@@ -5,7 +5,14 @@ import imageUrl from "./assets/logo.jpeg";
 import mattraxLogoUrl from "./assets/matrax-logo.png";
 import spectaLogoUrl from "./assets/specta-logo.png";
 import spotistatsLogoUrl from "./assets/spotistats-logo.png";
-import { FskLogo, GurafiLogo, RspcLogo, SpectaLogo } from "./components/icons";
+import {
+	FskLogo,
+	GurafiLogo,
+	KobalteLogo,
+	RspcLogo,
+	SpectaLogo,
+	TracingLogo,
+} from "./components/icons";
 
 type Icon = (props: { class: string }) => JSX.Element;
 type Logo = (props: { class?: string }) => JSX.Element;
@@ -97,6 +104,8 @@ export type Skill = {
 		| "Backend & platform";
 	/** Whether it appears in the homepage marquee. */
 	featured?: boolean;
+	/** Whether it only appears in the homepage marquee, not the resume. */
+	homepageOnly?: boolean;
 };
 
 export const skills: Skill[] = [
@@ -168,6 +177,22 @@ export const skills: Skill[] = [
 		group: "Frontend & tooling",
 		featured: true,
 	},
+	{
+		name: "Kobalte",
+		href: "https://kobalte.dev",
+		logo: KobalteLogo,
+		group: "Frontend & tooling",
+		featured: true,
+		homepageOnly: true,
+	},
+	{
+		name: "Playwright",
+		href: "https://playwright.dev",
+		logo: IconLogosPlaywright,
+		group: "Frontend & tooling",
+		featured: true,
+		homepageOnly: true,
+	},
 
 	{
 		name: "Tauri",
@@ -217,6 +242,14 @@ export const skills: Skill[] = [
 		featured: true,
 	},
 	{
+		name: "MySQL",
+		href: "https://www.mysql.com",
+		logo: IconLogosMysqlIcon,
+		group: "Backend & platform",
+		featured: true,
+		homepageOnly: true,
+	},
+	{
 		name: "PostHog",
 		href: "https://posthog.com",
 		logo: IconLogosPosthogIcon,
@@ -224,11 +257,51 @@ export const skills: Skill[] = [
 		featured: true,
 	},
 	{
+		name: "Cloudflare",
+		href: "https://www.cloudflare.com",
+		logo: IconLogosCloudflareIcon,
+		group: "Backend & platform",
+		featured: true,
+		homepageOnly: true,
+	},
+	{
 		name: "Effect",
 		href: "https://effect.website",
 		logo: IconLogosEffect,
 		group: "Backend & platform",
 		featured: true,
+	},
+	{
+		name: "Tokio",
+		href: "https://tokio.rs",
+		logo: IconSimpleIconsTokio,
+		group: "Backend & platform",
+		featured: true,
+		homepageOnly: true,
+	},
+	{
+		name: "tracing",
+		href: "https://github.com/tokio-rs/tracing",
+		logo: TracingLogo,
+		group: "Backend & platform",
+		featured: true,
+		homepageOnly: true,
+	},
+	{
+		name: "Docker",
+		href: "https://www.docker.com",
+		logo: IconLogosDockerIcon,
+		group: "Backend & platform",
+		featured: true,
+		homepageOnly: true,
+	},
+	{
+		name: "PostgreSQL",
+		href: "https://www.postgresql.org",
+		logo: IconLogosPostgresql,
+		group: "Backend & platform",
+		featured: true,
+		homepageOnly: true,
 	},
 ];
 
@@ -246,7 +319,10 @@ export type Experience = {
 	company: string;
 	href?: string;
 	position: string;
-	period: string;
+	/** Month employment started, as `YYYY-MM`. */
+	start: string;
+	/** Month employment ended, as `YYYY-MM`. Omit while still employed. */
+	end?: string;
 	/** Rich description used by the homepage. Lazy so SSR doesn't evaluate JSX at module scope. */
 	description: () => JSX.Element;
 	/** Condensed, plain-text achievements used by the resume. */
@@ -265,7 +341,8 @@ export const experience: Experience[] = [
 		company: "Zephyr Cloud",
 		href: "https://zephyr-cloud.io",
 		position: "Platform Engineer",
-		period: "Jun 2026 — Nov 2026",
+		start: "2026-06",
+		end: "2026-11",
 		description: () => (
 			<>
 				Zephyr Cloud builds infrastructure to deploy Module Federation and micro
@@ -288,13 +365,14 @@ export const experience: Experience[] = [
 			"Worked across platform and product on The AI Platform, a superapp for multi-agent, multi-human communication.",
 		],
 		resumeTech: ["TypeScript", "Module Federation", "Micro frontends"],
-		companyClass: "group-hover:text-black dark:group-hover:text-white",
+		companyClass: "group-hover:text-[#7C3AED]",
 	},
 	{
 		company: "Cap.so",
 		href: "https://cap.so",
 		position: "Contractor — Full Stack",
-		period: "Jul 2025 — Nov 2025",
+		start: "2025-07",
+		end: "2025-11",
 		description: () =>
 			"Cap is an open source screen recording and sharing tool. I worked on the desktop application and web backend including working with GPU shaders to render higher quality cursors, building a tracking system for the progress of uploading files, overhauling the recording flow GUI, and moving the camera preview to native GPU rendering.",
 		highlights: [
@@ -324,7 +402,8 @@ export const experience: Experience[] = [
 		company: "CrabNebula",
 		href: "https://crabnebula.dev",
 		position: "Contractor — Full Stack",
-		period: "Apr 2025 — Jun 2025",
+		start: "2025-04",
+		end: "2025-06",
 		description: () =>
 			"I worked on client projects, conducted Rust training sessions and contributed to open-source. I contributed to an AI chat-based computer automation application built in Tauri and also conducted training sessions for a 8-15 person development team on using Tauri and Rust effectively.",
 		highlights: [
@@ -332,13 +411,14 @@ export const experience: Experience[] = [
 			"Ran Rust and Tauri training sessions for an 8–15 person development team.",
 		],
 		resumeTech: ["Rust", "Tauri", "TypeScript"],
-		companyClass: "group-hover:text-[#C790FF]",
+		companyClass: "group-hover:text-[#99B6FF]",
 	},
 	{
 		company: "Spacedrive",
 		href: "https://spacedrive.com",
 		position: "Founding Engineer — Full Stack",
-		period: "May 2022 — May 2024",
+		start: "2022-05",
+		end: "2024-05",
 		description: () =>
 			"Building the file manager for the future. I worked on building the desktop application, Rust core for filesystem operations and peer to peer networking system. I also developed the system for us to ship our Rust core inside a React Native app.",
 		highlights: [
@@ -358,7 +438,8 @@ export const experience: Experience[] = [
 	{
 		company: "Freelancer",
 		position: "Contractor — Full Stack",
-		period: "Aug 2020 — May 2022",
+		start: "2020-08",
+		end: "2022-05",
 		description: () =>
 			"I worked with multiple clients to bring their vision to life. I built multiple Windows Device Management servers, a car dash camera manager application in Electron and worked on a modern web interface for managing a telephony system.",
 		highlights: [
@@ -389,6 +470,43 @@ export const experience: Experience[] = [
 		],
 	},
 ];
+
+const MONTHS = [
+	"Jan",
+	"Feb",
+	"Mar",
+	"Apr",
+	"May",
+	"Jun",
+	"Jul",
+	"Aug",
+	"Sep",
+	"Oct",
+	"Nov",
+	"Dec",
+] as const;
+
+export function formatExperiencePeriod(job: Pick<Experience, "start" | "end">) {
+	const format = (value: string) => {
+		const [year, month] = value.split("-");
+		return `${MONTHS[Number(month) - 1]} ${year}`;
+	};
+
+	return `${format(job.start)} — ${job.end ? format(job.end) : "Present"}`;
+}
+
+/**
+ * The latest role is the one with the newest start date. A role without an
+ * end date is current, so only advertise availability once it has ended.
+ */
+export function isOpenToWork() {
+	const latest = experience.reduce<Experience | undefined>(
+		(latest, job) => (!latest || job.start > latest.start ? job : latest),
+		undefined,
+	);
+
+	return Boolean(latest?.end);
+}
 
 export type ProjectSubsection = {
 	name: string;
