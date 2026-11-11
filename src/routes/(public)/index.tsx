@@ -395,11 +395,13 @@ const SubsectionLink = (props: {
 	</a>
 );
 
-const SectionTitle = (props: ParentProps<{ compact?: boolean }>) => (
+const SectionTitle = (
+	props: ParentProps<{ compact?: boolean; inline?: boolean }>,
+) => (
 	<h2
 		class={clsx(
 			"text-sm font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider",
-			props.compact ? "mb-4" : "mb-8",
+			props.inline ? undefined : props.compact ? "mb-4" : "mb-8",
 		)}
 	>
 		{props.children}
@@ -505,33 +507,38 @@ const SkillItem = (props: {
 	</a>
 );
 
-const LookingForWork = () => (
-	<div class="mb-8 flex items-center justify-between gap-4 border-b border-gray-200 pb-3 dark:border-gray-800">
-		<div class="flex min-w-0 items-center gap-2.5">
-			<span
-				aria-hidden="true"
-				class="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500"
-			/>
-			<p class="m-0 truncate text-sm text-gray-600 dark:text-gray-400">
-				<span class="font-semibold text-gray-900 dark:text-gray-100">
-					Open to new work
+const Availability = () => (
+	<button
+		type="button"
+		title="Email Oscar"
+		onClick={() => {
+			window.location.href = `mailto:${profile.email}`;
+		}}
+		class="group inline-flex min-w-0 cursor-pointer items-center gap-2.5 self-start rounded-full bg-emerald-50 px-3 py-1 text-left transition-colors duration-200 hover:bg-emerald-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 sm:self-auto dark:bg-emerald-500/10 dark:hover:bg-emerald-500/15"
+	>
+		<span
+			aria-hidden="true"
+			class="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500"
+		/>
+		<p class="m-0 truncate text-sm text-gray-600 dark:text-gray-400">
+			<span class="font-semibold text-emerald-700 dark:text-emerald-400">
+				Open to new work
+			</span>
+			<span class="mx-2 hidden text-emerald-300 sm:inline dark:text-emerald-500/40">
+				/
+			</span>
+			<span class="hidden text-emerald-700/80 sm:inline dark:text-emerald-400/80">
+				Full-time or contract
+			</span>
+		</p>
+		<span class="grid grid-cols-[1fr] opacity-100 transition-[grid-template-columns,opacity] duration-300 ease-out sm:grid-cols-[0fr] sm:opacity-0 sm:group-focus-visible:grid-cols-[1fr] sm:group-focus-visible:opacity-100 sm:group-hover:grid-cols-[1fr] sm:group-hover:opacity-100">
+			<span class="overflow-hidden">
+				<span class="block whitespace-nowrap border-l border-emerald-300/60 pl-2 text-sm font-medium text-emerald-700 dark:border-emerald-500/30 dark:text-emerald-400">
+					Get in touch
 				</span>
-				<span class="mx-2 hidden text-gray-300 sm:inline dark:text-gray-700">
-					/
-				</span>
-				<span class="hidden sm:inline">Full-time or contract</span>
-			</p>
-		</div>
-		<button
-			type="button"
-			class="shrink-0 cursor-pointer border-0 bg-transparent p-0 text-sm font-medium text-gray-500 underline-offset-4 transition-colors hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-gray-100"
-			onClick={() => {
-				window.location.href = `mailto:${profile.email}`;
-			}}
-		>
-			Get in touch
-		</button>
-	</div>
+			</span>
+		</span>
+	</button>
 );
 
 const Experience = () => {
@@ -553,10 +560,12 @@ const Experience = () => {
 
 	return (
 		<section class="pb-8">
-			<SectionTitle>Work Experience</SectionTitle>
-			<Show when={isOpenToWork()}>
-				<LookingForWork />
-			</Show>
+			<div class="mb-8 flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-5">
+				<SectionTitle inline>Work Experience</SectionTitle>
+				<Show when={isOpenToWork()}>
+					<Availability />
+				</Show>
+			</div>
 
 			<div
 				id="experience-list"

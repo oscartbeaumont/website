@@ -563,14 +563,14 @@ export const projects: Project[] = [
 				logo: IconSimpleIconsMidi,
 			},
 			{
-				name: "fsk",
-				href: "https://github.com/specta-rs/fsk",
-				logo: FskLogo,
-			},
-			{
 				name: "gurafi",
 				href: "https://github.com/specta-rs/gurafi",
 				logo: GurafiLogo,
+			},
+			{
+				name: "fsk",
+				href: "https://github.com/specta-rs/fsk",
+				logo: FskLogo,
 			},
 			{
 				name: "rspc",

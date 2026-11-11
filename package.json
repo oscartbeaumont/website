@@ -4,12 +4,6 @@
 	"private": true,
 	"type": "module",
 	"packageManager": "pnpm@10.11.1",
-	"pnpm": {
-		"overrides": {
-			"seroval": "^1.7.6",
-			"seroval-plugins": "^1.7.6"
-		}
-	},
 	"scripts": {
 		"dev": "cf dev",
 		"build": "cf workers types && node node_modules/typescript/bin/tsc -b && tsx src/generate-og.tsx && tsx src/generate-addy-icons.tsx && cf build",
