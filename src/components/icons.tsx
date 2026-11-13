@@ -1,6 +1,55 @@
+import { For } from "solid-js";
+
 import gurafiLogoUrl from "../assets/gurafi-logo.svg";
 import kobalteDarkUrl from "../assets/kobalte-dark.png";
 import kobalteLightUrl from "../assets/kobalte-light.png";
+
+/** The Besu mark is a 7×7 grid of rounded cells with one accent cell. */
+const besuCells = Array.from({ length: 49 }, (_, index) => ({
+	x: 78 + (index % 7) * 52.213,
+	y: 78 + Math.floor(index / 7) * 52.213,
+	/** The fifth column is the dark/light spine of the grid. */
+	spine: index % 7 === 4,
+	accent: index === 25,
+}));
+
+export function BesuLogo(props: { class?: string }) {
+	return (
+		<svg
+			class={props.class}
+			viewBox="0 0 512 512"
+			xmlns="http://www.w3.org/2000/svg"
+		>
+			<title>Besu</title>
+			<rect
+				x="1"
+				y="1"
+				width="510"
+				height="510"
+				rx="111"
+				class="fill-[#F3F0E8] stroke-[#E4DED1] dark:fill-[#070907] dark:stroke-[#070907]"
+			/>
+			<For each={besuCells}>
+				{(cell) => (
+					<rect
+						x={cell.x}
+						y={cell.y}
+						width="42.72"
+						height="42.72"
+						rx="6.835"
+						class={
+							cell.accent
+								? "fill-[#D9481B] dark:fill-[#FF5A1F]"
+								: cell.spine
+									? "fill-[#171A14] dark:fill-[#C8FF3D]"
+									: "fill-[#CFC7B6] dark:fill-[#2E3724]"
+						}
+					/>
+				)}
+			</For>
+		</svg>
+	);
+}
 
 export function TracingLogo(props: { class?: string }) {
 	return (

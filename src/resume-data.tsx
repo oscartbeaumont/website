@@ -6,6 +6,7 @@ import mattraxLogoUrl from "./assets/matrax-logo.png";
 import spectaLogoUrl from "./assets/specta-logo.png";
 import spotistatsLogoUrl from "./assets/spotistats-logo.png";
 import {
+	BesuLogo,
 	FskLogo,
 	GurafiLogo,
 	KobalteLogo,
@@ -571,6 +572,11 @@ export const projects: Project[] = [
 				name: "fsk",
 				href: "https://github.com/specta-rs/fsk",
 				logo: FskLogo,
+			},
+			{
+				name: "besu",
+				href: "https://github.com/specta-rs/besu",
+				logo: BesuLogo,
 			},
 			{
 				name: "rspc",
