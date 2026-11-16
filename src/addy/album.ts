@@ -75,6 +75,33 @@ export function daysTogether(now: Date): number {
 	);
 }
 
+/**
+ * The time together broken into whole years and the days since the last
+ * anniversary, so the page can say "1 year / 149 days" without anyone having
+ * to divide 514 by 365 in their head.
+ */
+export function yearsAndDaysTogether(now: Date): {
+	years: number;
+	days: number;
+} {
+	if (now.getTime() < START.getTime()) return { years: 0, days: 0 };
+	const total = daysTogether(now);
+	const start = perthDay(START);
+	const today = perthDay(now);
+	let years = today.year - start.year;
+	if (
+		Date.UTC(today.year, today.month, today.day) <
+		Date.UTC(start.year + years, start.month, start.day)
+	) {
+		years -= 1;
+	}
+	const spent =
+		(Date.UTC(start.year + years, start.month, start.day) -
+			Date.UTC(start.year, start.month, start.day)) /
+		86_400_000;
+	return { years, days: total - spent };
+}
+
 /** Perth is UTC+8 all year, so a fixed offset is enough for a wall-clock date. */
 const PERTH_OFFSET_MS = 8 * 60 * 60 * 1000;
 

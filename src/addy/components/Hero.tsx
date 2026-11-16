@@ -9,6 +9,8 @@ type HeroProps = {
 	/** True until the album has been fetched, so the page can hold its shape. */
 	loading: boolean;
 	days: number;
+	/** The same span, split into whole years and the days past the anniversary. */
+	elapsed: { years: number; days: number };
 	places: number | null;
 	anniversary: string | null;
 	onOpen: (photo: AddyPhoto) => void;
@@ -22,6 +24,43 @@ export function Hero(props: HeroProps) {
 		<Show when={props.locked} fallback={<HomeHero {...props} />}>
 			<LockedHero {...props} />
 		</Show>
+	);
+}
+
+/**
+ * The time together as it is written on the landing page: whole years and the
+ * days since the last anniversary in the big slot, with the plain day count
+ * underneath. Before the first anniversary there are no years to say, so it
+ * keeps the single number and its "days together" label.
+ */
+function Elapsed(props: { total: number; years: number; days: number }) {
+	const count = (value: number) => value.toLocaleString("en-AU");
+	const plural = (value: number, one: string, many: string) =>
+		value === 1 ? one : many;
+
+	return (
+		<>
+			<p class="split-number">
+				<Show
+					when={props.years > 0}
+					fallback={<span>{count(props.total)}</span>}
+				>
+					<span>
+						{count(props.years)} {plural(props.years, "year", "years")}
+					</span>
+					<Show when={props.days > 0}>
+						<span>
+							{count(props.days)} {plural(props.days, "day", "days")}
+						</span>
+					</Show>
+				</Show>
+			</p>
+			<p class="split-days">
+				{props.years > 0
+					? `${count(props.total)} ${plural(props.total, "day", "days")} together`
+					: `${plural(props.total, "day", "days")} together`}
+			</p>
+		</>
 	);
 }
 
@@ -65,10 +104,11 @@ function LockedHero(props: HeroProps) {
 				</div>
 
 				<div class="split-body">
-					<p class="split-number">{props.days.toLocaleString("en-AU")}</p>
-					<p class="split-days">
-						{props.days === 1 ? "day together" : "days together"}
-					</p>
+					<Elapsed
+						total={props.days}
+						years={props.elapsed.years}
+						days={props.elapsed.days}
+					/>
 					<span class="split-rule" aria-hidden="true" />
 					<p class="split-since">{START_LONG}</p>
 					<button
