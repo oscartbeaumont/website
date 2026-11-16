@@ -21,7 +21,7 @@ import {
 	daysTogether,
 	groupPlaces,
 	sortedNewest,
-	yearsAndDaysTogether,
+	yearsTogether,
 } from "../../addy/album";
 import {
 	clearCover,
@@ -399,7 +399,7 @@ export default function Page() {
 					photos={allPhotos()}
 					loading={loading()}
 					days={daysTogether(now())}
-					elapsed={yearsAndDaysTogether(now())}
+					years={yearsTogether(now())}
 					places={placeCount()}
 					anniversary={anniversary()}
 					onLogin={() => requestLogin()}

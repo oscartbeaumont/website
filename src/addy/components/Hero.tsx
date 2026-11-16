@@ -1,5 +1,5 @@
 import { createMemo, createSignal, Show } from "solid-js";
-import { START_LONG } from "../album";
+import { START_LONG, type YearsTogether } from "../album";
 import type { AddyPhoto } from "../store";
 import { Icon } from "./Icons";
 import { PhotoPlate } from "./PhotoPlate";
@@ -9,8 +9,8 @@ type HeroProps = {
 	/** True until the album has been fetched, so the page can hold its shape. */
 	loading: boolean;
 	days: number;
-	/** The same span, split into whole years and the days past the anniversary. */
-	elapsed: { years: number; days: number };
+	/** The same span as a mixed fraction of a year. */
+	years: YearsTogether;
 	places: number | null;
 	anniversary: string | null;
 	onOpen: (photo: AddyPhoto) => void;
@@ -28,35 +28,47 @@ export function Hero(props: HeroProps) {
 }
 
 /**
- * The time together as it is written on the landing page: whole years and the
- * days since the last anniversary in the big slot, with the plain day count
- * underneath. Before the first anniversary there are no years to say, so it
- * keeps the single number and its "days together" label.
+ * The time together as it is written on the landing page: "1 2/5 years" in the
+ * big slot, with the plain day count underneath. A fraction of a year is how
+ * people say it out loud, and the stacked fraction keeps it from reading as a
+ * date. Before the first anniversary there are no years to say, so it keeps
+ * the single day count and its "days together" label.
  */
-function Elapsed(props: { total: number; years: number; days: number }) {
+function YearsFraction(props: { total: number; years: YearsTogether }) {
 	const count = (value: number) => value.toLocaleString("en-AU");
 	const plural = (value: number, one: string, many: string) =>
 		value === 1 ? one : many;
 
+	const whole = () => props.years.whole;
+	const fraction = () => props.years.numerator > 0;
+	const unit = () => (whole() === 1 && !fraction() ? "year" : "years");
+	// Spoken as "1 and 2/5 years": the stacked fraction would otherwise be read
+	// as three separate numbers.
+	const spoken = () => {
+		if (whole() === 0)
+			return `${count(props.total)} ${plural(props.total, "day", "days")}`;
+		if (!fraction())
+			return `${count(whole())} ${plural(whole(), "year", "years")}`;
+		return `${count(whole())} and ${props.years.numerator}/${props.years.denominator} years`;
+	};
+
 	return (
 		<>
-			<p class="split-number">
-				<Show
-					when={props.years > 0}
-					fallback={<span>{count(props.total)}</span>}
-				>
-					<span>
-						{count(props.years)} {plural(props.years, "year", "years")}
-					</span>
-					<Show when={props.days > 0}>
-						<span>
-							{count(props.days)} {plural(props.days, "day", "days")}
+			<p class="sr-only">{spoken()}</p>
+			<p class="split-number" aria-hidden="true">
+				<Show when={whole() > 0} fallback={<span>{count(props.total)}</span>}>
+					<span>{count(whole())}</span>
+					<Show when={fraction()}>
+						<span class="split-fraction">
+							<span>{props.years.numerator}</span>
+							<span>{props.years.denominator}</span>
 						</span>
 					</Show>
+					<span>{unit()}</span>
 				</Show>
 			</p>
 			<p class="split-days">
-				{props.years > 0
+				{whole() > 0
 					? `${count(props.total)} ${plural(props.total, "day", "days")} together`
 					: `${plural(props.total, "day", "days")} together`}
 			</p>
@@ -104,11 +116,7 @@ function LockedHero(props: HeroProps) {
 				</div>
 
 				<div class="split-body">
-					<Elapsed
-						total={props.days}
-						years={props.elapsed.years}
-						days={props.elapsed.days}
-					/>
+					<YearsFraction total={props.days} years={props.years} />
 					<span class="split-rule" aria-hidden="true" />
 					<p class="split-since">{START_LONG}</p>
 					<button

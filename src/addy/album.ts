@@ -75,31 +75,75 @@ export function daysTogether(now: Date): number {
 	);
 }
 
+/** A mixed fraction of a year: whole years plus numerator/denominator of one. */
+export type YearsTogether = {
+	whole: number;
+	numerator: number;
+	denominator: number;
+};
+
 /**
- * The time together broken into whole years and the days since the last
- * anniversary, so the page can say "1 year / 149 days" without anyone having
- * to divide 514 by 365 in their head.
+ * The time together as whole years and a fraction of the year in progress, so
+ * the page can say "1 2/5 years" instead of making heads divide 514 by 365.
+ * The fraction is the closest one with a denominator of at most [MAX_DENOMINATOR]
+ * — small enough to read at display size, and recognisable arithmetic (halves,
+ * quarters, fifths, twelfths) rather than whatever lands closest.
  */
-export function yearsAndDaysTogether(now: Date): {
-	years: number;
-	days: number;
-} {
-	if (now.getTime() < START.getTime()) return { years: 0, days: 0 };
+export function yearsTogether(now: Date): YearsTogether {
+	if (now.getTime() < START.getTime())
+		return { whole: 0, numerator: 0, denominator: 1 };
+
 	const total = daysTogether(now);
 	const start = perthDay(START);
 	const today = perthDay(now);
-	let years = today.year - start.year;
+	let whole = today.year - start.year;
 	if (
 		Date.UTC(today.year, today.month, today.day) <
-		Date.UTC(start.year + years, start.month, start.day)
+		Date.UTC(start.year + whole, start.month, start.day)
 	) {
-		years -= 1;
+		whole -= 1;
 	}
-	const spent =
-		(Date.UTC(start.year + years, start.month, start.day) -
-			Date.UTC(start.year, start.month, start.day)) /
-		86_400_000;
-	return { years, days: total - spent };
+
+	// The days already spent on earlier anniversaries, so the remainder is
+	// measured from the one that just passed rather than from the start date.
+	const from = Date.UTC(start.year + whole, start.month, start.day);
+	const to = Date.UTC(start.year + whole + 1, start.month, start.day);
+	const days =
+		total - (from - Date.UTC(start.year, start.month, start.day)) / 86_400_000;
+
+	return { whole, ...closestFraction(days / ((to - from) / 86_400_000)) };
+}
+
+/** Twelfths are the smallest denominator that still says "about five months". */
+const MAX_DENOMINATOR = 12;
+
+/**
+ * The closest fraction to [value] (between 0 and 1) with at most [max] on the
+ * bottom. Never rounds up to a whole year: the last few days before an
+ * anniversary would otherwise print as the year that has not started yet.
+ */
+function closestFraction(
+	value: number,
+	max = MAX_DENOMINATOR,
+): { numerator: number; denominator: number } {
+	let numerator = 0;
+	let denominator = 1;
+	let error = value;
+	for (let candidate = 1; candidate <= max; candidate++) {
+		const top = Math.round(value * candidate);
+		if (top >= candidate) continue;
+		const candidateError = Math.abs(value - top / candidate);
+		if (candidateError < error - 1e-9) {
+			numerator = top;
+			denominator = candidate;
+			error = candidateError;
+		}
+	}
+	// Nothing rounded below a whole year, so the value sits within half a
+	// twelfth of the next anniversary; say 11/12 rather than jump ahead.
+	if (numerator === 0 && value > 0.5)
+		return { numerator: max - 1, denominator: max };
+	return { numerator, denominator };
 }
 
 /** Perth is UTC+8 all year, so a fixed offset is enough for a wall-clock date. */
