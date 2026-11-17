@@ -16,6 +16,8 @@ export default defineConfig({
 			},
 		},
 		domains: ["otbeaumont.me", "hireareallycutemodel.com"],
+		// Pull request previews get their own versioned `workers.dev` URL.
+		previewUrls: true,
 		env: {
 			KV: bindings.kv({
 				id: "131c4d5399294486a5a08727949aea35",
