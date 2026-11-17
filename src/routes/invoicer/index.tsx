@@ -9,6 +9,7 @@ import {
 	Show,
 	Switch,
 } from "solid-js";
+import invoiceLogo from "../../assets/brand/OscarBeaumontLogo-White.png?url&no-inline";
 import { createDateNow } from "../../date";
 import { CaptureAsPdf, defaultDocumentStyles } from "./CaptureAsPdf";
 import { createMutableLocalStorage } from "./util";
@@ -86,11 +87,7 @@ function InvoiceTemplate(props: { state: ReturnType<typeof initState> }) {
 		<>
 			<div class="h-1/5 w-full bg-[#1f65a6] text-white flex justify-between p-8">
 				<div class="pt-5">
-					<img
-						src="/assets/OscarBeaumontLogo-White.png"
-						alt="Oscar Beaumont Logo"
-						class="h-12"
-					/>
+					<img src={invoiceLogo} alt="Oscar Beaumont Logo" class="h-12" />
 					<h1 class="font-bold text-5xl -mt-2">Tax Invoice</h1>
 				</div>
 
