@@ -5,22 +5,12 @@
   referrer-policy: strict-origin-when-cross-origin
   strict-transport-security: max-age=63072000; includeSubDomains; preload
 
-# Vite writes all of its content-addressed output here, including the brand
-# artwork imported by the site. The hash in the filename is the version, so a
-# repeat visitor should never ask for it again. Cloudflare serves static assets
-# with `max-age=0, must-revalidate` by default, which makes every navigation
-# revalidate every script, stylesheet, font and picture.
 /assets/*
   cache-control: public, max-age=31536000, immutable
 
-# The launch screens are versioned with `ARTWORK_VERSION` on the URL, so the
-# file at a given version never changes.
 /splash/*
   cache-control: public, max-age=31536000, immutable
 
-# Artwork is versioned the same way, except the favicon which has no query
-# string. A week is enough to stop repeat downloads without pinning an old
-# file for a year.
 /favicon.ico
   cache-control: public, max-age=604800
 
