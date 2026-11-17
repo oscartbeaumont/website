@@ -5,16 +5,12 @@
   referrer-policy: strict-origin-when-cross-origin
   strict-transport-security: max-age=63072000; includeSubDomains; preload
 
-# Hand-written files in `public/assets` (brand artwork and photos). These
-# keep stable names, so they get a shorter TTL than the hashed build output.
+# Vite writes all of its content-addressed output here, including the brand
+# artwork imported by the site. The hash in the filename is the version, so a
+# repeat visitor should never ask for it again. Cloudflare serves static assets
+# with `max-age=0, must-revalidate` by default, which makes every navigation
+# revalidate every script, stylesheet, font and picture.
 /assets/*
-  cache-control: public, max-age=604800
-
-# Vite writes its content-addressed output here. The hash in the filename is
-# the version, so a repeat visitor should never ask for it again. Cloudflare
-# serves static assets with `max-age=0, must-revalidate` by default, which
-# makes every navigation revalidate every script, stylesheet and font.
-/_build/*
   cache-control: public, max-age=31536000, immutable
 
 # The launch screens are versioned with `ARTWORK_VERSION` on the URL, so the

@@ -62,11 +62,6 @@ function clientManifestForSsr(): Plugin {
 }
 
 export default defineConfig({
-	// Keep Vite's content-addressed output in its own directory, separate from
-	// the hand-written files in `public/assets`. That lets `_headers` cache the
-	// build output immutably for a year without also freezing brand artwork
-	// that someone may replace in place.
-	build: { assetsDir: "_build" },
 	optimizeDeps: { include: routeDependencies },
 	environments: {
 		ssr: {

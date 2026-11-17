@@ -1,4 +1,21 @@
 import { For, type ParentProps } from "solid-js";
+import logoGif from "../../assets/brand/logo.gif?url&no-inline";
+import logoIco from "../../assets/brand/logo.ico?url&no-inline";
+import logoPng from "../../assets/brand/logo.png?url&no-inline";
+import logoSplat from "../../assets/brand/logo-splat.gif?url&no-inline";
+import me from "../../assets/brand/me.jpg?url&no-inline";
+import meOriginal from "../../assets/brand/me-original.jpg?url&no-inline";
+import me2 from "../../assets/brand/me2.jpg?url&no-inline";
+import minecraftSkin from "../../assets/brand/minecraft-skin.png?url&no-inline";
+import logoAi from "../../assets/brand/OscarBeaumontLogo.ai?url&no-inline";
+import logo from "../../assets/brand/OscarBeaumontLogo.png?url&no-inline";
+import logoWhite from "../../assets/brand/OscarBeaumontLogo-White.png?url&no-inline";
+import oscar from "../../assets/brand/oscar.jpg?url&no-inline";
+import oscarTall from "../../assets/brand/oscar-tall.jpg?url&no-inline";
+import smaller from "../../assets/brand/smaller.png?url&no-inline";
+import wallpaper from "../../assets/brand/wallpaper.jpeg?url&no-inline";
+import wallpaper2 from "../../assets/brand/wallpaper2.jpg?url&no-inline";
+import wallpaper3 from "../../assets/brand/wallpaper3.jpg?url&no-inline";
 import { Layout } from "./index";
 
 export default function Brand() {
@@ -43,41 +60,41 @@ interface Asset {
 const assets: Asset[] = [
 	{
 		filename: "OscarBeaumontLogo-White.png",
-		path: "/assets/OscarBeaumontLogo-White.png",
+		path: logoWhite,
 		type: "image",
 	},
 	{
 		filename: "OscarBeaumontLogo.ai",
-		path: "/assets/OscarBeaumontLogo.ai",
+		path: logoAi,
 		type: "vector",
 	},
 	{
 		filename: "OscarBeaumontLogo.png",
-		path: "/assets/OscarBeaumontLogo.png",
+		path: logo,
 		type: "image",
 	},
-	{ filename: "logo-splat.gif", path: "/assets/logo-splat.gif", type: "image" },
-	{ filename: "logo.gif", path: "/assets/logo.gif", type: "image" },
-	{ filename: "logo.ico", path: "/assets/logo.ico", type: "image" },
-	{ filename: "logo.png", path: "/assets/logo.png", type: "image" },
+	{ filename: "logo-splat.gif", path: logoSplat, type: "image" },
+	{ filename: "logo.gif", path: logoGif, type: "image" },
+	{ filename: "logo.ico", path: logoIco, type: "image" },
+	{ filename: "logo.png", path: logoPng, type: "image" },
 	{
 		filename: "me-original.jpg",
-		path: "/assets/me-original.jpg",
+		path: meOriginal,
 		type: "image",
 	},
-	{ filename: "me.jpg", path: "/assets/me.jpg", type: "image" },
-	{ filename: "me2.jpg", path: "/assets/me2.jpg", type: "image" },
+	{ filename: "me.jpg", path: me, type: "image" },
+	{ filename: "me2.jpg", path: me2, type: "image" },
 	{
 		filename: "minecraft-skin.png",
-		path: "/assets/minecraft-skin.png",
+		path: minecraftSkin,
 		type: "image",
 	},
-	{ filename: "oscar-tall.jpg", path: "/assets/oscar-tall.jpg", type: "image" },
-	{ filename: "oscar.jpg", path: "/assets/oscar.jpg", type: "image" },
-	{ filename: "smaller.png", path: "/assets/smaller.png", type: "image" },
-	{ filename: "wallpaper.jpeg", path: "/assets/wallpaper.jpeg", type: "image" },
-	{ filename: "wallpaper2.jpg", path: "/assets/wallpaper2.jpg", type: "image" },
-	{ filename: "wallpaper3.jpg", path: "/assets/wallpaper3.jpg", type: "image" },
+	{ filename: "oscar-tall.jpg", path: oscarTall, type: "image" },
+	{ filename: "oscar.jpg", path: oscar, type: "image" },
+	{ filename: "smaller.png", path: smaller, type: "image" },
+	{ filename: "wallpaper.jpeg", path: wallpaper, type: "image" },
+	{ filename: "wallpaper2.jpg", path: wallpaper2, type: "image" },
+	{ filename: "wallpaper3.jpg", path: wallpaper3, type: "image" },
 ];
 
 const Assets = () => (
