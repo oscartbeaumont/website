@@ -1,3 +1,33 @@
+minimumReleaseAgeExclude:
+  - electron-to-chromium@1.5.487
+  - '@cloudflare/build-output-utils@1.0.0-rc.1'
+  - '@cloudflare/config@1.0.0-rc.1'
+  - '@cloudflare/runtime-types@0.1.30'
+  - '@cloudflare/workers-types@5.20261118.1'
+  - '@iconify-json/devicon@1.2.82'
+  - '@iconify-json/simple-icons@1.2.103'
+  - '@solidjs/compiler-darwin-arm64@2.0.0'
+  - '@solidjs/compiler-darwin-x64@2.0.0'
+  - '@solidjs/compiler-linux-arm64-gnu@2.0.0'
+  - '@solidjs/compiler-linux-x64-gnu@2.0.0'
+  - '@solidjs/compiler-wasm32-wasi@2.0.0'
+  - '@solidjs/compiler-win32-x64-msvc@2.0.0'
+  - '@solidjs/compiler@2.0.0'
+  - '@solidjs/meta@2.0.0'
+  - '@solidjs/router@2.0.0'
+  - '@solidjs/signals@2.0.0'
+  - '@solidjs/vite-plugin@3.0.1'
+  - '@solidjs/web@2.0.0'
+  - cf@1.0.0-rc.1
+  - maplibre-gl@6.19.0
+  - miniflare@5.20261117.0-beta
+  - posthog-js@1.450.1
+  - solid-js@2.0.0
 overrides:
   seroval: ^1.7.6
   seroval-plugins: ^1.7.6
+
+allowBuilds:
+  core-js: true
+  esbuild: true
+  workerd: true
