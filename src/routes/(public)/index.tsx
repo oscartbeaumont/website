@@ -1,13 +1,16 @@
 import { useNavigate } from "@solidjs/router";
-import { isServer, type JSX } from "@solidjs/web";
+import { getRequestEvent, isServer, type JSX } from "@solidjs/web";
 import clsx from "clsx";
 import {
+	type Accessor,
+	createContext,
 	createMemo,
 	createSignal,
 	For,
 	onSettled,
 	type ParentProps,
 	Show,
+	useContext,
 } from "solid-js";
 import IconArrowUpRight from "~icons/heroicons/arrow-up-right20-solid.jsx";
 
@@ -24,17 +27,69 @@ import {
 	socials,
 	yearsOfExperience,
 } from "../../resume-data";
+import type { StarCounts } from "../../stars";
+
+/** Values the server rendered, so hydration does not pop the badges in. */
+function readStarCounts(): StarCounts {
+	if (isServer)
+		return (
+			(getRequestEvent()?.locals.starCounts as StarCounts | undefined) ?? {}
+		);
+
+	const element = document.querySelector<HTMLElement>("[data-star-counts]");
+	if (!element?.dataset.starCounts) return {};
+	try {
+		return JSON.parse(element.dataset.starCounts) as StarCounts;
+	} catch {
+		return {};
+	}
+}
+
+const StarCountsContext = createContext<Accessor<StarCounts>>();
 
 export default function Home() {
+	const initialStarCounts = readStarCounts();
+	const [starCounts, setStarCounts] =
+		createSignal<StarCounts>(initialStarCounts);
+
+	// The HTML can sit in the CDN cache for a year, so the values baked into it
+	// above are refreshed from the same origin as soon as the page hydrates.
+	onSettled(() => {
+		if (isServer) return;
+		let cancelled = false;
+
+		void (async () => {
+			try {
+				const response = await fetch("/api/stars", {
+					headers: { Accept: "application/json" },
+				});
+				if (!response.ok) return;
+				const counts = (await response.json()) as StarCounts;
+				if (!cancelled && counts && typeof counts === "object")
+					setStarCounts(counts);
+			} catch {
+				// Keep the server-rendered values.
+			}
+		})();
+
+		return () => {
+			cancelled = true;
+		};
+	});
+
 	return (
-		<Layout>
-			<Header />
-			<About />
-			<WorkingOn />
-			<Skills />
-			<Experience />
-			<Contact />
-		</Layout>
+		<StarCountsContext value={starCounts}>
+			<Layout>
+				<Header />
+				<About />
+				<WorkingOn />
+				<Skills />
+				<Experience />
+				<Contact />
+			</Layout>
+			{/* Hands the server's counts to hydration so the badges do not pop in. */}
+			<div hidden data-star-counts={JSON.stringify(initialStarCounts)} />
+		</StarCountsContext>
 	);
 }
 
@@ -254,6 +309,56 @@ const projectLinkColorClass = (title: string) =>
 		title === "GitHub" && "hover:text-[#161614] dark:hover:text-white",
 	);
 
+/** Default threshold for a project badge; crates opt in to showing any count. */
+const STAR_THRESHOLD = 20;
+
+/** `1234` reads as `1.2k`, so the badge stays narrow on small screens. */
+function formatStars(stars: number) {
+	if (stars < 1000) return String(stars);
+	const thousands = stars / 1000;
+	return `${thousands.toFixed(thousands >= 10 ? 0 : 1)}k`;
+}
+
+const StarCount = (props: {
+	repo?: string;
+	/** Defaults to the project threshold; crates pass `0` to show any count. */
+	threshold?: number;
+	class?: string;
+	iconClass?: string;
+}) => {
+	const counts = useContext(StarCountsContext);
+	const stars = createMemo(() => {
+		const count = props.repo ? counts()[props.repo] : undefined;
+		const threshold = props.threshold ?? STAR_THRESHOLD;
+		return count !== undefined && count > threshold ? count : undefined;
+	});
+
+	return (
+		<Show when={stars()}>
+			{(count) => (
+				<span
+					class={clsx(
+						"inline-flex shrink-0 items-center gap-1 font-medium text-gray-500 tabular-nums dark:text-gray-400",
+						props.class,
+					)}
+					title={`${count().toLocaleString("en-US")} stars on GitHub`}
+				>
+					<IconHeroiconsStar20Solid
+						class={clsx(
+							"shrink-0 text-gray-500 transition-colors duration-200 ease-out dark:text-gray-400",
+							"group-hover:text-amber-500 group-focus-visible:text-amber-500 dark:group-hover:text-amber-400 dark:group-focus-visible:text-amber-400",
+							props.iconClass ?? "h-3 w-3",
+						)}
+						aria-hidden="true"
+					/>
+					<span class="sr-only">{count()} stars on GitHub</span>
+					<span aria-hidden="true">{formatStars(count())}</span>
+				</span>
+			)}
+		</Show>
+	);
+};
+
 const ProjectRow = (props: Project) => {
 	return (
 		<div class="flex items-start gap-3 py-1">
@@ -273,6 +378,7 @@ const ProjectRow = (props: Project) => {
 						<span class="truncate text-[15px] font-semibold text-gray-900 dark:text-gray-100">
 							{props.name}
 						</span>
+						<StarCount repo={props.repo} class="text-[11px]" />
 						<IconArrowUpRight
 							class="h-3.5 w-3.5 shrink-0 text-gray-400 opacity-0 transition-opacity duration-200 group-hover:opacity-100 dark:text-gray-500"
 							aria-hidden="true"
@@ -321,10 +427,11 @@ const FeaturedProject = (props: Project) => {
 						class={clsx("h-10 w-10 shrink-0 object-contain", props.logoClass)}
 					/>
 					<div class="min-w-0">
-						<div class="flex items-center gap-1">
+						<div class="flex items-center gap-2">
 							<div class="text-base font-semibold text-gray-900 dark:text-gray-100">
 								{props.name}
 							</div>
+							<StarCount repo={props.repo} class="text-xs" />
 							<IconArrowUpRight
 								class="h-4 w-4 shrink-0 text-gray-400 opacity-0 transition-opacity duration-200 group-hover:opacity-100 dark:text-gray-500"
 								aria-hidden="true"
@@ -382,6 +489,7 @@ const SubsectionLink = (props: {
 	name: string;
 	logo?: (props: { class?: string }) => JSX.Element;
 	deprecated?: boolean;
+	repo?: string;
 }) => (
 	<a
 		href={props.href}
@@ -389,7 +497,7 @@ const SubsectionLink = (props: {
 		rel="noopener"
 		title={props.deprecated ? `${props.name} (deprecated)` : undefined}
 		class={clsx(
-			"-mx-1 -my-0.5 inline-flex items-center gap-1 rounded px-1 py-0.5 font-mono text-[11px] transition-colors duration-200",
+			"group -mx-1 -my-0.5 inline-flex items-center gap-1 rounded px-1 py-0.5 font-mono text-[11px] transition-colors duration-200",
 			props.deprecated
 				? "text-gray-300 line-through decoration-dotted hover:bg-gray-100 dark:text-gray-600 dark:hover:bg-gray-800"
 				: "text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:text-gray-500 dark:hover:bg-gray-800 dark:hover:text-gray-300",
@@ -408,6 +516,12 @@ const SubsectionLink = (props: {
 			)}
 		</Show>
 		<span>{props.name}</span>
+		<StarCount
+			repo={props.repo}
+			threshold={0}
+			class={clsx("text-[10px]", props.deprecated && "opacity-50")}
+			iconClass="h-2.5 w-2.5"
+		/>
 	</a>
 );
 

@@ -13,6 +13,7 @@ declare global {
   const IconHeroiconsChevronDown20Solid: typeof import('~icons/heroicons/chevron-down20-solid.jsx').default
   const IconHeroiconsComputerDesktop20Solid: typeof import('~icons/heroicons/computer-desktop20-solid.jsx').default
   const IconHeroiconsMoon20Solid: typeof import('~icons/heroicons/moon20-solid.jsx').default
+  const IconHeroiconsStar20Solid: typeof import('~icons/heroicons/star20-solid.jsx').default
   const IconHeroiconsSun20Solid: typeof import('~icons/heroicons/sun20-solid.jsx').default
   const IconLogosCloudflareIcon: typeof import('~icons/logos/cloudflare-icon.jsx').default
   const IconLogosDiscordIcon: typeof import('~icons/logos/discord-icon.jsx').default

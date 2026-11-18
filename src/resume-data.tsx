@@ -514,6 +514,8 @@ export type ProjectSubsection = {
 	href: string;
 	logo?: Logo;
 	deprecated?: boolean;
+	/** GitHub repository (`owner/name`) whose stars are shown when it has any. */
+	repo?: string;
 };
 
 export type Project = {
@@ -524,6 +526,8 @@ export type Project = {
 	logoClass?: string;
 	/** 1 = headline project, 2 = secondary project. */
 	tier?: 1 | 2;
+	/** GitHub repository (`owner/name`) whose stars are shown when above 20. */
+	repo?: string;
 	links?: { href: string; title: string; icon: Icon }[];
 	subsections?: ProjectSubsection[];
 };
@@ -552,37 +556,44 @@ export const projects: Project[] = [
 				name: "specta",
 				href: "https://github.com/specta-rs/specta",
 				logo: SpectaLogo,
+				repo: "specta-rs/specta",
 			},
 			{
 				name: "tauri-specta",
 				href: "https://github.com/specta-rs/tauri-specta",
 				logo: IconLogosTauri,
+				repo: "specta-rs/tauri-specta",
 			},
 			{
 				name: "tauri-plugin-midi",
 				href: "https://github.com/specta-rs/tauri-plugin-midi",
 				logo: IconSimpleIconsMidi,
+				repo: "specta-rs/tauri-plugin-midi",
 			},
 			{
 				name: "gurafi",
 				href: "https://github.com/specta-rs/gurafi",
 				logo: GurafiLogo,
+				repo: "specta-rs/gurafi",
 			},
 			{
 				name: "fsk",
 				href: "https://github.com/specta-rs/fsk",
 				logo: FskLogo,
+				repo: "specta-rs/fsk",
 			},
 			{
 				name: "besu",
 				href: "https://github.com/specta-rs/besu",
 				logo: BesuLogo,
+				repo: "specta-rs/besu",
 			},
 			{
 				name: "rspc",
 				href: "https://github.com/specta-rs/rspc",
 				logo: RspcLogo,
 				deprecated: true,
+				repo: "specta-rs/rspc",
 			},
 		],
 	},
@@ -594,6 +605,7 @@ export const projects: Project[] = [
 		logo: mattraxLogoUrl,
 		logoClass: "dark:invert",
 		tier: 2,
+		repo: "mattrax/Mattrax",
 		links: [
 			{
 				href: "https://discord.gg/WPBHmDSfAn",
@@ -614,6 +626,7 @@ export const projects: Project[] = [
 		logo: erynLogoUrl,
 		logoClass: "dark:invert",
 		tier: 2,
+		repo: "oscartbeaumont/eryn",
 		links: [
 			{
 				href: "https://github.com/oscartbeaumont/eryn",
@@ -628,6 +641,7 @@ export const projects: Project[] = [
 		href: "https://spotistats.otbeaumont.me",
 		logo: spotistatsLogoUrl,
 		tier: 2,
+		repo: "oscartbeaumont/spotistats",
 		links: [
 			{
 				href: "https://github.com/oscartbeaumont/spotistats",
@@ -636,6 +650,22 @@ export const projects: Project[] = [
 			},
 		],
 	},
+];
+
+/**
+ * Every GitHub repository the homepage draws star counts from: projects and
+ * their subsections. Zero-star repos are fetched too, so the first star on one
+ * needs no data change.
+ */
+export const starRepos = [
+	...new Set(
+		projects
+			.flatMap((project) => [
+				project.repo,
+				...(project.subsections?.map((subsection) => subsection.repo) ?? []),
+			])
+			.filter((repo): repo is string => Boolean(repo)),
+	),
 ];
 
 export type Education = {

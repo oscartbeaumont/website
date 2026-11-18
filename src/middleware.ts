@@ -9,6 +9,7 @@ import { NO_INDEX } from "./addy/robots";
 import { listLegacyForApi } from "./addy/store";
 import { isAddySite } from "./host";
 import { handlePostHog } from "./routes/ph_4DkU/[...rest]";
+import { getStarCounts } from "./stars";
 
 const middleware: StartMiddleware = async (event, next) => {
 	const request = event.request;
@@ -52,6 +53,19 @@ const middleware: StartMiddleware = async (event, next) => {
 	)
 		return handleAddyImage(request, url);
 
+	// The page renders counts from the shared KV cache, and the client refreshes
+	// them here so the year-long HTML cache cannot freeze them.
+	if (request.method === "GET" && url.pathname === "/api/stars") {
+		const counts = await getStarCounts();
+		return Response.json(counts, {
+			headers: {
+				"Cache-Control": "public, max-age=300",
+				"Cloudflare-CDN-Cache-Control": "public, max-age=3600",
+				"X-Robots-Tag": NO_INDEX,
+			},
+		});
+	}
+
 	const nonce = randomBytes(16).toString("base64");
 	event.locals.nonce = nonce;
 	// The album renders its signed-in or signed-out page on the server, so a
@@ -65,6 +79,10 @@ const middleware: StartMiddleware = async (event, next) => {
 	const privateAlbum = albumPath || url.pathname.startsWith("/addy/");
 	if (albumPath)
 		event.locals.addyAuthenticated = await isAuthenticated(request);
+	// The homepage paints the counts into the cached HTML, then refreshes them
+	// from `/api/stars` once hydrated. The album does not show projects.
+	if (url.pathname === "/" && !isAddySite())
+		event.locals.starCounts = await getStarCounts();
 	const response = await next();
 	// Nothing about the album belongs in a search result, and the header is the
 	// half of that a crawler sees before it has parsed anything.
