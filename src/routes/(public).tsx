@@ -1,6 +1,8 @@
 import { Link, Meta, Title } from "@solidjs/meta";
 import { getRequestEvent, isServer } from "@solidjs/web";
 import type { ParentProps } from "solid-js";
+import appleTouchIcon from "../assets/favicon/apple-touch-icon.png?url&no-inline";
+import favicon from "../assets/favicon/favicon-32.png?url&no-inline";
 import openGraphImage from "../assets/og.png";
 import { openGraphImageSize } from "../constants";
 
@@ -24,7 +26,11 @@ export default function Layout(props: ParentProps) {
 				name="description"
 				content="I'm a software developer based in Perth, Australia. I am self-taught and love creating solutions to help people use technology effectively."
 			/>
-			<Link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+			<Link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
+			<Link rel="icon" type="image/png" sizes="32x32" href={favicon} />
+			{/* iOS ignores the ICO and, without this, the tab switcher falls back
+			    to the generic placeholder instead of the site's mark. */}
+			<Link rel="apple-touch-icon" sizes="180x180" href={appleTouchIcon} />
 			{import.meta.env.PROD && (
 				<Link rel="canonical" href={`${canonical}${path}`} />
 			)}
