@@ -53,7 +53,7 @@ function artwork(
 				...(background ? { backgroundColor: background } : {}),
 			}}
 		>
-			<img src={logo} width={mark} height={mark} />
+			<img src={logo} width={mark} height={mark} alt="" />
 		</div>
 	);
 }
