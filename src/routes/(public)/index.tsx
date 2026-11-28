@@ -604,6 +604,7 @@ const Skills = () => {
 										name={skill.name}
 										href={skill.href}
 										logo={skill.logo}
+										logoClass={skill.logoClass}
 									/>
 								</div>
 							)}
@@ -619,6 +620,7 @@ const SkillItem = (props: {
 	href: string;
 	name: string;
 	logo: (props: { class: string }) => JSX.Element;
+	logoClass?: string;
 }) => (
 	<a
 		href={props.href}
@@ -628,8 +630,10 @@ const SkillItem = (props: {
 		title={props.name}
 	>
 		{props.logo({
-			class:
+			class: clsx(
 				"w-10 h-10 object-contain grayscale group-hover:grayscale-0 transition-colors duration-300 ease-in-out",
+				props.logoClass,
+			),
 		})}
 		<span class="min-h-[2rem] text-center text-xs leading-tight font-medium text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors duration-300 ease-in-out">
 			{props.name}

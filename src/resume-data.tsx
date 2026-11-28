@@ -98,6 +98,8 @@ export type Skill = {
 	name: string;
 	href: string;
 	logo: Icon;
+	/** Extra classes for the logo, e.g. to keep monochrome marks visible in dark mode. */
+	logoClass?: string;
 	group:
 		| "Languages"
 		| "Frontend & tooling"
@@ -190,6 +192,15 @@ export const skills: Skill[] = [
 		name: "Playwright",
 		href: "https://playwright.dev",
 		logo: IconLogosPlaywright,
+		group: "Frontend & tooling",
+		featured: true,
+		homepageOnly: true,
+	},
+	{
+		name: "Vercel UI SDK",
+		href: "https://ui-sdk.dev",
+		logo: IconLogosVercelIcon,
+		logoClass: "dark:invert",
 		group: "Frontend & tooling",
 		featured: true,
 		homepageOnly: true,
