@@ -13,6 +13,7 @@ import {
 	RspcLogo,
 	SpectaLogo,
 	TracingLogo,
+	UiSdkLogo,
 } from "./components/icons";
 
 type Icon = (props: { class: string }) => JSX.Element;
@@ -98,7 +99,7 @@ export type Skill = {
 	name: string;
 	href: string;
 	logo: Icon;
-	/** Extra classes for the logo, e.g. to keep monochrome marks visible in dark mode. */
+	/** Extra classes for the logo, e.g. to size a wordmark differently from an icon. */
 	logoClass?: string;
 	group:
 		| "Languages"
@@ -199,8 +200,8 @@ export const skills: Skill[] = [
 	{
 		name: "Vercel UI SDK",
 		href: "https://ui-sdk.dev",
-		logo: IconLogosVercelIcon,
-		logoClass: "dark:invert",
+		logo: UiSdkLogo,
+		logoClass: "w-16!",
 		group: "Frontend & tooling",
 		featured: true,
 		homepageOnly: true,

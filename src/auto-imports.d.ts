@@ -41,7 +41,6 @@ declare global {
   const IconLogosTrpc: typeof import('~icons/logos/trpc.jsx').default
   const IconLogosTwitter: typeof import('~icons/logos/twitter.jsx').default
   const IconLogosTypescriptIcon: typeof import('~icons/logos/typescript-icon.jsx').default
-  const IconLogosVercelIcon: typeof import('~icons/logos/vercel-icon.jsx').default
   const IconLogosVitejs: typeof import('~icons/logos/vitejs.jsx').default
   const IconSimpleIconsDevdotto: typeof import('~icons/simple-icons/devdotto.jsx').default
   const IconSimpleIconsMidi: typeof import('~icons/simple-icons/midi.jsx').default
