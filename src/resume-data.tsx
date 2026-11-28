@@ -198,7 +198,7 @@ export const skills: Skill[] = [
 		homepageOnly: true,
 	},
 	{
-		name: "Vercel UI SDK",
+		name: "UI SDK",
 		href: "https://ui-sdk.dev",
 		logo: UiSdkLogo,
 		logoClass: "w-16!",
